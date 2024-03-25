@@ -54,3 +54,48 @@ class User:
     if not x:
       return 0
     return x['coins']
+
+  async def update_collection(self, value):
+    await db.collection.update_one(
+      {'user_id': self.user.id},
+      {'$set': {'collection': value}},
+      upsert=True
+    )
+
+  async def get_collection(self):
+    x = await db.collection.find_one(
+      {'user_id': user_id}
+    )
+    if not x:
+      return {}
+    return x['collection']
+
+  async def update_bot_id(self, value):
+    await db.active.update_one(
+      {'user_id': self.user.id},
+      {'$set': {'active': value}},
+      upsert=True
+    )
+
+  async def get_bot_id(self):
+    x = await db.active.find_one(
+      {'user_id': user_id}
+    )
+    if not x:
+      return 0
+    return x['active']
+
+  async def update_dp(self, value):
+    await db.dp.update_one(
+      {'user_id': self.user.id},
+      {'$set': {'dp': value}},
+      upsert=True
+    )
+
+  async def get_dp(self):
+    x = await db.dp.find_one(
+      {'user_id': user_id}
+    )
+    if not x:
+      return ''
+    return x['dp']
