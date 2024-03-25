@@ -1,4 +1,5 @@
 from YxH.Database import db
+import pickle
 
 class User:
   def __init__(user):
@@ -58,7 +59,7 @@ class User:
   async def update_collection(self, value):
     await db.collection.update_one(
       {'user_id': self.user.id},
-      {'$set': {'collection': value}},
+      {'$set': {'collection': pickle.dumps(value)}},
       upsert=True
     )
 
@@ -68,7 +69,7 @@ class User:
     )
     if not x:
       return {}
-    return x['collection']
+    return pickle.loads(x['collection'])
 
   async def update_bot_id(self, value):
     await db.active.update_one(
