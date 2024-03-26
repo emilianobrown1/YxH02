@@ -6,7 +6,7 @@ from ..Database.users import get_user
 
 @Client.on_message(filters.command("start") & filters.private)
 async def start(_, m):
-  await m.reply_photo("Images/start.JPG", start_text, reply_markup=start_markup)
+  await m.reply_photo("Images/start.JPG", start_text.format(m.from_user.first_name), reply_markup=await start_markup())
   user = m.from_user
   if not await get_user(user.id):
     u = User(user)
