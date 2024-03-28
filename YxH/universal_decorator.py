@@ -28,6 +28,9 @@ def YxH(
       if owner:
         if user_id != OWNER_ID:
           return
-      return await func(_, m, user)
+      try:
+        return await func(_, m, user)
+      except Exception as e:
+        await m.reply(e)
     return wrapper
   return fun
