@@ -14,6 +14,8 @@ def YxH(
       user_id = m.from_user.id
       chat_id = m.chat.id
       user = await get_user(user_id)
+      if not user:
+        return await force_start(m)
       if user.blocked:
         return await m.reply(block_text)
       if not private:
