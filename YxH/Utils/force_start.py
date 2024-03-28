@@ -10,7 +10,7 @@ async def force_start(m):
     markup = ikm(
       [
         [
-          ikb("Click here", url=f"https://t.me/{(await bot_info()).username}?startgroup=True")
+          ikb("Click here", url=f"https://t.me/{(await bot_info()).username}?start=YxH")
         ]
       ]
     )
