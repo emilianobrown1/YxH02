@@ -11,6 +11,7 @@ class User:
     self.profile_picture = None
     self.active_bot_id = 0
     self.bonus = [None, None] # [date, week]
+    self.blocked = False
 
   async def update(self):
     await db.users.update_one(

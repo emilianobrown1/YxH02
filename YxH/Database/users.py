@@ -1,5 +1,6 @@
 from . import db
 import pickle
+
 db = db.users
 
 async def get_user(user_id):
