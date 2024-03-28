@@ -1,5 +1,5 @@
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
-from . import bot_info
+from .. import bot_info
 from config import SUPPORT_GROUP, SUPPORT_CHANNEL
 
 async def start_markup():

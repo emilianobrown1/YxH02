@@ -1,4 +1,4 @@
-from YxH import YxH
+from yxh import YxH
 
 info = None
 
