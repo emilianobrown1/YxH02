@@ -14,6 +14,7 @@ class User:
     self.blocked = False
     self.treasure_state = False # Locked
     self.treasure = [] # [coins, gems, crystals]
+    self.store = {} # {date: [id1, id2, id3]}
 
   async def update(self):
     await db.users.update_one(
