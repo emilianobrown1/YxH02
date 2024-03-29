@@ -12,6 +12,8 @@ class User:
     self.active_bot_id = 0
     self.bonus = [None, None] # [date, week]
     self.blocked = False
+    self.treasure_state = False # Locked
+    self.treasure = [] # [coins, gems, crystals]
 
   async def update(self):
     await db.users.update_one(
