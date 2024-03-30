@@ -2,6 +2,7 @@ from .Database.users import get_user
 from .Utils.force_start import force_start
 from .Utils.strings import block_text, negate_private_text, negate_group_text
 from config import SUDO_USERS, OWNER_ID
+from .load_attr import load_attr
 
 def YxH(
   private=True,
@@ -30,9 +31,14 @@ def YxH(
       if owner:
         if user_id != OWNER_ID:
           return
-      try:
-        return await func(_, m, user)
-      except Exception as e:
-        await m.reply(e)
+      while True:
+        try:
+          await func(_, m, user)
+          break
+        except AttributeError:
+          await load_attr(user_id)
+        except Exception as e:
+          await m.reply(e)
+          break
     return wrapper
   return fun
