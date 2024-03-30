@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from . import get_date, YxH, characters_count
+from . import get_date, YxH, anime_characters_count
 import random
 from ..Utils.markups import store_markup
 from ..Utils.templates import get_image_and_caption
