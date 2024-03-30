@@ -1,5 +1,5 @@
 from .. import bot_info
 from ..Utils.datetime import get_date, get_week
 from ..Database.users import get_user
-from ..Database.characters import get_character, characters_count
+from ..Database.characters import get_anime_character, anime_characters_count
 from ..universal_decorator import YxH
