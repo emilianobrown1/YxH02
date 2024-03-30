@@ -2,10 +2,5 @@ from ..Database.characters import get_anime_character
 
 async def get_anime_image_and_caption(id):
   c = await get_anime_character(id)
-  cap = ""
-  cap += f"Name: {c.name}\n\n"
-  cap += f"Anime: {c.anime}\n\n"
-  cap += f"Price: {c.price}\n\n"
-  cap += f"Rarity: {c.rarity}\n\n"
-  cap += f"ID: {c.id}"
-  return c.image, cap
+  cap = "🎭 𝙉𝘼𝙈𝙀 : {}\n\n🎖𝘼𝙉𝙄𝙈𝙀 : {}\n\n💰 𝙋𝙍𝙄𝘾𝙀 : {} 💎\n\n🆔 : {}".format(c.name, c.anime, c.price, c.id)
+  return cap
