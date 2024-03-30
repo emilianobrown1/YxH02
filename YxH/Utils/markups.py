@@ -1,6 +1,5 @@
 from . import ikm, ikb
 from .. import bot_info
-from ..Database.characters import get_character
 from config import SUPPORT_GROUP, SUPPORT_CHANNEL
 
 async def start_markup():
@@ -18,7 +17,7 @@ async def start_markup():
   )
   return start_markup
 
-async def store_markup(user_id, page: int):
+def store_markup(user_id, page: int):
   dic = {1: [3, 2], 2: [1, 3], 3: [2, 1]}
   markup = ikm(
     [
