@@ -3,11 +3,12 @@ import random
 from YxH.Database import db
 
 class Character:
-  def __init__(self, id, image, name, anime, rarity, price=0):
+  def __init__(self, id, image, name, category, category_name, rarity, price=0):
     self.id = id
     self.image = image
     self.name = name
-    self.anime = anime
+    self.category = category
+    self.category_name = category_name
     self.rarity = rarity
     if price == 0:
       self.price = random.choice(list(range(30000, 60001)))
