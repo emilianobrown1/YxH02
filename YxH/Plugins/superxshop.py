@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from . import get_date, YxH, anime_characters_count
 import random
 from ..Utils.markups import store_markup
-from ..Utils.templates import get_image_and_caption
+from ..Utils.templates import get_anime_image_and_caption
 
 @Client.on_message(filters.command("superxshop"))
 @YxH(private=False)
@@ -18,6 +18,6 @@ async def sxs(_, m, u):
         store.append(i)
     u.store = {date: store}
     await u.update()
-  image, text = await get_image_and_caption(u.store[0])
+  image, text = await get_anime_image_and_caption(u.store[0])
   markup = store_markup(user_id, 1)
   await m.reply_photo(image, text, reply_markup=markup)
