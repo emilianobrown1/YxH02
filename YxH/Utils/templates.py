@@ -5,4 +5,4 @@ async def get_anime_image_and_caption(id: int) -> str:
   return "🎭 𝙉𝘼𝙈𝙀 : {}\n\n🎖𝘼𝙉𝙄𝙈𝙀 : {}\n\n💰 𝙋𝙍𝙄𝘾𝙀 : {} 💎\n\n🆔 : {}".format(c.name, c.anime, c.price, c.id)
 
 def xprofile_template(user):
-  return f"User: {user.user.first_name}\n\nGender: {user.gender}\n\nID: {user.user.id}\nOld: {user.get_old()}\n\nCrystals: {user.crystals} 🔮\nGems: {user.gems} 💎\nCoins: {user.coins} 🪙\nTreasure: {"Locked" if not user.treasure_state else "0, 0, 0"}\n\nCollected characters: {len(user.collection)}"
+  return f'User: {user.user.first_name}\n\nGender: {user.gender}\n\nID: {user.user.id}\nOld: {user.get_old()}\n\nCrystals: {user.crystals} 🔮\nGems: {user.gems} 💎\nCoins: {user.coins} 🪙\nTreasure: {"Locked" if not user.treasure_state else "0, 0, 0"}\n\nCollected characters: {len(user.collection)}'
