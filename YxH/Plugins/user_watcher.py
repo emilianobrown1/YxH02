@@ -1,7 +1,7 @@
 from .watchers import user_watcher
 from . import Client, filters, get_user
 
-@Client.on_message(group=user_watcher, filters.group)
+@Client.on_message(filters.group, group=user_watcher)
 async def cwf(_, m):
   u = await get_user(m.from_user.id)
   u.user = m.from_user
