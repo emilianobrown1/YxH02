@@ -1,4 +1,5 @@
-from . import Client, filters, YxH
+from pyrogram import Client, filters
+from . import YxH
 from ..Utils.templates import xprofile_template
 
 @Client.on_message(filters.command("xprofile"))
