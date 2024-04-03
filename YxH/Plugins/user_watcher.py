@@ -1,5 +1,6 @@
 from .watchers import user_watcher
-from . import Client, filters, get_user
+from pyrogram import Client, filters
+from . import get_user
 
 @Client.on_message(filters.group, group=user_watcher)
 async def cwf(_, m):
