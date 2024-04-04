@@ -36,7 +36,7 @@ def YxH(
           await func(_, m, user)
           break
         except AttributeError:
-          await load_attr(user_id)
+          user = await load_attr(user_id)
         except Exception as e:
           await m.reply(e)
           break
