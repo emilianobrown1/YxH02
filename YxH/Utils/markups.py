@@ -45,3 +45,12 @@ def gender_markup(u):
       ]
     ]
   )
+
+def xprofile_markup(u):
+  return ikm(
+    [
+      [
+        ikb("Gender", callback_data=f"gender_{u.user.id}")
+      ]
+    ]
+  )
