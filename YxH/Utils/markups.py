@@ -29,3 +29,7 @@ def store_markup(user_id, page: int):
     ]
   )
   return markup
+
+def gender_markup(u):
+  g = u.gender
+  markup = ikm()
