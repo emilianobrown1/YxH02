@@ -18,6 +18,9 @@ class User:
     self.store = {} # {date: [id1, id2, id3]}
     self.gender = 0 # {0: None, 1: Male, -1: Female}
     self.init_time = time.time() # now
+    
+    # Dev Requirements.
+    self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
 
   async def update(self):
     await db.users.update_one(
