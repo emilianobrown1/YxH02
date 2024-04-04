@@ -12,3 +12,4 @@ async def load_attr(user_id: int):
       continue
     setattr(user, x, getattr(ex_user, x))
   await user.update()
+  return user
