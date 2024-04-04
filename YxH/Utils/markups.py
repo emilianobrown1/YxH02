@@ -32,8 +32,7 @@ def store_markup(user_id, page: int):
 
 def gender_markup(u):
   g = u.gender
-  gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
-  gl[g] += " ☑️"
+  u.gl[g] += " ☑️"
   return ikm(
     [
       [
