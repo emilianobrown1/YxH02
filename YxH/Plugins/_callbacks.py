@@ -1,6 +1,6 @@
 from pyrogram import Client
 from ..Database.users import get_user
-from ..Utils.markups import gender_markup, xprofile_markuo
+from ..Utils.markups import gender_markup, xprofile_markup
 from ..Utils.templates import xprofile_template
 
 @Client.on_callback_query()
