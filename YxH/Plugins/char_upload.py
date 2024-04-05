@@ -1,11 +1,11 @@
 from pyrogram import Client, filters
 from . import YxH
 from ..Class.character import AnimeCharacter, YaoiYuriCharacter
-from config import CHAR_CHANNEL_ID
+from config import ANIME_CHAR_CHANNEL_ID
 import asyncio
 
 async def upload(cli: Client, msg_id: int):
-    m = await cli.get_messages(CHAR_CHANNEL_ID, msg_id)
+    m = await cli.get_messages(ANIME_CHAR_CHANNEL_ID, msg_id)
     if not m.photo or not m.caption:
         raise Exception("Invalid")
     spl = m.caption.split(";")
