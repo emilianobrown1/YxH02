@@ -27,6 +27,7 @@ async def upload(cli: Client, msg_id: int):
 @Client.on_message(filters.command("aupl"))
 @YxH(sudo=True)
 async def aupl(_, m, u):
+    ok = await m.reply("Processing...")
     spl = m.text.split()
     start = int(spl[1])
     end = int(spl[2]) + 1
@@ -34,3 +35,4 @@ async def aupl(_, m, u):
     for i in range(start, end):
         tasks.append(asyncio.create_task(upload(_, i)))
     await asyncio.gather(*tasks)
+    await ok.edit("Processed.")
