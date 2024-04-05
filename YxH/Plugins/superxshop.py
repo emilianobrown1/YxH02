@@ -18,6 +18,6 @@ async def sxs(_, m, u):
         store.append(i)
     u.store = {date: store}
     await u.update()
-  image, text = await get_anime_image_and_caption(u.store[0])
+  image, text = await get_anime_image_and_caption(u.store[date][0])
   markup = store_markup(user_id, 1)
   await m.reply_photo(image, text, reply_markup=markup)
