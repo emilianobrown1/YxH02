@@ -19,8 +19,8 @@ async def upload(cli: Client, msg_id: int):
         anime = spl[1].strip()
         rarity = spl[2].strip()
         id = int(spl[3].strip())
-    except:
-        raise Exception(f"Error at {msg_id}")
+    except Exception as e:
+        raise Exception(f"Error at {msg_id}\n\n{e}")
     c = AnimeCharacter(id, image, name, anime, rarity)
     await c.add()
 
