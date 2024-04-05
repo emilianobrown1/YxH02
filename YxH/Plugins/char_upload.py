@@ -3,6 +3,10 @@ from . import YxH
 from ..Class.character import AnimeCharacter, YaoiYuriCharacter
 from config import ANIME_CHAR_CHANNEL_ID
 import asyncio
+import os
+from telegraph import Telegraph
+
+t = Telegraph()
 
 async def upload(cli: Client, msg_id: int):
     m = await cli.get_messages(ANIME_CHAR_CHANNEL_ID, msg_id)
@@ -10,13 +14,14 @@ async def upload(cli: Client, msg_id: int):
         raise Exception("Invalid")
     spl = m.caption.split(";")
     try:
+        image = t.upload(await m.download())[0]
         name = spl[0].strip()
         anime = spl[1].strip()
         rarity = spl[2].strip()
         id = int(spl[3].strip())
     except:
         raise Exception(f"Error at {msg_id}")
-    c = AnimeCharacter(id, name, anime, rarity)
+    c = AnimeCharacter(id, image, name, anime, rarity)
     await c.add()
 
 @Client.on_message(filters.command("aupl"))
