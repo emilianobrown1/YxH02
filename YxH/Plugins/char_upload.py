@@ -14,7 +14,7 @@ async def upload(cli: Client, msg_id: int):
         raise Exception("Invalid")
     spl = m.caption.split(";")
     try:
-        image = t.upload(await m.download())[0]
+        image = "https://telegra.ph/" + t.upload(await m.download())[0]['src']
         name = spl[0].strip()
         anime = spl[1].strip()
         rarity = spl[2].strip()
