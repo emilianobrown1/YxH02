@@ -8,7 +8,7 @@ from ..Utils.templates import get_anime_image_and_caption
 @YxH(private=False)
 async def sxs(_, m, u):
   date = get_date()
-  cc = await characters_count()
+  cc = await anime_characters_count()
   if not date in u.store:
     store = []
     for i in range(1, cc+1):
