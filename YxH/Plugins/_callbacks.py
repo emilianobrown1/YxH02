@@ -51,6 +51,6 @@ async def cbq(_, q):
       await q.answer()
       return await q.message.delete()
     image, caption = await get_anime_image_and_caption(chars[page-1])
-    markup = await store_markup(actual, page)
+    markup = store_markup(actual, page)
     await q.answer()
     await q.edit_message_media(image, caption, reply_markup=markup)
