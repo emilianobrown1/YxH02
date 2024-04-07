@@ -46,7 +46,10 @@ async def cbq(_, q):
   elif data.startswith("turn"):
     page = int(data.split("|")[1])
     date = get_date()
-    chars = u.store[date]
+    chars = u.store.get(date)
+    if not chars:
+      await q.answer()
+      return await q.message.delete()
     image, caption = await get_anime_image_and_caption(chars[page-1])
     markup = await store_markup(actual, page)
     await q.answer()
