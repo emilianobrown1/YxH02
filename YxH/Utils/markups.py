@@ -25,6 +25,9 @@ def store_markup(user_id, page: int):
         ikb("<-", callback_data=f"turn|{dic[page][0]}_{user_id}"),
         ikb("Buy", callback_data=f"buy|{page}_{user_id}"),
         ikb("->", callback_data=f"turn|{dic[page][1]}_{user_id}")
+      ],
+      [
+        ikb("Close 🗑️", callback_data=f"close_{user_id}")
       ]
     ]
   )
