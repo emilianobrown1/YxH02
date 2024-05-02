@@ -16,15 +16,9 @@ async def sxs(_, m, u):
       if len(store) == 3:
         break
 
-character_name, anime_name, price = await get_character_info(i)
+character_name, anime_name, price,rarity = await get_character_info(i)
 
-            character = {
-                "id": i,
-                "name": character_name,
-                "anime": anime_name,
-                "price": price,
-                "rarity": rarity
-            }
+           
 
       if not i in store:
         store.append(i)
