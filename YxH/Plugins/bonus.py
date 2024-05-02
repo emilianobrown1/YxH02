@@ -9,7 +9,7 @@ async def claim(_, m, user):
   if user.bonus == l:
     return await m.reply("You have already claimed your bonus.")
   if user.bonus[1] != week:
-    await m.reply("Weekly and Daily Bonus has been claimed, 550000")
+    await m.reply("Weekly Bonus has been claimed: 550000 gems, 50000 gold, and 1 crystal")
     user.gems += 550000
     user.bonus = l
     return await user.update()
