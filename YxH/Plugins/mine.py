@@ -3,7 +3,7 @@ from . import YxH, get_date, get_week
 from ..Utils.templates import xprofile_template
 from ..Utils.markups import xprofile_markup
 import random
-from .bonus import today
+from .bonus import 
 
 @Client.on_message(filters.command("mine") & filters.group)
 @YxH()
