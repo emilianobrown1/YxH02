@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from . import YxH, get_date, get_week
 import random
 
-@Client.on_message(filters.command("mine"))
+@Client.on_message(filters.command("mine") & filters.group)
 @YxH()
 async def mine(_, m, user):
     
