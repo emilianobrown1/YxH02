@@ -15,7 +15,7 @@ async def mine(_, m, user):
     
     success = random.randint(0, 100) < 20  
     if success:
-        # If successful, add a gold mine to the user's inventory or increase their gold count
+        
         user.gold_mines += 1  # Assuming 'gold_mines' is an attribute of the user object
         await m.reply("You've struck gold! Reward: Gold Mine")
     else:
