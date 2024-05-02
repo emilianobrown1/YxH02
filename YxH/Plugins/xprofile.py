@@ -5,7 +5,7 @@ from ..Utils.markups import xprofile_markup
 
 @Client.on_message(filters.command("xprofile")& ~filters.private)
 @YxH())
-@YxH()
+
 async def xprofile(_, m, u):
   await m.reply(
     xprofile_template(u),
