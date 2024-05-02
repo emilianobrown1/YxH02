@@ -18,7 +18,7 @@ async def sxs(_, m, u):
 
 character_name, anime_name, price,rarity = await get_character_info(i)
           
-      if not i in store:
+
         store.append(i)
     u.store = {date: store}
     await u.update()
