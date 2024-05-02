@@ -18,5 +18,3 @@ async def claim(_, m, user):
     user.gems += 50000
     user.bonus = l
     return await user.update()
-except Exception as e:
-        await m.reply(f"An error occurred: {e}")
