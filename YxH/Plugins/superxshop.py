@@ -5,9 +5,9 @@ from ..Utils.markups import store_markup
 from ..Utils.templates import get_anime_image_and_caption
 
 RARITY_LEVELS = {
-    "Normal": 0.6,
-    "Rare": 0.3,
-    "Epic": 0.1
+    "Normal"
+    "Rare"
+    "Epic" 
 }
 @Client.on_message(filters.command("superxshop"))
 @YxH(private=False)
