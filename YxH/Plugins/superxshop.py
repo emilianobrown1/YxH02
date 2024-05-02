@@ -4,7 +4,6 @@ import random
 from ..Utils.markups import store_markup
 from ..Utils.templates import get_anime_image_and_caption
 
-
 @Client.on_message(filters.command("superxshop"))
 @YxH(private=False)
 async def sxs(_, m, u):
@@ -15,10 +14,9 @@ async def sxs(_, m, u):
     for i in range(1, cc+1):
       if len(store) == 3:
         break
-
-character_name, anime_name, price,rarity = await get_character_info(i)
-          
-
+      if not i in store:
+        store.append(i)
+    u.store = {date: store}
     await u.update()
   image, text = await get_anime_image_and_caption(u.store[date][0])
   markup = store_markup(u.user.id, 1)
