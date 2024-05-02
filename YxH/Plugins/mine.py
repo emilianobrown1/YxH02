@@ -2,7 +2,8 @@ from pyrogram import Client, filters
 from . import YxH, get_date, get_week
 from ..Utils.templates import xprofile_template
 from ..Utils.markups import
-from .bonus import  xprofile_markup
+from .bonus 
+import  xprofile_markup
 import random
 
 
