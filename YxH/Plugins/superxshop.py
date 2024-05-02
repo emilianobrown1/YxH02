@@ -4,6 +4,11 @@ import random
 from ..Utils.markups import store_markup
 from ..Utils.templates import get_anime_image_and_caption
 
+RARITY_LEVELS = {
+    "Normal": 0.6,
+    "Rare": 0.3,
+    "Epic": 0.1
+}
 @Client.on_message(filters.command("superxshop"))
 @YxH(private=False)
 async def sxs(_, m, u):
@@ -14,6 +19,18 @@ async def sxs(_, m, u):
     for i in range(1, cc+1):
       if len(store) == 3:
         break
+rarity = random.choices(list(RARITY_LEVELS.keys()), weights=list(RARITY_LEVELS.values()), k=1)[0]
+
+character_name, anime_name, price = await get_character_info(i)
+
+            character = {
+                "id": i,
+                "name": character_name,
+                "anime": anime_name,
+                "price": price,
+                "rarity": rarity
+            }
+
       if not i in store:
         store.append(i)
     u.store = {date: store}
