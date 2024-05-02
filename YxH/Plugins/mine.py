@@ -1,5 +1,7 @@
 from pyrogram import Client, filters
 from . import YxH, get_date, get_week
+from ..Utils.templates import xprofile_template
+from ..Utils.markups import xprofile_markup
 import random
 
 @Client.on_message(filters.command("mine") & filters.group)
