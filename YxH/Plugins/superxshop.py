@@ -19,8 +19,6 @@ async def sxs(_, m, u):
 character_name, anime_name, price,rarity = await get_character_info(i)
           
 
-        store.append(i)
-    u.store = {date: store}
     await u.update()
   image, text = await get_anime_image_and_caption(u.store[date][0])
   markup = store_markup(u.user.id, 1)
