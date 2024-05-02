@@ -7,7 +7,7 @@ class User:
     self.user = user
     self.crystals = 0
     self.gems = 0
-    self.coins = 0
+    self.gold = 0
     self.collection = {}
     self.profile_picture = None
     self.active_bot_id = 0
