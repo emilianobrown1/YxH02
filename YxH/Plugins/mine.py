@@ -19,7 +19,7 @@ async def mine(_, m, user):
         user.gold_mines += 1  
         await m.reply("You've struck gold! Reward: Gold Mine")
     else:
-        # If not successful, encourage the user to try again
+        
         await m.reply("No luck this time, keep mining!")
     
     # Update the user's data
