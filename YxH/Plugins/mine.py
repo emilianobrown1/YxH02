@@ -5,7 +5,7 @@ import random
 @Client.on_message(filters.command("mine"))
 @YxH()
 async def mine(_, m, user):
-    # Minimum gold required to mine
+    
     min_gold_required = 500
     
     
