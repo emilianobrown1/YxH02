@@ -3,7 +3,6 @@ from . import YxH, get_date, get_week
 from ..Utils.templates import xprofile_template
 from ..Utils.markups import 
 import  xprofile_markup
-from bonus import 
 import random
 
 
