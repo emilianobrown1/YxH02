@@ -3,7 +3,8 @@ from . import YxH
 from ..Utils.templates import xprofile_template
 from ..Utils.markups import xprofile_markup
 
-@Client.on_message(filters.command("xprofile"))
+@Client.on_message(filters.command("xprofile")& ~filters.private)
+@YxH())
 @YxH()
 async def xprofile(_, m, u):
   await m.reply(
