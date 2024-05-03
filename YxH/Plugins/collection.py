@@ -36,7 +36,7 @@ async def build_markup(lis, ids, user_id):
 async def turn(_, q):
     page = int(q.data.split("_")[0].split("/")[1])
     ind = page - 1
-    user_id = await
+    
     x = await parts(user_id)
     try:
         sub_lis = x[ind]
@@ -64,7 +64,7 @@ async def turn(_, q):
 @Client.on_message(filters.command("collection"))
 @YxH(private=False)
 async def coll(_, m, user_id):
-    user_id = await
+    
     x = await parts(user_id)
     if not x:
         return await m.reply(capsify("your collection is empty !"))
