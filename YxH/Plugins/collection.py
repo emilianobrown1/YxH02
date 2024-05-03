@@ -36,7 +36,7 @@ async def build_markup(lis, ids, user_id):
 async def turn(_, q):
     page = int(q.data.split("_")[0].split("/")[1])
     ind = page - 1
-    user_id = await get_switch(q.from_user.id)
+    user_id = await
     x = await parts(user_id)
     try:
         sub_lis = x[ind]
