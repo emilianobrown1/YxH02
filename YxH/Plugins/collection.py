@@ -62,7 +62,7 @@ async def turn(_, q):
     await q.edit_message_text(txt, reply_markup=markup)
 
 @Client.on_message(filters.command("collection"))
-@SpL(private=False)
+@YxH(private=False)
 async def coll(_, m, user_id):
     user_id = await get_switch(m.from_user.id)
     x = await parts(user_id)
