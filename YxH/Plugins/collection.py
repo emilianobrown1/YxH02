@@ -64,7 +64,7 @@ async def turn(_, q):
 @Client.on_message(filters.command("collection"))
 @YxH(private=False)
 async def coll(_, m, user_id):
-    user_id = await get_switch(m.from_user.id)
+    user_id = await
     x = await parts(user_id)
     if not x:
         return await m.reply(capsify("your collection is empty !"))
