@@ -18,13 +18,15 @@ async def start_markup():
   return start_markup
 
 def store_markup(user_id, page: int):
+  p = '👈'
+  n = '👉'
   dic = {1: [3, 2], 2: [1, 3], 3: [2, 1]}
   markup = ikm(
     [
       [
-        ikb("<-", callback_data=f"turn|{dic[page][0]}_{user_id}"),
-        ikb("Buy", callback_data=f"buy|{page}_{user_id}"),
-        ikb("->", callback_data=f"turn|{dic[page][1]}_{user_id}")
+        ikb(p, callback_data=f"turn|{dic[page][0]}_{user_id}"),
+        ikb("Buy 💎", callback_data=f"buy|{page}_{user_id}"),
+        ikb(n, callback_data=f"turn|{dic[page][1]}_{user_id}")
       ],
       [
         ikb("Close 🗑️", callback_data=f"close_{user_id}")
@@ -57,3 +59,17 @@ def xprofile_markup(u):
       ]
     ]
   )
+
+def acollection_markup(prev: int, next: int, u):
+  markup = ikm(
+    [
+      [
+        ikb('<-', callback_data=f'acoll|{prev}_{u.user.id}'),
+        ikb('->', callback_data=f'acoll|{next}_{u.user.id}')
+      ],
+      [
+        ikb('Close', callback_data=f'close_{u.user.id}')
+      ]
+    ]
+  )
+  return markup
