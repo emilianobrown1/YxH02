@@ -42,6 +42,9 @@ async def cbq(_, q):
     else:
       await q.answer()
       await q.edit_message_reply_markup(reply_markup=xprofile_markup(u))
+  elif data == 'close':
+    await q.answer()
+    await q.message.delete()
   elif data.startswith("turn"):
     page = int(data.split("|")[1])
     date = get_date()
