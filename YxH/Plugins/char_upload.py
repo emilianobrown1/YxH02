@@ -11,7 +11,7 @@ t = Telegraph()
 async def upload(cli: Client, msg_id: int):
     m = await cli.get_messages(ANIME_CHAR_CHANNEL_ID, msg_id)
     if not m.photo or not m.caption:
-        raise Exception("Invalid")
+        return
     spl = m.caption.split(";")
     try:
         image = "https://telegra.ph/" + t.upload_file(await m.download())[0]['src']
