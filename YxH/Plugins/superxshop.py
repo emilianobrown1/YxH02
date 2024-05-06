@@ -3,20 +3,24 @@ from pyrogram.types import Message
 from . import get_date, YxH, anime_characters_count
 from ..Utils.markups import store_markup
 from ..Utils.templates import get_anime_image_and_caption
+from ..Class.user import User
+import random
 
 @Client.on_message(filters.command("superxshop"))
 @YxH(private=False)
-async def sxs(_, m: Message, u):
+async def sxs(_, m: Message, u: User):
   date = get_date()
   cc = await anime_characters_count()
-  if not date in u.store:
+  all = list(range(1, cc+1))
+  if (not date in u.store):
     store = []
-    for i in range(1, cc+1):
-      if len(store) == 3:
-        break
-      if not i in store:
-        store.append(i)
+    while len(store) != 3:
+      r = random.choice(all)
+      if r in store:
+        continue
+      store.append(r)
     u.store = {date: store}
+    u.store_purchases = {date: [False, False, False]}
     await u.update()
   image, text = await get_anime_image_and_caption(u.store[date][0])
   markup = store_markup(u.user.id, 1)
