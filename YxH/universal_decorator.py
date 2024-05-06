@@ -26,7 +26,7 @@ def YxH(
         if chat_id < 0:
           return await m.reply(negate_group_text)
       if sudo:
-        if not user_id in SUDO_USERS:
+        if user_id not in SUDO_USERS:
           return
       if owner:
         if user_id != OWNER_ID:
@@ -38,7 +38,9 @@ def YxH(
         except AttributeError:
           user = await load_attr(user_id)
         except Exception as e:
-          await m.reply(e)
+          import traceback
+          tb = traceback.format_exc()
+          await m.reply(f'Error: {e} at function: {func.__name__}, line: {tb.splitlines()[-2]}')
           break
     return wrapper
   return fun
