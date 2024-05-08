@@ -17,22 +17,35 @@ async def start_markup():
   )
   return start_markup
 
-def store_markup(user_id, page: int):
+def store_markup(user_id: int, page: int, bought: bool):
   p = '👈'
   n = '👉'
   dic = {1: [3, 2], 2: [1, 3], 3: [2, 1]}
-  markup = ikm(
-    [
+  if not bought:
+    markup = ikm(
       [
-        ikb(p, callback_data=f"turn|{dic[page][0]}_{user_id}"),
-        ikb("Buy 💎", callback_data=f"buy|{page}_{user_id}"),
-        ikb(n, callback_data=f"turn|{dic[page][1]}_{user_id}")
-      ],
-      [
-        ikb("Close 🗑️", callback_data=f"close_{user_id}")
+        [
+          ikb(p, callback_data=f"turn|{dic[page][0]}_{user_id}"),
+          ikb("Buy 💎", callback_data=f"buy|{page}_{user_id}"),
+          ikb(n, callback_data=f"turn|{dic[page][1]}_{user_id}")
+        ],
+        [
+          ikb("Close 🗑️", callback_data=f"close_{user_id}")
+        ]
       ]
-    ]
-  )
+    )
+  else:
+    markup = ikm(
+      [
+        [
+          ikb(p, callback_data=f"turn|{dic[page][0]}_{user_id}"),
+          ikb(n, callback_data=f"turn|{dic[page][1]}_{user_id}")
+        ],
+        [
+          ikb("Close 🗑️", callback_data=f"close_{user_id}")
+        ]
+      ]
+    )
   return markup
 
 def gender_markup(u):

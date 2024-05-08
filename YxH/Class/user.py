@@ -16,6 +16,7 @@ class User:
     self.treasure_state = False # Locked
     self.treasure = [] # [coins, gems, crystals]
     self.store = {} # {date: [id1, id2, id3]}
+    self.store_purchases = {} # {date: [False, False, False]}
     self.gender = 0 # {0: None, 1: Male, -1: Female}
     self.init_time = time.time() # now
     

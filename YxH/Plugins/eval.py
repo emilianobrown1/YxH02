@@ -12,6 +12,8 @@ from pyrogram import filters
 from pyrogram import Client, filters
 from config import OWNER_ID as OWNER
 
+from ..Database.users import get_user
+
 SUDOERS = filters.user(OWNER)
 
 async def aexec(code, client, message):
