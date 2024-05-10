@@ -18,6 +18,6 @@ async def collection(_, m, u):
     txt = f"{u.user.first_name}'s collection\n"
     txt += f'page: 1/{total}\n\n'
     txt += acollection_template(first_5_dict)
-    markup = acollection_markup(total, 2, u)
+    markup = acollection_markup(1, u, first_5)
     image = (await get_anime_character(first_5[0])).image
     await m.reply_photo(image, caption=txt, reply_markup=markup)
