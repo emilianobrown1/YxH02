@@ -1,6 +1,8 @@
 from . import ikm, ikb
 from .. import bot_info
+from ..Class import User
 from config import SUPPORT_GROUP, SUPPORT_CHANNEL
+import math
 
 async def start_markup():
   info = await bot_info()
@@ -73,16 +75,31 @@ def xprofile_markup(u):
     ]
   )
 
-def acollection_markup(prev: int, next: int, u):
-  markup = ikm(
+def acollection_markup(current: int, u: User, current_5: list[int]):
+  total = math.ceil(len(u.collection)/5)
+  next = current + 1
+  prev = current - 1
+  if next > total:
+    next = 1
+  if prev < 0:
+    prev = total
+  l = [ikb(str(i), callback_data=f'view|{i}_{u.user.id}') for i in current_5]
+  res = []
+  if len(current_5) > 3:
+    res.append(l[:3])
+    res.append(l[3:])
+  else:
+    res.append(l)
+  res.append(
     [
-      [
-        ikb('<-', callback_data=f'acoll|{prev}_{u.user.id}'),
-        ikb('->', callback_data=f'acoll|{next}_{u.user.id}')
-      ],
-      [
-        ikb('Close', callback_data=f'close_{u.user.id}')
-      ]
+      ikb('<-', callback_data=f'acoll|{prev}_{u.user.id}'),
+      ikb('->', callback_data=f'acoll|{next}_{u.user.id}')
     ]
   )
+  res.append(
+    [
+        ikb('Close', callback_data=f'close_{u.user.id}')
+    ]
+  )
+  markup = ikm(res)
   return markup
