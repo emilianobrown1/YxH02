@@ -10,6 +10,7 @@ def xprofile_template(user):
 def acollection_template(lis: list[dict]) -> str:
   txt = ''
   for x in lis:
+    del x['image']
     for y in x:
       txt += f'{y}: {x[y]}'
       txt += '\n' 

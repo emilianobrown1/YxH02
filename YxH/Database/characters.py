@@ -7,6 +7,11 @@ async def get_anime_character(id):
     return pickle.loads(x['info'])
   return None
 
+async def get_anime_character_ids() -> list[int]:
+  x = db.anime_characters.find()
+  x = await x.to_list(length=None)
+  return [i['id'] for i in x]
+
 async def anime_characters_count():
   x = db.anime_characters.find()
   if not x:

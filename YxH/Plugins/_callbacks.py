@@ -1,11 +1,12 @@
 from pyrogram import Client
 from pyrogram.types import CallbackQuery
 from ..Database.users import get_user
+from ..Database.characters import get_anime_character
 from ..Utils.markups import gender_markup, xprofile_markup, store_markup
 from ..Utils.templates import xprofile_template, get_anime_image_and_caption
 from pyrogram.types import InputMediaPhoto as imp
 from ..Utils.datetime import get_date
-from ..Class import User
+from ..Class import User, AnimeCharacter
 
 @Client.on_callback_query()
 async def cbq(_, q: CallbackQuery):
@@ -65,10 +66,15 @@ async def cbq(_, q: CallbackQuery):
     if not chars:
       await q.answer()
       return await q.message.delete()
+    char_id = u.store[date][page-1]
+    char: AnimeCharacter = await get_anime_character(char_id)
+    if u.gems < char.price:
+      return await q.answer(f'You need {char.price-u.gems} more gems to buy this.', show_alert=True)
     await q.answer('Bought Successfully', show_alert=True)
     u.store_purchases[date][page - 1] = True
     markup = store_markup(actual, page, True)
     await q.edit_message_reply_markup(markup)
+    u.gems -= char.price
     if not chars[page-1] in u.collection:
       u.collection[chars[page-1]] = 1
     else:
