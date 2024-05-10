@@ -35,8 +35,11 @@ def YxH(
         try:
           await func(_, m, user)
           break
-        except AttributeError:
+        except AttributeError as e:
           user = await load_attr(user_id)
+          import traceback
+          tb = traceback.format_exc()
+          await m.reply(f'Error: {e} at function: {func.__name__}, line: {tb.splitlines()[-2]}')
         except Exception as e:
           import traceback
           tb = traceback.format_exc()
