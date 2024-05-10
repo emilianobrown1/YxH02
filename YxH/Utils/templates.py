@@ -8,11 +8,11 @@ def xprofile_template(user):
   return f'User: {user.user.first_name}\n\nGender: {user.gl[user.gender]}\n\nID: {user.user.id}\nOld: {user.get_old()}\n\nCrystals: {user.crystals} 🔮\nGems: {user.gems} 💎\nGold: {user.gold} 📯\nTreasure: {"Locked" if not user.treasure_state else "0, 0, 0"}\n\nCollected characters: {len(user.collection)}'
 
 def acollection_template(lis: list[dict]) -> str:
-  txt = ''
-  for x in lis:
-    del x['image']
-    for y in x:
-      txt += f'{y}: {x[y]}'
-      txt += '\n' 
-    txt += '\n'
-  return txt  
+    txt = ''
+    for x in lis:
+        txt += '🎭 𝙉𝘼𝙈𝙀 : ' + str(x.get('name', '')) + '\n\n'
+        txt += '🎖𝘼𝙉𝙄𝙈𝙀 : ' + str(x.get('anime', '')) + '\n\n'
+        txt += '💰 𝙋𝙍𝙄𝘾𝙀 : ' + str(x.get('price', '')) + '\n\n'
+        txt += '♦️ Epic\n\n'
+        txt += '🆔 : ' + str(x.get('id', '')) + '\n\n'
+    return txt
