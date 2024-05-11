@@ -81,7 +81,7 @@ def acollection_markup(current: int, u: User, current_5: list[int]):
   prev = current - 1
   if next > total:
     next = 1
-  if prev < 0:
+  if prev < 1:
     prev = total
   l = [ikb(str(i), callback_data=f'view|{i}_{u.user.id}') for i in current_5]
   res = []
@@ -92,8 +92,8 @@ def acollection_markup(current: int, u: User, current_5: list[int]):
     res.append(l)
   res.append(
     [
-      ikb('<-', callback_data=f'acoll|{prev}_{u.user.id}'),
-      ikb('->', callback_data=f'acoll|{next}_{u.user.id}')
+      ikb('<-', callback_data=f'acoll|{current}|{prev}_{u.user.id}'),
+      ikb('->', callback_data=f'acoll|{current}|{next}_{u.user.id}')
     ]
   )
   res.append(
