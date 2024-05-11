@@ -1,1 +1,2 @@
-user_watcher = 0
+fw_watcher = 0
+info_watcher = 1
