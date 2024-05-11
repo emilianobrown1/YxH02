@@ -22,6 +22,10 @@ from pyrogram.types import InputMediaPhoto as imp
 from ..Utils.datetime import get_date
 from ..Class import User, AnimeCharacter
 
+# MODULE FUNCTIONS IMPORTS
+
+from .bonus import claim_cbq
+
 @Client.on_callback_query()
 async def cbq(_, q: CallbackQuery):
   data, actual = q.data.split("_")
@@ -124,3 +128,5 @@ async def cbq(_, q: CallbackQuery):
     markup = view_back_markup(u.user.id, current)
     await q.answer()
     await q.edit_message_media(InputMediaPhoto(image, caption=caption), reply_markup=markup)
+  elif data.startswith('claim'):
+    await claim_cbq(_, q, u)
