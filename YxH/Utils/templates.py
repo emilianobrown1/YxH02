@@ -14,7 +14,7 @@ def acollection_template(lis: list[dict], no: list[int]) -> str:
         x = lis[y]
         o = no[y]
         txt += '🎭 𝙉𝘼𝙈𝙀 : ' + str(x.get('name', '')) + '\n'
-        txt += '🎖  𝘼𝙉𝙄𝙈𝙀 : ' + str(x.get('anime', '')) + '\n'
+        txt += '🎖 𝘼𝙉𝙄𝙈𝙀 : ' + str(x.get('anime', '')) + '\n'
         txt += '💰 𝙋𝙍𝙄𝘾𝙀 : ' + str(x.get('price', '')) + '\n'
         txt += '♦️ Epic\n'
         txt += '🆔 : ' + str(x.get('id', '')) + f' (x{o})' + '\n\n'

@@ -1,9 +1,11 @@
+import asyncio
+import math
+import random
+
 from pyrogram import Client, filters
 from . import YxH, get_anime_character
 from ..Utils.markups import acollection_markup
 from ..Utils.templates import acollection_template
-import asyncio
-import math
 
 @Client.on_message(filters.command('collection'))
 @YxH()
@@ -20,5 +22,5 @@ async def collection(_, m, u):
     txt += f'page: 1/{total}\n\n'
     txt += acollection_template(first_5_dict, no_first_5)
     markup = acollection_markup(1, u, first_5)
-    image = (await get_anime_character(first_5[0])).image
+    image = (await get_anime_character(random.choice(first_5))).image
     await m.reply_photo(image, caption=txt, reply_markup=markup)

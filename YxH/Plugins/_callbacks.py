@@ -1,15 +1,17 @@
 import asyncio
 import math
+import random
 
 from pyrogram import Client
-from pyrogram.types import CallbackQuery
+from pyrogram.types import CallbackQuery, InputMediaPhoto
 from ..Database.users import get_user
 from ..Database.characters import get_anime_character
 from ..Utils.markups import (
     gender_markup,
     xprofile_markup, 
     store_markup,
-    acollection_markup
+    acollection_markup,
+    view_back_markup
 )
 from ..Utils.templates import (
     xprofile_template,
@@ -102,6 +104,7 @@ async def cbq(_, q: CallbackQuery):
     last: int = (page * 5)
     first: int = last - 5
     char_ids: list[int] = list(coll)[first: last]
+    image: str = (await get_anime_character(random.choice(char_ids))).image
     nos: list[int] = list(coll.values())[first: last]
     char_objs: list[AnimeCharacter] = await asyncio.gather(*[asyncio.create_task(get_anime_character(x)) for x in char_ids])
     char_dicts: list[dict] = [x.__dict__ for x in char_objs]
@@ -110,4 +113,14 @@ async def cbq(_, q: CallbackQuery):
     txt += acollection_template(char_dicts, nos)
     markup = acollection_markup(page, u, char_ids)
     await q.answer()
-    await q.edit_message_text(txt, reply_markup=markup)
+    media: InputMediaPhoto = InputMediaPhoto(image, caption=txt)
+    await q.edit_message_media(media, reply_markup=markup)
+  elif data.startswith('view'):
+    current: int = int(data.split('|')[1])
+    id: int = int(data.split('|')[2])
+    char_dict: dict = (await get_anime_character(id)).__dict__
+    image: str = char_dict['image']
+    caption: str = acollection_template([char_dict], [u.collection.get(id)])
+    markup = view_back_markup(u.user.id, current)
+    await q.answer()
+    await q.edit_message_media(InputMediaPhoto(image, caption=caption), reply_markup=markup)

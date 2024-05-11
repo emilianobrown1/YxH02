@@ -11,7 +11,7 @@ class User:
     self.collection = {}
     self.profile_picture = None
     self.active_bot_id = 0
-    self.bonus = [None, None] # [date, week]
+    self.bonus = {} # {date: [False: Crystal, False: Gems, False: Gold]}
     self.blocked = False
     self.treasure_state = False # Locked
     self.treasure = [] # [coins, gems, crystals]

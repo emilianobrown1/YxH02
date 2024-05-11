@@ -83,7 +83,7 @@ def acollection_markup(current: int, u: User, current_5: list[int]):
     next = 1
   if prev < 1:
     prev = total
-  l = [ikb(str(i), callback_data=f'view|{i}_{u.user.id}') for i in current_5]
+  l = [ikb(str(i), callback_data=f'view|{current}|{i}_{u.user.id}') for i in current_5]
   res = []
   if len(current_5) > 3:
     res.append(l[:3])
@@ -103,3 +103,15 @@ def acollection_markup(current: int, u: User, current_5: list[int]):
   )
   markup = ikm(res)
   return markup
+
+def view_back_markup(user_id: int, current: int) -> ikm:
+  return ikm(
+    [
+      [
+        ikb('Back', callback_data=f'acoll|0|{current}_{user_id}')
+      ],
+      [
+        ikb('Close', callback_data=f'close_{user_id}')
+      ]
+    ]
+  )
