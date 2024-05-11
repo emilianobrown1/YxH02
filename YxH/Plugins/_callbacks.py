@@ -1,9 +1,21 @@
+import asyncio
+import math
+
 from pyrogram import Client
 from pyrogram.types import CallbackQuery
 from ..Database.users import get_user
 from ..Database.characters import get_anime_character
-from ..Utils.markups import gender_markup, xprofile_markup, store_markup
-from ..Utils.templates import xprofile_template, get_anime_image_and_caption
+from ..Utils.markups import (
+    gender_markup,
+    xprofile_markup, 
+    store_markup,
+    acollection_markup
+)
+from ..Utils.templates import (
+    xprofile_template,
+    get_anime_image_and_caption,
+    acollection_template
+)
 from pyrogram.types import InputMediaPhoto as imp
 from ..Utils.datetime import get_date
 from ..Class import User, AnimeCharacter
@@ -80,3 +92,22 @@ async def cbq(_, q: CallbackQuery):
     else:
       u.collection[chars[page-1]] += 1
     await u.update()
+  elif data.startswith('acoll'):
+    current: int = int(data.split('|')[1])
+    page = int(data.split('|')[2])
+    if current == page:
+      return await q.answer()
+    coll: dict[int, int] = u.collection
+    total: int = math.ceil(len(coll) / 5)
+    last: int = (page * 5)
+    first: int = last - 5
+    char_ids: list[int] = list(coll)[first: last]
+    nos: list[int] = list(coll.values())[first: last]
+    char_objs: list[AnimeCharacter] = await asyncio.gather(*[asyncio.create_task(get_anime_character(x)) for x in char_ids])
+    char_dicts: list[dict] = [x.__dict__ for x in char_objs]
+    txt: str = f"{u.user.first_name}'s collection\n"
+    txt += f'page: {page}/{total}\n\n'
+    txt += acollection_template(char_dicts, nos)
+    markup = acollection_markup(page, u, char_ids)
+    await q.answer()
+    await q.edit_message_text(txt, reply_markup=markup)
