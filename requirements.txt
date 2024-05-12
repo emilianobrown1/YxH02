@@ -2,4 +2,4 @@ pyrogram
 tgcrypto
 telegraph
 motor
-Pillow==8.2.0
+Pillow==9.5.0
