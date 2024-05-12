@@ -1,11 +1,9 @@
 from .watchers import info_watcher
-from pyrogram import Client, filters
 from . import get_user, get_chat
 from ..load_attr import load_attr, load_chat_attr
 from ..Class import Chat
 import asyncio
 
-@Client.on_message(filters.group, group=info_watcher)
 async def cwf(_, m):
   u, c = await asyncio.gather(
     get_user(m.from_user.id),
