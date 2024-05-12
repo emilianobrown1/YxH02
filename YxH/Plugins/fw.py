@@ -1,4 +1,3 @@
-from pyrogram import Client, filters
 from . import get_chat, get_user
 from ..Class import Chat
 from .image_maker import make_image
@@ -8,7 +7,6 @@ import asyncio
 
 count: dict[int, int] = {}
 
-@Client.on_message(filters.group, group=fw_watcher)
 async def cwf(_, m):
     global count
     try:
