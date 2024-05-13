@@ -6,6 +6,8 @@ class Chat:
         self.chat = chat
         self.fw_cooldown = 25
         self.fw_status: str = ''
+        self.copx_cooldown = 100
+        self.copx_status: int = 0
         self.words = {} # {user_id: words}
 
     async def update(self):

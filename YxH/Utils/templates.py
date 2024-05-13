@@ -19,3 +19,17 @@ def acollection_template(lis: list[dict], no: list[int]) -> str:
         txt += '♦️ Epic\n'
         txt += '🆔 : ' + str(x.get('id', '')) + f' (x{o})' + '\n\n'
     return txt
+
+def copx_template(info: dict) -> str:
+   txt = 'char avail for purchase'
+   txt += '\n\n'
+   txt += f'Name: {info["name"]}'
+   txt += '\n'
+   txt += f'Anime: {info["anime"]}'
+   txt += '\n'
+   txt += f'Price: {info["price"]}'
+   txt += '\n'
+   txt += f'ID: {info["id"]}'
+   txt += '\n\n'
+   txt += '/copx to purchase.'
+   return txt
