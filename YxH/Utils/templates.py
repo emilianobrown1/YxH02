@@ -21,15 +21,15 @@ def acollection_template(lis: list[dict], no: list[int]) -> str:
     return txt
 
 def copx_template(info: dict) -> str:
-   txt = 'char avail for purchase'
+   txt = '🌈 New Character Alert: CATCH IT! 🌈''\n''Catch the Excitement!Join the adventure and add the newest member to your collection.Don`t miss out on the thrill of the chase!'
    txt += '\n\n'
    txt += f'Name: {info["name"]}'
    txt += '\n'
-   txt += f'Anime: {info["anime"]}'
+   txt += f'🌻Anime: {info["anime"]}'
    txt += '\n'
-   txt += f'Price: {info["price"]}'
+   txt += f'💰Price: {info["price"]}'
    txt += '\n'
-   txt += f'ID: {info["id"]}'
+   txt += f'🎴ID: {info["id"]}'
    txt += '\n\n'
-   txt += '/copx to purchase.'
+   txt += 'EXAMPLE - /copx [Character Name].'
    return txt
