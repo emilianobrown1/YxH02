@@ -3,3 +3,4 @@ tgcrypto
 telegraph
 motor
 Pillow==9.5.0
+english-words
