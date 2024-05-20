@@ -1,19 +1,36 @@
 from . import db
 import pickle
+import asyncio
+
+chars: dict = {}
+
+async def get_all():
+  x = db.anime_characters.find()
+  x = await x.to_list(length=None)
+  for y in x:
+    chars[y['id']] = pickle.loads(y['info'])
 
 async def get_anime_character(id):
+  if id in chars:
+    return chars[id]
   x = await db.anime_characters.find_one({'id': id})
   if x:
     return pickle.loads(x['info'])
   return None
 
 async def get_anime_character_ids() -> list[int]:
+  if chars:
+    return list(chars)
   x = db.anime_characters.find()
   x = await x.to_list(length=None)
   return [i['id'] for i in x]
 
 async def anime_characters_count():
+  if chars:
+    return len(chars)
   x = db.anime_characters.find()
   if not x:
     return 0
   return len(await x.to_list(length=None))
+
+asyncio.create_task(get_all())
