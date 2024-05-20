@@ -2,7 +2,7 @@ from . import get_chat, get_user
 from ..Class import Chat
 from .image_maker import make_image
 from .watchers import fw_watcher
-# import random
+import words
 import asyncio
 
 count: dict[int, int] = {}
@@ -41,7 +41,7 @@ async def cwf(_, m):
         count[chat_id] = 1
     if count[chat_id] == chat.fw_cooldown:
         count[chat_id] = 0
-        word = 'Example'
+        word = words.Word()
         chat.fw_status = word.lower()
         await chat.update()
         im = make_image(word, '@alpha')
