@@ -28,6 +28,11 @@ from .bonus import claim_cbq
 
 @Client.on_callback_query()
 async def cbq(_, q: CallbackQuery):
+  if q.data.startswith('name'):
+    id = int(q.data[4:])
+    char_name = await get_anime_character(id)
+    char_name = char_name.name
+    return await q.answer(char_name, show_alert=True)
   data, actual = q.data.split("_")
   actual = int(actual)
   if actual != q.from_user.id:

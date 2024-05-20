@@ -1,4 +1,5 @@
 from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton as ikb, InlineKeyboardMarkup as ikm
 from . import YxH, get_anime_character, get_user, get_chat
 from ..Database.characters import get_anime_character_ids
 from ..Utils.templates import copx_template
@@ -7,6 +8,9 @@ import asyncio
 import random
 
 count: dict[int, int] = {}
+
+def markup(id: int) -> ikm:
+    return ikm([[ikb('Name', callback_data=f'name{id}')]])
 
 async def cwf(_, m):
     global count
@@ -34,7 +38,7 @@ async def cwf(_, m):
         info = info.__dict__
         cap: str = copx_template(info)
         im: str = info['image']
-        await _.send_photo(chat_id, im, caption=cap)
+        await _.send_photo(chat_id, im, caption=cap, reply_markup=markup(id))
         count[chat_id] = 0
 
 @Client.on_message(filters.command('copx'))
