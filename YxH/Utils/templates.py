@@ -33,3 +33,13 @@ def copx_template(info: dict) -> str:
    txt += '\n\n'
    txt += 'EXAMPLE - /copx [Character Name].'
    return txt
+
+def inline_template(char):
+   form = '🎭 Name : {}\n\n🎖 Anime : {}\n\n💰 Price : {} Gems\n\n♦️ : {}\n\n🆔 : {}'
+   return form.format(
+      char.name,
+      char.anime,
+      char.price,
+      char.rarity,
+      char.id
+   )

@@ -8,8 +8,8 @@ from telegraph import Telegraph
 
 t = Telegraph()
 
-async def upload(cli: Client, msg_id: int):
-    m = await cli.get_messages(ANIME_CHAR_CHANNEL_ID, msg_id)
+async def upload(m):
+    # m = await cli.get_messages(ANIME_CHAR_CHANNEL_ID, msg_id)
     if not m.photo or not m.caption:
         return
     spl = m.caption.split(";")
@@ -20,7 +20,7 @@ async def upload(cli: Client, msg_id: int):
         rarity = spl[2].strip()
         id = int(spl[3].strip())
     except Exception as e:
-        raise Exception(f"Error at {msg_id}\n\n{e}")
+        raise Exception(f"Error at {m.id}\n\n{e}")
     c = AnimeCharacter(id, image, name, anime, rarity)
     await c.add()
 
@@ -31,8 +31,9 @@ async def aupl(_, m, u):
     spl = m.text.split()
     start = int(spl[1])
     end = int(spl[2]) + 1
+    messages = await _.get_messages(ANIME_CHAR_CHANNEL_ID, list(range(start, end)))
     tasks = []
-    for i in range(start, end):
-        tasks.append(asyncio.create_task(upload(_, i)))
+    for i in messages:
+        tasks.append(asyncio.create_task(upload(i)))
     await asyncio.gather(*tasks)
     await ok.edit("Processed.")

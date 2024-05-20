@@ -5,10 +5,15 @@ import asyncio
 chars: dict = {}
 
 async def get_all():
-  x = db.anime_characters.find()
-  x = await x.to_list(length=None)
-  for y in x:
-    chars[y['id']] = pickle.loads(y['info'])
+  global chars
+  if not chars:
+    x = db.anime_characters.find()
+    x = await x.to_list(length=None)
+    new = {}
+    for y in x:
+      new[y['id']] = pickle.loads(y['info'])
+    chars = new
+  return chars
 
 async def get_anime_character(id):
   if id in chars:
