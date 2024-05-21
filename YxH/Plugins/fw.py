@@ -4,6 +4,7 @@ from .image_maker import make_image
 from .watchers import fw_watcher
 import words
 import asyncio
+import random
 
 count: dict[int, int] = {}
 
@@ -21,7 +22,9 @@ async def cwf(_, m):
     if chat.fw_status:
         if m.text:
             if m.text.lower() == chat.fw_status:
-                await m.reply('Congrats kiddo.')
+                rew = random.randint(3000, 8001)
+                user.gems += rew
+                await m.reply(f'Congrats kiddo, You\'ve received `{rew}` Gems.')
                 chat.fw_status = None
                 if user_id in chat.words:
                     chat.words[user_id] += 1
