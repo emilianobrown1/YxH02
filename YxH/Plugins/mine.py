@@ -48,4 +48,42 @@ async def mine(_, m, user):
         )
     
     return await user.update()
+    try:
+        inp = int(m.text.split()[1])
+    except IndexError:
+        return await m.reply('Usage: `/mine <amount>`')
     
+    if inp > user.gold:
+        return await m.reply(f'You only have `{user.gold}` gold.')
+    
+    if inp < min_gold_required:
+        return await m.reply("You need at least `500` gold to start mining.")
+    
+    success = random.choice([True, False])
+    
+    percentage = random.choice(percentage_range)
+    gold = int((inp * percentage) / 100)
+    
+    if success:
+        user.gold += gold
+        txt = (
+            f"You mined ⚒️ `{inp}` gold.\n\n"
+            f"Your balance before mining: `{user.gold - gold}` gold.\n\n"
+            f"You've struck gold! 🎉\n"
+            f"Percentage of gold found: `{percentage}%`\n\n"
+            f"Reward: `{gold}` gold.📯\n"
+            f"Your gold after reward: `{user.gold}`"
+        )
+    else:
+        user.gold -= gold
+        txt = (
+            f"You mined ⚒️ `{inp}` gold.\n\n"
+            f"Your balance before mining: `{user.gold + gold}` gold.\n\n"
+            f"No luck this time, keep mining! 💪\n"
+            f"Percentage of gold lost: `{percentage}%`\n\n"
+            f"Lost: `{gold}` gold.😞\n\n"
+            f"Your gold after loss: `{user.gold}`"
+        )
+    
+    await m.reply_animation("Images/mine.mp4", caption=txt)
+    await user.update()
