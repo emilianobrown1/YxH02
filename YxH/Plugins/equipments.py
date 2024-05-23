@@ -8,7 +8,7 @@ equipment_data = {
     "Hammer": {"emoji": "🔨", "increase": 7, "cost": 15000},
     "Shovel": {"emoji": "🛠", "increase": 5, "cost": 12000},
     "Pickaxe": {"emoji": "⛏", "increase": 5, "cost": 12000},
-    "Boomb": {"emoji": "💣", "increase": 10, "cost": 50000}
+    "Bomb": {"emoji": "💣", "increase": 10, "cost": 50000}
 }
 
 
@@ -20,7 +20,7 @@ async def equipments_handler(client: Client, message: Message, user):
 
     
     keyboard = [
-        [InlineKeyboardButton(f"{data['emoji']} {name} - {data['cost']} gold", callback_data=name)]
+        [InlineKeyboardButton(f"{data['emoji']} {name} - {data['cost']} gold", callback_data=f"name_{user_id}")]
         for name, data in equipment_data.items()
     ]
 
