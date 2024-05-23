@@ -135,3 +135,15 @@ async def cbq(_, q: CallbackQuery):
     await q.edit_message_media(InputMediaPhoto(image, caption=caption), reply_markup=markup)
   elif data.startswith('claim'):
     await claim_cbq(_, q, u)
+  elif data.startswith("treasure"):
+    cry = u.crystals
+    if cry < 500:
+      req = 500 - cry
+      return await q.answer(f"You need `{req}` more crystals to unlock treasure.", show_alert=True)
+    u.crystals -= 500
+    u.treasure_state = True
+    markup = xprofile_markup(u)
+    await asyncio.gather(
+      q.answer("Unlocked.", show_alert=True)
+      q.edit_message_reply_markup(reply_markup=markup)
+    )
