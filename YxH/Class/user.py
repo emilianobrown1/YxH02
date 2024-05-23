@@ -21,6 +21,7 @@ class User:
     self.gender = 0 # {0: None, 1: Male, -1: Female}
     self.init_time = time.time() # now
     self.words = {} # {chat_id: words}
+    self.rented_items = {} # {item: time}
     
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
