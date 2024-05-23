@@ -28,15 +28,12 @@ async def equipments_handler(client: Client, message: Message, user):
      
 
     
-    keyboard = [
-        [InlineKeyboardButton(f"{data['emoji']} {name} - {data['cost']} gold", callback_data=f"name_{user_id}")]
-        for name, data in equipment_data.items()
-    ]
+    keyboard = equipments_markup(user)
 
     
     await message.reply_text(
         "Select the equipment you want to rent for 15 days:",
-        reply_markup=InlineKeyboardMarkup(keyboard)
+        reply_markup=keyboard
     )
     
 async def e_cbq(_, q, u):
@@ -51,4 +48,9 @@ async def e_cbq(_, q, u):
             return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
         u.gold -= req
         u.rented_items["a"] = time.time()
-        await u.update()
+        markup = equipments_markup(u)
+        await asyncio.gather(
+          u.update(),
+          q.answer("Rented Successfully.", show_alert=True),
+          q.edit_message_reply_markup(reply_markup=markup)
+        )
