@@ -146,4 +146,5 @@ async def cbq(_, q: CallbackQuery):
     await asyncio.gather(
       q.answer("Unlocked.", show_alert=True)
       q.edit_message_reply_markup(reply_markup=markup)
+      u.update()
     )
