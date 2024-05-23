@@ -3,7 +3,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from . import get_date, YxH
 
 import time
-
+import asyncio
 
 equipment_data = {
     "Axe": {"emoji": "🪓", "increase": 3, "cost": 10000},
