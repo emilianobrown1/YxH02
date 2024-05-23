@@ -67,13 +67,26 @@ def gender_markup(u):
   )
 
 def xprofile_markup(u):
-  return ikm(
-    [
-      [
-        ikb("Gender", callback_data=f"gender_{u.user.id}")
-      ]
-    ]
-  )
+  if u.treasure.state:
+    markup = ikm(
+        [
+          [
+            ikb("Gender", callback_data=f"gender_{u.user.id}")
+          ]
+        ]
+      )
+  else:
+    markup = ikm(
+        [
+          [
+            ikb("Gender", callback_data=f"gender_{u.user.id}")
+          ],
+          [
+            ikb("Treasure 🔒", callback_data=f"treasure_{u.user.id}")
+          ]
+        ]
+      )
+  return markup
 
 def acollection_markup(current: int, u: User, current_5: list[int]):
   total = math.ceil(len(u.collection)/5)
