@@ -30,3 +30,8 @@ async def equipments_handler(client: Client, message: Message, user):
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
     
+async def e_cbq(_, q, u):
+    data = q.data
+    id = u.user.id
+    if data.startswith("Axe"):
+        ...
