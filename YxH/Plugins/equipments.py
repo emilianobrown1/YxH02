@@ -54,60 +54,60 @@ async def e_cbq(_, q, u):
           q.answer("Rented Successfully.", show_alert=True),
           q.edit_message_reply_markup(reply_markup=markup)
         )
-    elif data.startswith("Axe"):
-        if "a" in u.rented_items:
+    elif data.startswith("Hammer"):
+        if "h" in u.rented_items:
             return await q.answer("You have already rented it.", show_alert=True)
-        req = equipment_data["Axe"]["cost"]
+        req = equipment_data["Hammer"]["cost"]
         if u.gold < req:
             r = req - u.gold
             return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
         u.gold -= req
-        u.rented_items["a"] = time.time()
+        u.rented_items["h"] = time.time()
         markup = equipments_markup(u)
         await asyncio.gather(
           u.update(),
           q.answer("Rented Successfully.", show_alert=True),
           q.edit_message_reply_markup(reply_markup=markup)
         )
-    elif data.startswith("Axe"):
-        if "a" in u.rented_items:
+    elif data.startswith("Shovel"):
+        if "s" in u.rented_items:
             return await q.answer("You have already rented it.", show_alert=True)
-        req = equipment_data["Axe"]["cost"]
+        req = equipment_data["Shovel"]["cost"]
         if u.gold < req:
             r = req - u.gold
             return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
         u.gold -= req
-        u.rented_items["a"] = time.time()
+        u.rented_items["s"] = time.time()
         markup = equipments_markup(u)
         await asyncio.gather(
           u.update(),
           q.answer("Rented Successfully.", show_alert=True),
           q.edit_message_reply_markup(reply_markup=markup)
         )
-    elif data.startswith("Axe"):
-        if "a" in u.rented_items:
+    elif data.startswith("Pickaxe"):
+        if "p" in u.rented_items:
             return await q.answer("You have already rented it.", show_alert=True)
-        req = equipment_data["Axe"]["cost"]
+        req = equipment_data["Pickaxe"]["cost"]
         if u.gold < req:
             r = req - u.gold
             return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
         u.gold -= req
-        u.rented_items["a"] = time.time()
+        u.rented_items["p"] = time.time()
         markup = equipments_markup(u)
         await asyncio.gather(
           u.update(),
           q.answer("Rented Successfully.", show_alert=True),
           q.edit_message_reply_markup(reply_markup=markup)
         )
-    elif data.startswith("Axe"):
-        if "a" in u.rented_items:
+    elif data.startswith("Bomb"):
+        if "b" in u.rented_items:
             return await q.answer("You have already rented it.", show_alert=True)
-        req = equipment_data["Axe"]["cost"]
+        req = equipment_data["Bomb"]["cost"]
         if u.gold < req:
             r = req - u.gold
             return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
         u.gold -= req
-        u.rented_items["a"] = time.time()
+        u.rented_items["b"] = time.time()
         markup = equipments_markup(u)
         await asyncio.gather(
           u.update(),
