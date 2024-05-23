@@ -2,6 +2,8 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from . import get_date, YxH
 
+import time
+
 
 equipment_data = {
     "Axe": {"emoji": "🪓", "increase": 3, "cost": 10000},
@@ -34,4 +36,12 @@ async def e_cbq(_, q, u):
     data = q.data
     id = u.user.id
     if data.startswith("Axe"):
-        ...
+        if "a" in u.rented_items:
+            return await q.answer("You have already rented it.", show_alert=True)
+        req = equipment_data["Axe"]["cost"]
+        if u.gold < req:
+            r = req - u.gold
+            return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
+        u.gold -= req
+        u.rented_items["a"] = time.time()
+        await u.update()
