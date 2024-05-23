@@ -25,6 +25,7 @@ from ..Class import User, AnimeCharacter
 # MODULE FUNCTIONS IMPORTS
 
 from .bonus import claim_cbq
+from .equipments import e_cbq
 
 @Client.on_callback_query()
 async def cbq(_, q: CallbackQuery):
@@ -148,3 +149,5 @@ async def cbq(_, q: CallbackQuery):
       q.edit_message_reply_markup(reply_markup=markup)
       u.update()
     )
+  elif data.startswith("Axe", "Hammer", "Shovel", "Pickaxe", "Bomb"):
+    await e_cbq(_, q, u)
