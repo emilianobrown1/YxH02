@@ -111,6 +111,11 @@ def acollection_markup(current: int, u: User, current_5: list[int]):
   )
   res.append(
     [
+      ikb("Inline", switch_inline_query_current_chat=f"collection_{u.user.id}")
+    ]
+  )
+  res.append(
+    [
         ikb('Close', callback_data=f'close_{u.user.id}')
     ]
   )
