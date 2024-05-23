@@ -67,7 +67,7 @@ def gender_markup(u):
   )
 
 def xprofile_markup(u):
-  if u.treasure.state:
+  if u.treasure_state:
     markup = ikm(
         [
           [
