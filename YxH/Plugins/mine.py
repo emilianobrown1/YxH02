@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from . import YxH
 import random
-from .equipments import equipments_data, check_expiry
+from .equipments import equipment_data as equipments_data, check_expiry
 
 percentage_range: list[int] = list(range(10, 51))
 
