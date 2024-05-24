@@ -145,8 +145,8 @@ async def cbq(_, q: CallbackQuery):
     u.treasure_state = True
     markup = xprofile_markup(u)
     await asyncio.gather(
-      q.answer("Unlocked.", show_alert=True)
-      q.edit_message_reply_markup(reply_markup=markup)
+      q.answer("Unlocked.", show_alert=True),
+      q.edit_message_reply_markup(reply_markup=markup),
       u.update()
     )
   elif data.startswith("Axe", "Hammer", "Shovel", "Pickaxe", "Bomb"):
