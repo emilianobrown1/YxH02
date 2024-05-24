@@ -27,8 +27,8 @@ def equipments_markup(u):
     for x in equipment_data:
         txt = equipment_data[x]["emoji"] + " " + x + " "
         txt += "☑️" if x[0].lower() in u.rented_items else str(equipment_data[x]["cost"])
-        lis.append(InlineKeyboardButton(txt, callback_data=f"{x}_{u.user.id}"))
-    return InlineKeyboardMarkup([lis])
+        lis.append([InlineKeyboardButton(txt, callback_data=f"{x}_{u.user.id}")])
+    return InlineKeyboardMarkup(lis)
 
 @Client.on_message(filters.command("equipments"))
 @YxH(private=False)
