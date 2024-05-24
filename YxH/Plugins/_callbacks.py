@@ -149,5 +149,5 @@ async def cbq(_, q: CallbackQuery):
       q.edit_message_reply_markup(reply_markup=markup),
       u.update()
     )
-  elif data.startswith("Axe", "Hammer", "Shovel", "Pickaxe", "Bomb"):
+  elif data.startswith(("Axe", "Hammer", "Shovel", "Pickaxe", "Bomb")):
     await e_cbq(_, q, u)
