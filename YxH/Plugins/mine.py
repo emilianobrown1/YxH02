@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from . import YxH
 import random
-
+from .equipments import equipments_data
 
 percentage_range: list[int] = list(range(10, 51))
 
@@ -28,12 +28,14 @@ async def mine(_, m, user):
     gold = int((inp * percentage) / 100)
     
     if success:
-        user.gold += gold
+        more = sum([x["increase"] for x in equipments_data if x[0].lower() in user.rented_items])
+        gold += int(gold * more / 100)
         txt = (
             f"You mined ⚒️ `{inp}` gold.\n\n"
             f"Your balance before mining: `{user.gold - gold}` gold.\n\n"
             f"You've struck gold! 🎉\n"
             f"Percentage of gold found: `{percentage}%`\n\n"
+            f"Equipments percentage: {more}%\n\n"
             f"Reward: `{gold}` gold.📯\n"
             f"Your gold after reward: `{user.gold}`"
         )
