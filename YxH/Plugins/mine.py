@@ -1,13 +1,14 @@
 from pyrogram import Client, filters
 from . import YxH
 import random
-from .equipments import equipments_data
+from .equipments import equipments_data, check_expiry
 
 percentage_range: list[int] = list(range(10, 51))
 
 @Client.on_message(filters.command("mine"))
 @YxH(private=False)
 async def mine(_, m, user):
+    await check_expiry(user)
     min_gold_required = 500
     
     
