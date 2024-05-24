@@ -5,6 +5,15 @@ from . import get_date, YxH
 import time
 import asyncio
 
+async def check_expiry(u):
+    to_rem = []
+    for x in u.rented_items:
+        if int(time.time() - u.rented_items[x]) >= 15 * 86400:
+            to_rem.append(x)
+    for y in to_rem:
+        u.rented_items.pop(y)
+    await u.update()
+
 equipment_data = {
     "Axe": {"emoji": "🪓", "increase": 3, "cost": 10000},
     "Hammer": {"emoji": "🔨", "increase": 7, "cost": 15000},
@@ -24,6 +33,7 @@ def equipments_markup(u):
 @Client.on_message(filters.command("equipments"))
 @YxH(private=False)
 async def equipments_handler(client: Client, message: Message, user):
+    await check_expiry(user)
     user_id = message.from_user.id
      
 
