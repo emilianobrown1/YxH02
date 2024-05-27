@@ -8,14 +8,9 @@ from . import get_date, YxH
 
 @Client.on_message(filters.command("spinxwin"))
 @YxH(private=False)
-async def spinxwin(client, message: Message, extra_argument):
+async def spinxwin(client, message: Message, user):
     user_id = message.from_user.id
-    user = await get_user(user_id)
-    
-    
     last_spin_time = datetime.fromtimestamp(user.last_spin_time)
-
-    
     if user.spins_left <= 0 and datetime.now() < last_spin_time + timedelta(hours=3):
         time_left = (last_spin_time + timedelta(hours=3)) - datetime.now()
         await message.reply(f"You can spin again in {time_left.seconds // 3600} hours and {(time_left.seconds // 60) % 60} minutes.")
