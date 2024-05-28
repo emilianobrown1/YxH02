@@ -6,7 +6,10 @@ from ..Database.users import get_user
 async def gold(_, m):
     spl = m.text.split()
     try:
-        id, amount = m.reply_to_message.from_user.id, int(spl[1]) if m.reply_to_message else int(spl[1]), int(spl[2])
+        if m.reply_to_message:
+            id, amount = m.reply_to_message.from_user.id, int(spl[1])
+        else:
+            id, amount = int(spl[1]), int(spl[2])
     except:
         return await m.reply("Usage:\n\n/gold <id> <amount>\n/gold <amount> (Reply to an user)")
     u = await get_user(id)
@@ -18,7 +21,10 @@ async def gold(_, m):
 async def gems(_, m):
     spl = m.text.split()
     try:
-        id, amount = m.reply_to_message.from_user.id, int(spl[1]) if m.reply_to_message else int(spl[1]), int(spl[2])
+        if m.reply_to_message:
+            id, amount = m.reply_to_message.from_user.id, int(spl[1])
+        else:
+            id, amount = int(spl[1]), int(spl[2])
     except Exception as e:
         await m.reply(e)
         return await m.reply("Usage:\n\n/gems <id> <amount>\n/gems <amount> (Reply to an user)")
@@ -31,7 +37,10 @@ async def gems(_, m):
 async def crystals(_, m):
     spl = m.text.split()
     try:
-        id, amount = m.reply_to_message.from_user.id, int(spl[1]) if m.reply_to_message else int(spl[1]), int(spl[2])
+        if m.reply_to_message:
+            id, amount = m.reply_to_message.from_user.id, int(spl[1])
+        else:
+            id, amount = int(spl[1]), int(spl[2])   
     except:
         return await m.reply("Usage:\n\n/crystals <id> <amount>\n/crystals <amount> (Reply to an user)")
     u = await get_user(id)
