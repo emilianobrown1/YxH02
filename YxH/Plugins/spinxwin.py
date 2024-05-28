@@ -24,7 +24,7 @@ async def spinxwin(_, m: Message, u):
                      "Gems = 75,000\n" \
                      "Gold = 750,000\n" \
                      "Any random character = 1\n\n" \
-                     f"Spins Left: {10-u.spins}"
+                     f"Spins Left: {10-cur}"
 
     
     spin_button = InlineKeyboardMarkup([
