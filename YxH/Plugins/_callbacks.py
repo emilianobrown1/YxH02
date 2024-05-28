@@ -21,6 +21,7 @@ from ..Utils.templates import (
 from pyrogram.types import InputMediaPhoto as imp
 from ..Utils.datetime import get_date
 from ..Class import User, AnimeCharacter
+from .spinxwin import spin_cbq
 
 # MODULE FUNCTIONS IMPORTS
 
@@ -151,3 +152,5 @@ async def cbq(_, q: CallbackQuery):
     )
   elif data.startswith(("Axe", "Hammer", "Shovel", "Pickaxe", "Bomb")):
     await e_cbq(_, q, u)
+  elif data.startswith("spin"):
+    await spin_cbq(_, q, u)
