@@ -22,6 +22,7 @@ class User:
     self.init_time = time.time() # now
     self.words = {} # {chat_id: words}
     self.rented_items = {} # {item: time}
+    self.spins = {} # {date-hour: 0}
     
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
