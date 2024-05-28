@@ -39,7 +39,7 @@ def YxH(
           user = await load_attr(user_id)
           import traceback
           tb = traceback.format_exc()
-          await m.reply(f'Error: {e} at function: {func.__name__}, line: {tb.splitlines()[-2]}')
+          print(f'Error: {e} at function: {func.__name__}, line: {tb.splitlines()[-2]}')
         except Exception as e:
           import traceback
           tb = traceback.format_exc()
