@@ -4,7 +4,7 @@ from datetime import datetime
 from ..Database.users import get_user
 from . import get_date, YxH
 import random
-from Database.characters import get_anime_character_ids
+from ..Database.characters import get_anime_character_ids
 
 def get_res(prob_perc) -> bool:
     return randon.randint(1, 101) <= prob_perc
