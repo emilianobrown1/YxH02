@@ -12,7 +12,7 @@ def get_res(prob_perc) -> bool:
 @Client.on_message(filters.command("spinxwin"))
 @YxH(private=False)
 async def spinxwin(_, m: Message, u):
-    now = str(datetime.datetime.now()).split(":")[0].replace(" ", "-")
+    now = str(datetime.now()).split(":")[0].replace(" ", "-")
     cur = u.spins.get(now, 0)
     if cur >= 10:
         return await m.reply("No spins left for this hour.")
@@ -35,7 +35,7 @@ async def spinxwin(_, m: Message, u):
     await m.reply(spin_info_text, reply_markup=spin_button)
     
 async def spin_cbq(_, q, u):
-    now = str(datetime.datetime.now()).split(":")[0].replace(" ", "-")
+    now = str(datetime.now()).split(":")[0].replace(" ", "-")
     cur = u.spins.get(now, 0)
     if cur >= 10:
         return await m.reply("No spins left for this hour.")
