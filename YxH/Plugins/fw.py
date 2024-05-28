@@ -5,11 +5,18 @@ from .watchers import fw_watcher
 import words
 import asyncio
 import random
+from pyrogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as IKB
 
 count: dict[int, int] = {}
 
+me = None
+
+markup = IKM([[IKB("Support", url="https://t.me/YxH_homeland")]])
+
 async def cwf(_, m):
-    global count
+    global count, me
+    if not me:
+        me = await _.get_me()
     try:
         chat_id = m.chat.id
         user_id = m.from_user.id
@@ -47,5 +54,5 @@ async def cwf(_, m):
         word = words.Word()
         chat.fw_status = word.lower()
         await chat.update()
-        im = make_image(word, '@alpha')
-        await _.send_photo(chat_id, im, caption='Complete')
+        im = make_image(word, f'@{me.username}')
+        await _.send_photo(chat_id, im, caption='Complete', reply_markup=markup)
