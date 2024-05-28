@@ -11,7 +11,7 @@ async def gold(_, m):
         else:
             id, amount = int(spl[1]), int(spl[2])
     except:
-        return await m.reply("Usage:\n\n/gold <id> <amount>\n/gold <amount> (Reply to an user)")
+        return await m.reply("Usage:\n\n`/gold <id> <amount>`\n`/gold <amount> (Reply to an user)`")
     u = await get_user(id)
     u.gold += amount
     await m.reply(f"Added `{amount}`")
