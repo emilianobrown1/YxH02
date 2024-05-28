@@ -18,8 +18,6 @@ async def spinxwin(_, m: Message, u):
         return await m.reply("No spins left for this hour.")
     if u.gold < 500000:
         return await m.reply(f"You need `{500000-u.gold}` more gold to spin.")
-    cry = 2 if get_res(2) else 0
-    char = 
     spin_info_text = f"Spin - 500000 gold (cost) 🎰\n\n" \
                      "SPIN REWARD : 🎰\n\n" \
                      "Crystal = 2\n" \
