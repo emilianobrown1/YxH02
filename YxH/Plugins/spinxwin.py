@@ -1,24 +1,25 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from datetime import datetime, timedelta  
-import time
+from datetime import datetime  
 from ..Database.users import get_user
 from . import get_date, YxH
+import random
 
+def get_res(prob_perc) -> bool:
+    return randon.randint(1, 101) <= prob_perc
 
 @Client.on_message(filters.command("spinxwin"))
 @YxH(private=False)
-async def spinxwin(client, message: Message, user):
-    user_id = message.from_user.id
-    last_spin_time = datetime.fromtimestamp(user.last_spin_time)
-    if user.spins_left <= 0 and datetime.now() < last_spin_time + timedelta(hours=3):
-        time_left = (last_spin_time + timedelta(hours=3)) - datetime.now()
-        await message.reply(f"You can spin again in {time_left.seconds // 3600} hours and {(time_left.seconds // 60) % 60} minutes.")
-        return
-
-    
-    spin_cost = 500000  
-    spin_info_text = f"Spin - {spin_cost} gold (cost) 🎰\n\n" \
+async def spinxwin(_, m: Message, u):
+    now = str(datetime.datetime.now()).split(":")[0].replace(" ", "-")
+    cur = u.spins.get(now, 0)
+    if cur >= 10:
+        return await m.reply("No spins left for this hour.")
+    if u.gold < 500000:
+        return await m.reply(f"You need `{500000-u.gold}` more gold to spin.")
+    cry = 2 if get_res(2) else 0
+    char = 
+    spin_info_text = f"Spin - 500000 gold (cost) 🎰\n\n" \
                      "SPIN REWARD : 🎰\n\n" \
                      "Crystal = 2\n" \
                      "Gems = 75,000\n" \
