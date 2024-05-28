@@ -7,7 +7,7 @@ import random
 from ..Database.characters import get_anime_character_ids
 
 def get_res(prob_perc) -> bool:
-    return randon.randint(1, 101) <= prob_perc
+    return random.randint(1, 101) <= prob_perc
 
 @Client.on_message(filters.command("spinxwin"))
 @YxH(private=False)
