@@ -36,3 +36,4 @@ async def crystals(_, m):
     u = await get_user(id)
     u.crystals += amount
     await m.reply(f"Added `{amount}`")
+    await u.update()
