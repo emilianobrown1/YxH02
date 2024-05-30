@@ -9,7 +9,7 @@ def YxH(
   group=True,
   sudo=False,
   owner=False,
-  main=False
+  main_only=False
 ):
   def fun(func):
     async def wrapper(_, m, *args):
@@ -20,7 +20,7 @@ def YxH(
         return await force_start(m)
       if user.blocked:
         return await m.reply(block_text)
-      if main:
+      if main_only:
         if m.chat.id != MAIN_GROUP_ID:
           return
       if not private:
