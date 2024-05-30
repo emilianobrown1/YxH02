@@ -28,7 +28,11 @@ async def inl(_, i: InlineQuery):
         final_answers = answers
     offset = int(i.offset or 0)
     NEXT = 30
-    images = final_answers[offset: offset+NEXT]
+    if offset+NEXT > len(final_answers):
+        hehe = len(final_answers)
+    else:
+        hehe = offset+NEXT
+    images = final_answers[offset: hehe]
     await i.answer(results=images, is_gallery=True, cache_time=1, next_offset=str(offset + NEXT))
 
 asyncio.create_task(load())
