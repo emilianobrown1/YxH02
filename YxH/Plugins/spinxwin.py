@@ -6,8 +6,8 @@ from . import get_date, YxH
 import random
 from ..Database.characters import get_anime_character_ids
 
-def get_res(prob_perc) -> bool:
-    return random.randint(1, 101) <= prob_perc
+def get_res() -> int:
+    return random.randint(1, 101)
 
 @Client.on_message(filters.command("spinxwin"))
 @YxH(private=False)
@@ -42,20 +42,22 @@ async def spin_cbq(_, q, u):
     if u.gold < 500000:
         return await m.reply(f"You need `{500000-u.gold}` more gold to spin.")
     u.spins[now] = cur + 1
-    cry = 2 if get_res(2) else None
-    char = random.choice(await get_anime_character_ids()) if get_res(5) else None
-    txt = "You got\n\nGold: 600000\nGems: 75000\n"
-    u.gold += 600000
-    u.gems += 75000
-    if cry:
-        txt += "Crystals: 2\n"
+    x = get_res()
+    if x <= 5:
+        txt = "You got 2 Crystals."
         u.crystals += 2
-    if char:
-        txt += f"Character of ID: {char}"
-        if char in u.collection:
-            u.collection[char] += 1
-        else:
-            u.collection[char] = 1
+    elif x > 5 and x <= 10:
+        char = random.choice(await get_anime_character_ids())
+        txt = f"You got a character of ID {char}."
+        u.collection[char] = u.collection.get(char, 0) + 1
+    elif x > 10 and x <= 40:
+        u.gold += 600000
+        txt = f"You got 600000 Gold."
+        txt += "\n\nBetter Luck Next Time."
+    elif x > 40 and x <= 70:
+        u.gems += 75000
+        txt = f"You got 75000 Gems."
+        txt += "\n\nBetter Luck Next Time."
     await q.answer(txt, show_alert=True)
-    await q.edit_message_text(q.message.text[:-1] + str(10-u.spins))
+    await q.edit_message_text(q.message.text[:-1] + str(10-u.spins[now]))
     await u.update()
