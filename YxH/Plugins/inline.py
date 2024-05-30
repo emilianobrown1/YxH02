@@ -3,6 +3,7 @@ from ..Database.users import get_user
 from pyrogram import Client, filters
 from pyrogram.types import InlineQuery
 import asyncio
+from ..universal_decorator import YxH
 
 answers = {}
 
