@@ -5,6 +5,17 @@ from . import get_date, YxH
 import time
 import asyncio
 
+def get_time(sec):
+    days = int(sec/86400)
+    hours = int(sec/3600)
+    if days == 0 and hours == 0:
+        return f"{int(sec/60)}m"
+    if days == 0:
+        return f"{hours}h"
+    if hours == 0:
+        return f"{days}d"
+    return f"{days}d {hours}h"
+        
 async def check_expiry(u):
     to_rem = []
     for x in u.rented_items:
@@ -26,7 +37,7 @@ def equipments_markup(u):
     lis = []
     for x in equipment_data:
         txt = equipment_data[x]["emoji"] + " " + x + " "
-        txt += "☑️" if x[0].lower() in u.rented_items else "- " + str(equipment_data[x]["cost"])
+        txt += f"☑️, {get_time((15*86400)-int(time.time()-u.rented_items[x[0].lower()]))}" if x[0].lower() in u.rented_items else "- " + str(equipment_data[x]["cost"])
         lis.append([InlineKeyboardButton(txt, callback_data=f"{x}_{u.user.id}")])
     return InlineKeyboardMarkup(lis)
 
