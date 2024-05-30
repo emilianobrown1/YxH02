@@ -57,5 +57,5 @@ async def spin_cbq(_, q, u):
         else:
             u.collection[char] = 1
     await q.answer(txt, show_alert=True)
-    await q.edit_message_text(q.message.caption[:-1] + str(10-u.spins))
+    await q.edit_message_text(q.message.text[:-1] + str(10-u.spins))
     await u.update()
