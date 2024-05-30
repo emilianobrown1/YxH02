@@ -16,7 +16,7 @@ async def load():
         
 @Client.on_message(filters.command("reload"))
 @YxH(sudo=True)
-async def loads(_, m):
+async def loads(_, m, u):
     msg = await m.reply("Reloading...")
     await load()
     await msg.edit("Reloaded.")
