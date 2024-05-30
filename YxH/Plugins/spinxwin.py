@@ -38,9 +38,9 @@ async def spin_cbq(_, q, u):
     now = str(datetime.now()).split(":")[0].replace(" ", "-")
     cur = u.spins.get(now, 0)
     if cur >= 10:
-        return await m.reply("No spins left for this hour.")
+        return await q.answer("No spins left for this hour.", show_alert=True)
     if u.gold < 500000:
-        return await m.reply(f"You need `{500000-u.gold}` more gold to spin.")
+        return await q.answer(f"You need `{500000-u.gold}` more gold to spin.", show_alert=True)
     u.spins[now] = cur + 1
     x = get_res()
     if x <= 5:
