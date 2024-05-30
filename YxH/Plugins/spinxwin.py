@@ -65,6 +65,9 @@ async def spin_cbq(_, q, u):
                      "Gold = 6,00,000\n" \
                      "Any random character = 1\n\n" \
                      f"Spins Left: {10-u.spins[now]}"
+    spin_button = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Spin 🎰", callback_data=f"spin_{u.user.id}")]
+    ])
     await q.answer(txt, show_alert=True)
-    await q.edit_message_text(spin_info_text)
+    await q.edit_message_text(spin_info_text, reply_markup=spin_button)
     await u.update()
