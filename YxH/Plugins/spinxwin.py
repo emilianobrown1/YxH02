@@ -59,5 +59,5 @@ async def spin_cbq(_, q, u):
     else:
         txt = "You got nothing, Better Luck Next Time."
     await q.answer(txt, show_alert=True)
-    await q.edit_message_text(q.message.text[:-1] + str(10-u.spins[now]))
+    await q.edit_message_text("".join(q.message.text.split()[:-1]) + " " + str(10-u.spins[now]))
     await u.update()
