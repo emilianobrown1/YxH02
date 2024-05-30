@@ -1,14 +1,15 @@
 from .Database.users import get_user
 from .Utils.force_start import force_start
 from .Utils.strings import block_text, negate_private_text, negate_group_text
-from config import SUDO_USERS, OWNER_ID
+from config import SUDO_USERS, OWNER_ID, MAIN_GROUP_ID
 from .load_attr import load_attr
 
 def YxH(
   private=True,
   group=True,
   sudo=False,
-  owner=False
+  owner=False,
+  main=False
 ):
   def fun(func):
     async def wrapper(_, m, *args):
@@ -19,6 +20,9 @@ def YxH(
         return await force_start(m)
       if user.blocked:
         return await m.reply(block_text)
+      if main:
+        if m.chat.id != MAIN_GROUP_ID:
+          return
       if not private:
         if chat_id > 0:
           return await m.reply(negate_private_text)
