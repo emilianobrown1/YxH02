@@ -53,11 +53,11 @@ async def spin_cbq(_, q, u):
     elif x > 10 and x <= 40:
         u.gold += 600000
         txt = f"You got 600000 Gold."
-        txt += "\n\nBetter Luck Next Time."
     elif x > 40 and x <= 70:
         u.gems += 75000
         txt = f"You got 75000 Gems."
-        txt += "\n\nBetter Luck Next Time."
+    else:
+        txt = "You got nothing, Better Luck Next Time."
     await q.answer(txt, show_alert=True)
     await q.edit_message_text(q.message.text[:-1] + str(10-u.spins[now]))
     await u.update()
