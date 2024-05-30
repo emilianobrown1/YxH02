@@ -7,7 +7,7 @@ import asyncio
 
 def get_time(sec):
     days = int(sec/86400)
-    hours = int(sec/3600)
+    hours = int(sec/3600) % 24
     if days == 0 and hours == 0:
         return f"{int(sec/60)}m"
     if days == 0:
