@@ -33,7 +33,7 @@ async def inl(_, i: InlineQuery):
         for x in user.collection:
             final_answers.append(answers[x])
     else:
-        final_answers = answers.values()
+        final_answers = list(answers.values())
     offset = int(i.offset or 0)
     NEXT = 30
     if offset+NEXT > len(final_answers):
