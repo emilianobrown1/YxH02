@@ -12,6 +12,13 @@ async def load():
         all = await get_all()
         new = {x.id: x.inline for x in all.values() if hasattr(x, 'inline')}
         answers = new
+        
+@Client.on_message(filters.command("reload"))
+@YxH(sudo=True)
+async def load(_, m):
+    msg = await m.reply("Reloading...")
+    await load()
+    await msg.edit("Reloaded.")
 
 @Client.on_inline_query()
 async def inl(_, i: InlineQuery):
