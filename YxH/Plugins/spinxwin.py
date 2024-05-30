@@ -22,7 +22,7 @@ async def spinxwin(_, m: Message, u):
                      "SPIN REWARD : 🎰\n\n" \
                      "Crystal = 2\n" \
                      "Gems = 75,000\n" \
-                     "Gold = 750,000\n" \
+                     "Gold = 6,00,000\n" \
                      "Any random character = 1\n\n" \
                      f"Spins Left: {10-cur}"
 
