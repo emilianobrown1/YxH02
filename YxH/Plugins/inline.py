@@ -9,10 +9,9 @@ answers = {}
 
 async def load():
     global answers
-    if not answers:
-        all = await get_all()
-        new = {x.id: x.inline for x in all.values() if hasattr(x, 'inline')}
-        answers = new
+    all = await get_all()
+    new = {x.id: x.inline for x in all.values() if hasattr(x, 'inline')}
+    answers = new
         
 @Client.on_message(filters.command("reload"))
 @YxH(sudo=True)
