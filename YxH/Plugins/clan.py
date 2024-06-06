@@ -19,7 +19,7 @@ Join our mighty clan and conquer the fantasy world together! 💪🌟
 async def join_clan(_, m, user):
     id = int(m.text.split("_")[1])
     if user.clan_id:
-        if user.clan_id = id:
+        if user.clan_id == id:
             return await m.reply("You are already in the clan you want to join.")
         else:
             return await m.reply("You are already in a clan.")
@@ -51,6 +51,7 @@ async def myc(_, m, u):
   markup = [[ikb("Members", callback_data=f"members_{u.user.id}")]]
   if u.user.id == clan.leader:
     markup.append([ikb("Settings", callback_data=f"settings_{u.user.id}")])
+    markup.append([ikb(f"Requests ({len(clan.join_requests)})", callback_data=f"requests_{u.user.id}")])
   else:
     markup.append([ikb("Leave", callback_data=f"leave_{u.user.id}")])
   markup.append([ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=join_{clan.id}")])
