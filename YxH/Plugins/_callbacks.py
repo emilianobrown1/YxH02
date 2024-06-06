@@ -154,3 +154,5 @@ async def cbq(_, q: CallbackQuery):
     await e_cbq(_, q, u)
   elif data.startswith("spin"):
     await spin_cbq(_, q, u)
+  else:
+    return await q.answer("Under maintenance.", show_alert=True)
