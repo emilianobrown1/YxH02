@@ -3,8 +3,8 @@ import pickle
 
 class Clan:
     def __init__(self, clan_id, clan_name, leader):
-        self.clan_id = clan_id
-        self.clan_name = clan_name
+        self.id = clan_id
+        self.name = clan_name
         self.leader = leader
         self.members = []
         self.level = 1
