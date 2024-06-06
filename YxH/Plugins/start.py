@@ -33,3 +33,7 @@ async def join_clan(_, m, user):
         await m.reply(f"You have joined **{clan.name}**.")
         await user.update()
         await clan.update()
+    else:
+        if m.from_user.id in clan.join_requests:
+            return await m.reply("You have already requested to join.")
+        
