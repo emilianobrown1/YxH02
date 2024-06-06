@@ -17,7 +17,6 @@ Join our mighty clan and conquer the fantasy world together! 💪🌟
 """
 
 async def join_clan(_, m, user):
-    if "join_" in m.text:
     id = int(m.text.split("_")[1])
     if user.clan_id:
         if user.clan_id = id:
