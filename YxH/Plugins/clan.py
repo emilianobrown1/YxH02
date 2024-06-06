@@ -2,6 +2,7 @@ from pyrogram import Client, filters
 from ..Class.clan import Clan
 from ..Database.clan import get_clan, get_clans_count
 from ..universal_decorator import YxH
+from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
 
 @Client.on_message(filters.command("clan"))
 @YxH()
@@ -24,6 +25,7 @@ async def cr(_, m, u):
   clan_id = await get_clans_count() + 1
   u.clan_id = clan_id
   cl = Clan(clan_id, clan_name, u.user.id)
+  ma = ikm([[ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=join_{clan_id}")]])
   await cl.update()
   await u.update()
-  return await m.reply(f"(**{clan_name}**) Clan has been created.")
+  return await m.reply(f"(**{clan_name}**) Clan has been created.", reply_markup=ma)
