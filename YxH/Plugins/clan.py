@@ -16,6 +16,33 @@ Members: `{}/15`
 Join our mighty clan and conquer the fantasy world together! 💪🌟
 """
 
+async def join_clan(_, m, user):
+    if "join_" in m.text:
+    id = int(m.text.split("_")[1])
+    if user.clan_id:
+        if user.clan_id = id:
+            return await m.reply("You are already in the clan you want to join.")
+        else:
+            return await m.reply("You are already in a clan.")
+    if user.crystals < 100:
+        return await m.reply(f"You need `{100-user.crystals}` more crystal(s) to join.")
+    clan = await get_clan(id)
+    if clan.anyone_can_join:
+        if len(clan.members) >= 15:
+            return await m.reply("Clan is full!")
+        user.clan_id = id
+        user.crystals -= 100
+        clan.members.append(m.from_user.id)
+        await m.reply(f"You have joined **{clan.name}**.")
+        await user.update()
+        await clan.update()
+    else:
+        if m.from_user.id in clan.join_requests:
+            return await m.reply("You have already requested to join.")
+        clan.joun_requests.append(m.from_user.id)
+        await m.reply("Requested to join.")
+        await clan.update()
+
 @Client.on_message(filters.command("myclan"))
 @YxH()
 async def myc(_, m, u):
