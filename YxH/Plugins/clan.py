@@ -37,15 +37,15 @@ async def c(_, m, u):
 async def cr(_, m, u):
   if u.clan_id:
     return
-  try:
+  if len(m.text.split()) > 1:
     clan_name = "".join(m.text.split()[1:])
-  except:
+  else:
     return await m.reply("Usage: /create <clan name>")
   if u.crystals < 500:
     return await m.reply(f"You need `{500-u.crystals}` more crystal(s) to create a clan.")
   u.crystals -= 500
   clan_id = await get_clans_count() + 1
-  u.clan_id = clan_id
+  u.id = clan_id
   cl = Clan(clan_id, clan_name, u.user.id)
   ma = ikm([[ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=join_{clan_id}")]])
   await cl.update()
