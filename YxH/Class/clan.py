@@ -2,11 +2,13 @@ from ..Database.clan import db
 import pickle
 
 class Clan:
-    def __init__(self, clan_id, clan_name, owner):
+    def __init__(self, clan_id, clan_name, leader):
         self.clan_id = clan_id
         self.clan_name = clan_name
-        self.owner = owner
+        self.leader = leader
         self.members = []
+        self.level = 1
+        self.anyone_can_join = True
         
     async def update(self):
         await db.update_one({"clan_id": self.clan_id}, {"$set": {"info": pickle.dumps(self)}}, upsert=True)
