@@ -2,7 +2,7 @@ from .Database.users import get_user
 from .Utils.force_start import force_start
 from .Utils.strings import block_text, negate_private_text, negate_group_text
 from config import SUDO_USERS, OWNER_ID, MAIN_GROUP_ID
-from .load_attr import load_attr
+from .load_attr import load_attr, load_clan_attr
 
 me = None
 
@@ -47,6 +47,7 @@ def YxH(
           break
         except AttributeError as e:
           user = await load_attr(user_id)
+          await load_clan_attr(user.clan_id)
           import traceback
           tb = traceback.format_exc()
           print(f'Error: {e} at function: {func.__name__}, line: {tb.splitlines()[-2]}')
