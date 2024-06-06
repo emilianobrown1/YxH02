@@ -4,11 +4,26 @@ from ..Database.clan import get_clan, get_clans_count
 from ..universal_decorator import YxH
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
 
+temp = """
+🏰 Clan Information 🏰
+
+Clan: **{}**
+Level: `{}`
+Leader: **{}**
+Members: `{}`
+
+Join our mighty clan and conquer the fantasy world together! 💪🌟
+"""
+
 @Client.on_message(filters.command("clan"))
 @YxH()
 async def c(_, m, u):
   if not u.clan_id:
     return await m.reply("You are not placed in any clan, You can join a clan or create one using /create.")
+  clan = await get_clan(u.clan_id)
+  markup = [[ikb("Members", callback_data=f"members_{u.user.id}")]]
+  if u.user.id == clan.leader:
+    markup.append([ikb("Settings", callback_data=f"settings_{u.user.id}")])
   
     
 @Client.on_message(filters.command("create"))
