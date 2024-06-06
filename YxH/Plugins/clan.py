@@ -29,7 +29,7 @@ async def c(_, m, u):
     markup.append([ikb("Leave", callback_data=f"leave_{u.user.id}")])
   markup.append([ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=join_{clan.id}")])
   leader = await get_user(clan.leader)
-  txt = temp.format(clan.name, clan.level, leader.user.first_name, len(clan.members))
+  txt = temp.format(clan.name, clan.level, leader.user.first_name, len(clan.members)+1)
   return await m.reply(txt, reply_markup=ikm(markup))
 
 @Client.on_message(filters.command("create"))
