@@ -11,4 +11,4 @@ class Clan:
         self.anyone_can_join = True
         
     async def update(self):
-        await db.update_one({"clan_id": self.clan_id}, {"$set": {"info": pickle.dumps(self)}}, upsert=True)
+        await db.update_one({"clan_id": self.id}, {"$set": {"info": pickle.dumps(self)}}, upsert=True)
