@@ -23,6 +23,7 @@ class User:
     self.words = {} # {chat_id: words}
     self.rented_items = {} # {item: time}
     self.spins = {} # {date-hour: 0}
+    self.clan_id = None
     
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
