@@ -4,6 +4,8 @@ from .Utils.strings import block_text, negate_private_text, negate_group_text
 from config import SUDO_USERS, OWNER_ID, MAIN_GROUP_ID
 from .load_attr import load_attr
 
+me = None
+
 def YxH(
   private=True,
   group=True,
@@ -13,6 +15,10 @@ def YxH(
 ):
   def fun(func):
     async def wrapper(_, m, *args):
+      global me
+      if not me:
+        me = await _.get_me()
+      _.myself = me
       user_id = m.from_user.id
       chat_id = m.chat.id
       user = await get_user(user_id)
