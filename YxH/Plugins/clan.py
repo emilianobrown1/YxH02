@@ -23,4 +23,7 @@ async def cr(_, m, u):
   u.crystals -= 500
   clan_id = await get_clans_count() + 1
   u.clan_id = clan_id
+  cl = Clan(clan_id, clan_name, u.user.id)
+  await cl.update()
+  await u.update()
   return await m.reply(f"(**{clan_name}**) Clan has been created.")
