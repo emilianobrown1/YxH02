@@ -10,7 +10,7 @@ temp = """
 Clan: **{}**
 Level: `{}`
 Leader: **{}**
-Members: `{}`
+Members: `{}/15`
 
 Join our mighty clan and conquer the fantasy world together! 💪🌟
 """
@@ -24,8 +24,9 @@ async def c(_, m, u):
   markup = [[ikb("Members", callback_data=f"members_{u.user.id}")]]
   if u.user.id == clan.leader:
     markup.append([ikb("Settings", callback_data=f"settings_{u.user.id}")])
-  
-    
+  markup.append([ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=join_{clan.clan_id}")])
+  txt = temp.format(clan.clan_name
+
 @Client.on_message(filters.command("create"))
 @YxH()
 async def cr(_, m, u):
