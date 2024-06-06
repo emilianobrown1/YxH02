@@ -1,4 +1,4 @@
-from ..Database import db
+from ..Database.clan import db
 import pickle
 
 class Clan:
@@ -8,4 +8,4 @@ class Clan:
         self.members = []
         
     async def update(self):
-        await db.clan.update_one({"clan_id": self.clan_id}, {"$set": {"info": pickle.dumps(self)}}, upsert=True)
+        await db.update_one({"clan_id": self.clan_id}, {"$set": {"info": pickle.dumps(self)}}, upsert=True)
