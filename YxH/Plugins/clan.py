@@ -12,4 +12,6 @@ async def c(_, m, u):
 @Client.on_message(filters.command("create"))
 @YxH()
 async def cr(_, m, u):
-   ...
+   if u.clan_id:
+      return
+   
