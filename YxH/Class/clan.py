@@ -9,6 +9,7 @@ class Clan:
         self.members = []
         self.level = 1
         self.anyone_can_join = True
+        self.join_requests = []
         
     async def update(self):
         await db.update_one({"clan_id": self.id}, {"$set": {"info": pickle.dumps(self)}}, upsert=True)
