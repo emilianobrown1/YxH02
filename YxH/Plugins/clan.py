@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from ..Class.clan import Clan
-from ..Database.clan import get_clan, get_clans_count
+from ..Database.clan import get_clan, get_clans_count, get_clans
 from ..Database.users import get_user
 from ..universal_decorator import YxH
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
@@ -89,4 +89,10 @@ def clans_markup(clans: list, user_id) -> ikm:
     lis.append([ikb("Refresh", callback_data=f"refresh_{user_id}")])
     return ikm(lis)
     
-    
+@Client.on_message(filters.command("clans"))
+@YxH()
+async def clans(_, m, u):
+    clans = await get_clans()
+    new = random.sample(clans, 5)
+    markup = clans_markup(new)
+    await m.reply("**Here are some clans to join:**", reply_markup=markup)
