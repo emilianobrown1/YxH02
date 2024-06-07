@@ -6,12 +6,24 @@ import asyncio
 from ..universal_decorator import YxH
 
 answers = {}
+names = {}
 
 async def load():
-    global answers
+    global answers, names
     all = await get_all()
     new = {x.id: x.inline for x in all.values() if hasattr(x, 'inline')}
     answers = new
+    xd = {}
+    for x in all:
+        if x.name in xd:
+            xd[x.name].append(x.id)
+        else:
+            xd[x.name] = [x.id]
+        if x.anime in xd:
+            xd[x.anime].append(x.id)
+        else:
+            xd[x.anime] = [x.id]
+    names = xd
         
 @Client.on_message(filters.command("reload"))
 @YxH(sudo=True)
@@ -31,6 +43,11 @@ async def inl(_, i: InlineQuery):
         final_answers = []
         for x in user.collection:
             final_answers.append(answers[x])
+    if i.query != "":
+        try:
+            ids = [int(i.query)]
+        except:
+            
     else:
         final_answers = list(answers.values())
     offset = int(i.offset or 0)
