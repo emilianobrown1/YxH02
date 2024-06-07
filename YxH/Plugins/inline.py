@@ -34,13 +34,13 @@ async def loads(_, m, u):
 
 @Client.on_inline_query()
 async def inl(_, i: InlineQuery):
+    final_answers = []
     if i.query.startswith("collection_"):
         try:
             user_id = int(i.query.split("_")[1])
         except:
             user_id = i.from_user.id
         user = await get_user(user_id)
-        final_answers = []
         for x in user.collection:
             final_answers.append(answers[x])
     if i.query != "":
