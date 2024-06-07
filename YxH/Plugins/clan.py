@@ -131,6 +131,20 @@ async def settings_cbq(_, q, u):
     await q.answer()
     await q.edit_message_text(txt, reply_markup=settings_markup(clan, u.user.id))
     
+async def toggle_vis(_, q, u):
+    clan = await get_clan(u.clan_id)
+    clan.private = not clan.private
+    await q.answer()
+    await q.edit_message_reply_markup(reply_markup=settings_markup(clan, u.user.id))
+    await clan.update()
+    
+async def toggle_aa(_, q, u):
+    clan = await get_clan(u.clan_id)
+    clan.anyone_can_join = not clan.anyone_can_join
+    await q.answer()
+    await q.edit_message_reply_markup(reply_markup=settings_markup(clan, u.user.id))
+    await clan.update()
+    
 async def members_cbq(_, q, u):
     clan = await get_clan(u.clan_id)
     txt = f"Members of **{clan.name}**\n\n"
