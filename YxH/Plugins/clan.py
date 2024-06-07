@@ -5,6 +5,7 @@ from ..Database.users import get_user
 from ..universal_decorator import YxH
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
 import random
+import asyncio
 
 temp = """
 🏰 Clan Information 🏰
@@ -129,3 +130,15 @@ async def settings_cbq(_, q, u):
     txt = "**Clan Settings:**"
     await q.answer()
     await q.edit_message_text(txt, reply_markup=settings_markup(clan, u.user.id))
+    
+async def members_cbq(_, q, u):
+    clan = await get_clan(u.clan_id)
+    txt = f"Members of **{clan.name}**\n\n"
+    members = [clan.leader] + clan.members
+    members = asyncio.gather(*[asyncio.create_task(get_user(x)) for x in members])
+    for x, y in enumerate(members):
+        txt += f"`{x+1}.` **{y.first_name}**"
+        txt += "\n"
+    await q.answer()
+    lis = [[ikb("Back", callback_data=f"clanback_{u.user.id}")]]
+    await q.edit_message_text(txt, reply_markup=ikm(lis))
