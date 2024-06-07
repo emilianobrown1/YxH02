@@ -51,7 +51,8 @@ async def inl(_, i: InlineQuery):
             for x in names:
                 if i.query.lower() in x:
                     ids += names[x]
-        final_answers = [answers[y] for y in ids]
+        if ids:
+            final_answers = [answers[y] for y in ids]
     else:
         final_answers = list(answers.values())
     offset = int(i.offset or 0)
