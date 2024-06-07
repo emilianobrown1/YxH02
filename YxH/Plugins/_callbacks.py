@@ -27,6 +27,7 @@ from .spinxwin import spin_cbq
 
 from .bonus import claim_cbq
 from .equipments import e_cbq
+from .clan import settings_cbq, clanback_cbq
 
 @Client.on_callback_query()
 async def cbq(_, q: CallbackQuery):
@@ -154,5 +155,9 @@ async def cbq(_, q: CallbackQuery):
     await e_cbq(_, q, u)
   elif data.startswith("spin"):
     await spin_cbq(_, q, u)
+  elif data.startswith("settings"):
+    await settings_cbq(_, q, u)
+  elif data.startswith("clanback"):
+    await clanback_cbq(_, q, u)
   else:
     return await q.answer("Under maintenance.", show_alert=True)
