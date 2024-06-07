@@ -135,7 +135,7 @@ async def members_cbq(_, q, u):
     clan = await get_clan(u.clan_id)
     txt = f"Members of **{clan.name}**\n\n"
     members = [clan.leader] + clan.members
-    members = asyncio.gather(*[asyncio.create_task(get_user(x)) for x in members])
+    members = await asyncio.gather(*[asyncio.create_task(get_user(x)) for x in members])
     for x, y in enumerate(members):
         txt += f"`{x+1}.` **{y.first_name}**"
         txt += "\n"
