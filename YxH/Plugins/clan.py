@@ -94,7 +94,10 @@ def clans_markup(clans: list, user_id) -> ikm:
 async def clans(_, m, u):
     clans = await get_clans()
     clans = [x for x in clans if not x.private]
-    new = random.sample(clans, 5)
+    if len(clans) > 5:
+        new = random.sample(clans, 5)
+    else:
+        new = clans
     markup = clans_markup(new, u.user.id)
     await m.reply("**Here are some clans to join:**", reply_markup=markup)
     
