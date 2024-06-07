@@ -15,14 +15,14 @@ async def load():
     answers = new
     xd = {}
     for x in all:
-        if x.name in xd:
-            xd[x.name].append(x.id)
+        if x.name.lower() in xd:
+            xd[x.name.lower()].append(x.id)
         else:
-            xd[x.name] = [x.id]
-        if x.anime in xd:
-            xd[x.anime].append(x.id)
+            xd[x.name.lower()] = [x.id]
+        if x.anime.lower() in xd:
+            xd[x.anime.lower()].append(x.id)
         else:
-            xd[x.anime] = [x.id]
+            xd[x.anime.lower()] = [x.id]
     names = xd
         
 @Client.on_message(filters.command("reload"))
@@ -47,7 +47,11 @@ async def inl(_, i: InlineQuery):
         try:
             ids = [int(i.query)]
         except:
-            
+            ids = []
+            for x in names:
+                if i.query.lower() in x:
+                    ids += names[x]
+        final_answers = [answers[y] for y in ids]
     else:
         final_answers = list(answers.values())
     offset = int(i.offset or 0)
