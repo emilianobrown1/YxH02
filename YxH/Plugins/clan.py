@@ -137,7 +137,7 @@ async def members_cbq(_, q, u):
     members = [clan.leader] + clan.members
     members = await asyncio.gather(*[asyncio.create_task(get_user(x)) for x in members])
     for x, y in enumerate(members):
-        txt += f"`{x+1}.` **{y.first_name}**"
+        txt += f"`{x+1}.` **{y.user.first_name}**"
         txt += "\n"
     await q.answer()
     lis = [[ikb("Back", callback_data=f"clanback_{u.user.id}")]]
