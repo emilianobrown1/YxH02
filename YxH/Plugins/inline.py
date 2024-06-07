@@ -11,7 +11,7 @@ names = {}
 async def load():
     global answers, names
     all = await get_all()
-    all = all.valued
+    all = all.values()
     new = {x.id: x.inline for x in all if hasattr(x, 'inline')}
     answers = new
     xd = {}
