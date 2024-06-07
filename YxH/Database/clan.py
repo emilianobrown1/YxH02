@@ -12,3 +12,8 @@ async def get_clans_count() -> int:
     x = db.find()
     x = await x.to_list(length=None)
     return len(x)
+    
+async def get_clans() -> list:
+    x = db.find()
+    x = await x.to_list(length=None)
+    return [pickle.loads(i["info"]) for i in x]
