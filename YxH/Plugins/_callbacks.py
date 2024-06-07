@@ -36,6 +36,8 @@ async def cbq(_, q: CallbackQuery):
     char_name = await get_anime_character(id)
     char_name = char_name.name
     return await q.answer(char_name, show_alert=True)
+  elif q.data.startswith("answer"):
+    return await q.answer()
   data, actual = q.data.split("_")
   actual = int(actual)
   if actual != q.from_user.id:
