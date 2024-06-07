@@ -105,4 +105,7 @@ def settings_markup(clan, user_id):
     return ikm(lis)
 
 async def settings_cbq(_, q, u):
-    ...
+    clan = await get_clan(u.clan_id)
+    txt = "**Clan Settings:**"
+    await q.answer()
+    await q.edit_message_text(txt, reply_markup=settings_markup(clan, u.user.id))
