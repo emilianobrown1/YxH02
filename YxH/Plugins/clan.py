@@ -102,7 +102,24 @@ def settings_markup(clan, user_id):
     lis = []
     lis.append([ikb("Approve Request", callback_data="answer"), ikb("❌" if clan.anyone_can_join else "✅", callback_data=f"togglejr_{user_id}")])
     lis.append([ikb("Visibility", callback_data="answer"), ikb("Private" if clan.private else "Public", callback_data=f"togglev_{user_id}")])
+    lis.append([ikb("Back", callback_data=f"clanback_{user_id}")])
     return ikm(lis)
+    
+async def clanback_cbq(_, q, u):
+  if not u.clan_id:
+    return await q.answer("You are not placed in any clan, You can join a clan or create one using /create.", show_alert=True)
+  clan = await get_clan(u.clan_id)
+  markup = [[ikb("Members", callback_data=f"members_{u.user.id}")]]
+  if u.user.id == clan.leader:
+    markup.append([ikb("Settings", callback_data=f"settings_{u.user.id}")])
+    markup.append([ikb(f"Requests ({len(clan.join_requests)})", callback_data=f"requests_{u.user.id}")])
+  else:
+    markup.append([ikb("Leave", callback_data=f"leave_{u.user.id}")])
+  markup.append([ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=join_{clan.id}")])
+  leader = u
+  txt = temp.format(clan.name, clan.level, leader.user.first_name, len(clan.members)+1)
+  await q.answer()
+  return await q.edit_message_text(txt, reply_markup=ikm(markup))
 
 async def settings_cbq(_, q, u):
     clan = await get_clan(u.clan_id)
