@@ -93,6 +93,16 @@ def clans_markup(clans: list, user_id) -> ikm:
 @YxH()
 async def clans(_, m, u):
     clans = await get_clans()
+    clans = [x for x in clans if not x.private]
     new = random.sample(clans, 5)
     markup = clans_markup(new, u.user.id)
     await m.reply("**Here are some clans to join:**", reply_markup=markup)
+    
+def settings_markup(clan, user_id):
+    lis = []
+    lis.append([ikb("Approve Request", callback_data="answer"), ikb("❌" if clan.anyone_can_join else "✅", callback_data=f"togglejr_{user_id}")])
+    lis.append([ikb("Visibility", callback_data="answer"), ikb("Private" if clan.private else "Public", callback_data=f"togglev_{user_id}")])
+    return ikm(lis)
+
+async def settings_cbq(_, q, u):
+    ...
