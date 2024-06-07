@@ -162,6 +162,6 @@ async def cbq(_, q: CallbackQuery):
   elif data.startswith("clanback"):
     await clanback_cbq(_, q, u)
   elif data.startswith("members"):
-    await members_cbq(_, q, u):
+    await members_cbq(_, q, u)
   else:
     return await q.answer("Under maintenance.", show_alert=True)
