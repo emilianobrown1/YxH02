@@ -18,30 +18,35 @@ Members: `{}/15`
 Join our mighty clan and conquer the fantasy world together! 💪🌟
 """
 
-async def join_clan(_, m, user):
-    id = int(m.text.split("_")[1])
+def clan_info(clan, user_id):
+    leader = await get_user(clan.leader)
+    txt = temp.format(clan.name, clan.level, leader.user.first_name, len(clan.members)+1)
+    markup = ikm([[ikn("Join Clan", callback_data=f"join|{clan.id}_{user_id}")]])
+    return txt, markup
+
+async def join_clan(_, q, user, id):
     if user.clan_id:
         if user.clan_id == id:
-            return await m.reply("You are already in the clan you want to join.")
+            return await q.answer("You are already in the clan you want to join.", show_alert=True)
         else:
-            return await m.reply("You are already in a clan.")
+            return await q.answer("You are already in a clan.", show_alert=True)
     if user.crystals < 100:
-        return await m.reply(f"You need `{100-user.crystals}` more crystal(s) to join.")
+        return await q.answer(f"You need `{100-user.crystals}` more crystal(s) to join.", show_alert=True)
     clan = await get_clan(id)
     if clan.anyone_can_join:
         if len(clan.members) >= 15:
-            return await m.reply("Clan is full!")
+            return await q.answer("Clan is full!", show_alert=True)
         user.clan_id = id
         user.crystals -= 100
         clan.members.append(m.from_user.id)
-        await m.reply(f"You have joined **{clan.name}**.")
+        await q.edit_message_text(f"You have joined **{clan.name}**.")
         await user.update()
         await clan.update()
     else:
         if m.from_user.id in clan.join_requests:
-            return await m.reply("You have already requested to join.")
-        clan.joun_requests.append(m.from_user.id)
-        await m.reply("Requested to join.")
+            return await q.answer("You have already requested to join.", show_alert=True)
+        clan.join_requests.append(m.from_user.id)
+        await q.edit_message_text("Requested to join.")
         await clan.update()
 
 @Client.on_message(filters.command("myclan"))
