@@ -84,7 +84,7 @@ async def cr(_, m, u):
 def clans_markup(clans: list, user_id) -> ikm:
     lis = []
     def x(clan):
-        return [ikb(clan.name, callback_data="answer"), ikb("View", callback_data=f"clan|{clan.id}_{user_id}")]
+        return [ikb(clan.name, callback_data=f"clan|{clan.id}_{user_id}")]
     for y in clans:
         lis.append(x(y))
     lis.append([ikb("Refresh", callback_data=f"refresh_{user_id}")])
