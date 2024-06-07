@@ -86,6 +86,7 @@ def clans_markup(clans: list, user_id) -> ikm:
         return [ikb(clan.name, callback_data="answer"), ikb("View", callback_data=f"clan|{clan.id}_{user_id}")]
     for y in clans:
         lis.append(x(y))
+    lis.append([ikb("Refresh", callback_data=f"refresh_{user_id}")])
     return ikm(lis)
     
     
