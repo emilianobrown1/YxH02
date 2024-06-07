@@ -4,6 +4,7 @@ from ..Database.clan import get_clan, get_clans_count
 from ..Database.users import get_user
 from ..universal_decorator import YxH
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
+import random
 
 temp = """
 🏰 Clan Information 🏰
@@ -78,3 +79,13 @@ async def cr(_, m, u):
   await cl.update()
   await u.update()
   return await m.reply(f"(**{clan_name}**) Clan has been created.", reply_markup=ma)
+
+def clans_markup(clans: list, user_id) -> ikm:
+    lis = []
+    def x(clan):
+        return [ikb(clan.name, callback_data="answer"), ikb("View", callback_data=f"clan|{clan.id}_{user_id}")]
+    for y in clans:
+        lis.append(x(y))
+    return ikm(lis)
+    
+    
