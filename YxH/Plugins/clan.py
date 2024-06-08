@@ -29,7 +29,7 @@ async def clan_cbq(_, q, u):
     txt, markup = await clan_info(clan, u.user.id)
     await q.answer()
     try:
-        await q.edit_message_text(txt)
+        await q.edit_message_text(txt, reply_markup=q.message.reply_markup))
     except:
         pass
 
