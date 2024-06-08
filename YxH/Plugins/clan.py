@@ -61,7 +61,7 @@ async def myc(_, m, u):
     markup.append([ikb(f"Requests ({len(clan.join_requests)})", callback_data=f"requests_{u.user.id}")])
   else:
     markup.append([ikb("Leave", callback_data=f"leave_{u.user.id}")])
-  markup.append([ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=join_{clan.id}")])
+  markup.append([ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=clan_{clan.id}")])
   leader = await get_user(clan.leader)
   txt = temp.format(clan.name, clan.level, leader.user.first_name, len(clan.members)+1)
   return await m.reply(txt, reply_markup=ikm(markup))
@@ -81,7 +81,7 @@ async def cr(_, m, u):
   clan_id = await get_clans_count() + 1
   u.clan_id = clan_id
   cl = Clan(clan_id, clan_name, u.user.id)
-  ma = ikm([[ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=join_{clan_id}")]])
+  ma = ikm([[ikb("Clan Link", url=f"https://t.me/{_.myself.username}?start=clan_{clan_id}")]])
   await cl.update()
   await u.update()
   return await m.reply(f"(**{clan_name}**) Clan has been created.", reply_markup=ma)
