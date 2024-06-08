@@ -33,7 +33,8 @@ from .clan import (
     members_cbq,
     toggle_jr,
     toggle_v,
-    join_clan
+    join_clan,
+    clan_cbq
 )
 
 @Client.on_callback_query()
@@ -176,5 +177,7 @@ async def cbq(_, q: CallbackQuery):
     await toggle_v(_, q, u)
   elif data.startswith("join"):
     await join_clan(_, q, u, int(data.split("_")[0].split("|")[1]))
+  elif data.startswith("clan"):
+    await clan_cbq(_, q, u)
   else:
     return await q.answer("Under maintenance.", show_alert=True)
