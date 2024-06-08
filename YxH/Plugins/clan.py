@@ -18,7 +18,7 @@ Members: `{}/15`
 Join our mighty clan and conquer the fantasy world together! 💪🌟
 """
 
-def clan_info(clan, user_id):
+async def clan_info(clan, user_id):
     leader = await get_user(clan.leader)
     txt = temp.format(clan.name, clan.level, leader.user.first_name, len(clan.members)+1)
     markup = ikm([[ikn("Join Clan", callback_data=f"join|{clan.id}_{user_id}")]])
