@@ -21,7 +21,7 @@ Join our mighty clan and conquer the fantasy world together! 💪🌟
 async def clan_info(clan, user_id):
     leader = await get_user(clan.leader)
     txt = temp.format(clan.name, clan.level, leader.user.first_name, len(clan.members)+1)
-    markup = ikm([[ikn("Join Clan", callback_data=f"join|{clan.id}_{user_id}")]])
+    markup = ikm([[ikb("Join Clan", callback_data=f"join|{clan.id}_{user_id}")]])
     return txt, markup
 
 async def join_clan(_, q, user, id):
@@ -89,7 +89,7 @@ async def cr(_, m, u):
 def clans_markup(clans: list, user_id) -> ikm:
     lis = []
     def x(clan):
-        return [ikb(clan.name, callback_data=f"clan|{clan.id}_{user_id}")]
+        return [ikb(clan.name, callback_data=f"clan|{clan.id}_{user_id}"), ikb("Join", callback_data=f"join|{clan.id}_{user_id}")]
     for y in clans:
         lis.append(x(y))
     lis.append([ikb("Refresh", callback_data=f"refresh_{user_id}")])
