@@ -10,7 +10,7 @@ from .clan import clan_info
 async def start(_, m):
   user = await get_user(m.from_user.id)
   if "join_" in m.text:
-      txt, markup = clan_info(await get_clan(int(m.text.split("_")[1]), m.from_user.id))
+      txt, markup = await clan_info(await get_clan(int(m.text.split("_")[1]), m.from_user.id))
       return await m.reply(txt, reply_markup=markup)
   await m.reply_photo("Images/start.JPG", start_text.format(m.from_user.first_name), reply_markup=await start_markup())
   if not user:
