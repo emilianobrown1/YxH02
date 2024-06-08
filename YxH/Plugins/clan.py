@@ -113,6 +113,8 @@ async def clans(_, m, u):
         new = random.sample(clans, 5)
     else:
         new = clans
+    if not new:
+        return await m.reply("**No clans availabale right now.**")
     markup = clans_markup(new, u.user.id)
     await m.reply("**Here are some clans to join:**", reply_markup=markup)
     
