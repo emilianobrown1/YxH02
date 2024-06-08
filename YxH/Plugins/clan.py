@@ -23,6 +23,15 @@ async def clan_info(clan, user_id):
     txt = temp.format(clan.name, clan.level, leader.user.first_name, len(clan.members)+1)
     markup = ikm([[ikb("Join Clan", callback_data=f"join|{clan.id}_{user_id}")]])
     return txt, markup
+    
+async def clan_cbq(_, q, u):
+    clan = await get_clan(u.clan_id)
+    txt, markup = await clan_info(clan, u.user.id)
+    await q.answer()
+    try:
+        await q.edit_message_text(txt)
+    except:
+        pass
 
 async def join_clan(_, q, user, id):
     if user.clan_id:
