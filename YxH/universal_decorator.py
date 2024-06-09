@@ -28,7 +28,7 @@ def YxH(
         return await m.reply(block_text)
       if main_only:
         if m.chat.id != MAIN_GROUP_ID:
-          return
+          return await m.reply("**This command only works in maim group.**")
       if not private:
         if chat_id > 0:
           return await m.reply(negate_private_text)
