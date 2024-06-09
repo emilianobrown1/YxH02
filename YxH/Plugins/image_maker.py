@@ -16,7 +16,8 @@ def make_image(text, username):
   w, h = d.textsize(text, font)
   new_w = (wi - w) / 2
   new_h = (he - h) / 2
-  d.text((new_w, new_h + 150), text, fill="blue", font=font)
-  d.text((5, 5), username, fill="blue", font=font1)
+  emoji_blue = (85, 172, 238)  
+  d.text((new_w, new_h + 150), text, fill=emoji_blue, font=font)
+  d.text((5, 5), username, fill=emoji_blue, font=font1)
   i.save(f'saved_images/{text}.jpg')
   return f'saved_images/{text}.jpg'
