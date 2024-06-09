@@ -15,7 +15,7 @@ async def mine(_, m, user):
     try:
         inp = int(m.text.split()[1])
     except IndexError:
-        return await m.reply('Usage: `/mine <amount>`')
+        return await m.reply('Usage: `/mine [amount]`')
     
     if inp > user.gold:
         return await m.reply(f'You only have `{user.gold}` gold.')
