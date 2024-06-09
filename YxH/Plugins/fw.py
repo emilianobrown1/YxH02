@@ -31,7 +31,7 @@ async def cwf(_, m):
             if m.text.lower() == chat.fw_status:
                 rew = random.randint(3000, 8001)
                 user.gems += rew
-                await m.reply(f'Congrats kiddo, You\'ve received `{rew}` Gems.')
+                await m.reply(f'✦ ✧ ✧ Congratulations You Got ✧ ✧ ✦ `{rew}` 💎.')
                 chat.fw_status = None
                 if user_id in chat.words:
                     chat.words[user_id] += 1
@@ -55,4 +55,4 @@ async def cwf(_, m):
         chat.fw_status = word.lower()
         await chat.update()
         im = make_image(word, f'@{me.username}')
-        await _.send_photo(chat_id, im, caption='Complete', reply_markup=markup)
+        await _.send_photo(chat_id, im, caption='ᴄᴏᴍᴘʟᴇᴛᴇ ᴛʜᴇ ᴡᴏʀᴅ!', reply_markup=markup)
