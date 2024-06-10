@@ -31,6 +31,7 @@ async def mine(_, m, user):
     if success:
         more = sum([equipments_data[x]["increase"] for x in equipments_data if x[0].lower() in user.rented_items])
         gold += int(gold * more / 100)
+        user.gold += gold
         txt = (
             f"You mined ⚒️ `{inp}` gold.\n\n"
             f"Your balance before mining: `{user.gold - gold}` gold.\n\n"
