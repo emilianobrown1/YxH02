@@ -4,6 +4,7 @@ from ..Database.users import get_user
 from ..Database.characters import get_anime_character
 import asyncio
 from yxh import YxH as app
+from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
 
 deals_dic = {} # {seller: {ID: buyer}}
 
@@ -28,6 +29,10 @@ async def deal(_, m, u):
         u.collection[char_id] -= 1
     await m.reply(f'Character of ID `{char_id}` has been added to your deals for `{price}` Gems.')
     await u.update()
+    
+def deals_markup(ids: list[int]) -> ikm:
+    txt = "|".join(ids)
+    return ikm([[ikb("View Inline", switch_inline_query_current_chat=f"view|{txt}")]])
 
 @Client.on_message(filters.command('deals'))
 @YxH(private=False)
@@ -50,7 +55,7 @@ async def deals(_, m, u):
         txt += f'`{x+1}.` {char.name} ({char.id}): `{t_u.deals[y]}` Gems\n'
     txt += '\n'
     txt += f'For purchasing, use `/buy {t_id}` [character]'
-    return await m.reply(txt)
+    return await m.reply(txt, reply_markup=deals_markup(list(t_u.deals)))
 
 @Client.on_message(filters.command('buy'))
 @YxH(private=False)
