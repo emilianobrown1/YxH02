@@ -36,6 +36,9 @@ async def loads(_, m, u):
 @Client.on_inline_query()
 async def inl(_, i: InlineQuery):
     final_answers = []
+    if i.query.startswith("view"):
+        ids = list(map(int, i.query.split("|")[1:]))
+        final_answers = [answers[y] for y in ids]
     if i.query.startswith("collection_"):
         try:
             user_id = int(i.query.split("_")[1])
