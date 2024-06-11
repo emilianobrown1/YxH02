@@ -31,7 +31,7 @@ async def deal(_, m, u):
     await u.update()
     
 def deals_markup(ids: list[int]) -> ikm:
-    txt = "|".join(ids)
+    txt = "|".join(list(map(str, ids)))
     return ikm([[ikb("View Inline", switch_inline_query_current_chat=f"view|{txt}")]])
 
 @Client.on_message(filters.command('deals'))
