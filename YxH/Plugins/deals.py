@@ -59,6 +59,19 @@ async def deals(_, m, u):
     txt += f'For purchasing, use `/buy {t_id}` [character]'
     return await m.reply(txt, reply_markup=deals_markup(list(t_u.deals)))
 
+@Client.on_message(filters.command("rdeal"))
+@YxH()
+async def rdeal(_, m, u):
+    try:
+        id = int(m.text.split()[1])
+    except:
+        return await m.reply("**Usage:** `/rdeal [character]`")
+    if not id in u.deals:
+        return await m.reply("**This Character is not in your deals.**")
+    u.deals.pop(id)
+    await m.reply(f"Character of ID `{id}` has been removed from your deals.")
+    await u.update()
+
 @Client.on_message(filters.command('mydeals'))
 @YxH()
 async def mydeals(_, m, u):
