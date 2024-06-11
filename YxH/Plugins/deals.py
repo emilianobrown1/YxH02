@@ -44,6 +44,8 @@ async def deals(_, m, u):
             t_id = int(m.text.split()[1])
     except:
         return await m.reply('**Either reply to an user or provide their ID.**')
+    if t_id == m.from_user.id:
+        return
     t_u = await get_user(t_id)
     if not t_u:
         return await m.reply('**User Not Found.**')
