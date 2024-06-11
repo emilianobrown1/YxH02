@@ -59,6 +59,19 @@ async def deals(_, m, u):
     txt += f'For purchasing, use `/buy {t_id}` [character]'
     return await m.reply(txt, reply_markup=deals_markup(list(t_u.deals)))
 
+@Client.on_message(filters.command('mydeals'))
+@YxH()
+async def mydeals(_, m, u):
+    if not u.deals:
+        return await m.reply(f'You having no active deals currently.')
+    txt = f'**{u.user.first_name}**\'s Deals\n\n'
+    for x, y in enumerate(u.deals):
+        char = await get_anime_character(y)
+        txt += f'`{x+1}.` {char.name} ({char.id}): `{u.deals[y]}` Gems\n'
+    txt += '\n'
+    txt += f'For removing, use `/rdeal [character]`'
+    return await m.reply(txt, reply_markup=deals_markup(list(u.deals)))
+
 @Client.on_message(filters.command('buy'))
 @YxH(private=False)
 async def buy(_, m, u):
