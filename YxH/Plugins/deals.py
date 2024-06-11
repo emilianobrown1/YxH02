@@ -22,6 +22,8 @@ async def deal(_, m, u):
         return await m.reply('**This character is already in your deals list.**')
     if len(u.deals) == 5:
         return await m.reply('**Deals slot is Full.**')
+    if price < 10000 or price > 200000:
+        return await m.reply('Deal price should be in between `10000` and `200000`.')
     u.deals[char_id] = price
     if u.collection[char_id] == 1:
         u.collection.pop(char_id)
