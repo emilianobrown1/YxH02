@@ -69,6 +69,7 @@ async def rdeal(_, m, u):
     if not id in u.deals:
         return await m.reply("**This Character is not in your deals.**")
     u.deals.pop(id)
+    u.collection[id] = u.collection.get(id, 0) + 1
     await m.reply(f"Character of ID `{id}` has been removed from your deals.")
     await u.update()
 
