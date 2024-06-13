@@ -14,6 +14,6 @@ async def top(_, m, u):
     top10 = heapq.nlargest(10, users, key=key_func)
     txt = "**Top Miners**"
     txt += "\n\n"
-    for x, y in emumerate(top10):
+    for x, y in enumerate(top10):
         txt += f"`{x+1}. **{y.user.first_name}**\n"
     await m.reply(txt)
