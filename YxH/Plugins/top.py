@@ -15,5 +15,5 @@ async def top(_, m, u):
     txt = "**Top Miners**"
     txt += "\n\n"
     for x, y in enumerate(top10):
-        txt += f"`{x+1}. **{y.user.first_name}**\n"
+        txt += f"`{x+1}.` **{y.user.first_name}** - `sum([y.mine[z] for z in y.mine])`\n"
     await m.reply(txt)
