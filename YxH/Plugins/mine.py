@@ -11,13 +11,6 @@ percentage_range: list[int] = list(range(10, 51))
 async def mine(_, m, user):
     await check_expiry(user)
     min_gold_required = 500
-    now = str(datetime.now()).split(":")[0].replace(" ", "-")
-    val = user.mine.get(now, 0)
-    if val >= 45:
-        min = int(str(datetime.now()).split(":")[1])
-        after = 30-min if min < 30 else 90-min
-        return await m.reply("Mining limit reached, try again after `{after}` minutes.")
-    user.mine[now] = val + 1
     try:
         inp = int(m.text.split()[1])
     except IndexError:
@@ -29,6 +22,13 @@ async def mine(_, m, user):
     if inp < min_gold_required:
         return await m.reply("You need at least `500` gold to start mining.")
     
+    now = str(datetime.now()).split(":")[0].replace(" ", "-")
+    val = user.mine.get(now, 0)
+    if val >= 45:
+        min = int(str(datetime.now()).split(":")[1])
+        after = 30-min if min < 30 else 90-min
+        return await m.reply("Mining limit reached, try again after `{after}` minutes.")
+    user.mine[now] = val + 1
     success = random.choice([True, False])
     
     percentage = random.choice(percentage_range)
