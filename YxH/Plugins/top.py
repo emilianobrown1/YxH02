@@ -14,9 +14,23 @@ async def top(_, m, u):
     users = await get_all_users()
     # This will get the top 10 users based on the amount of gold they hold
     top10 = heapq.nlargest(10, users, key=key_func)
-    txt = "**Top Miner**"
+    txt = "**Top Miners**"
     txt += "\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"  # Display the gold amount
     await m.reply(txt)
-    
+
+def c_func(user):
+    return len(user.collection)
+
+@Client.on_message(filters.command("ctop"))
+@YxH()
+async def ctop(_, m, u):
+    users = await get_all_users()
+    # This will get the top 10 users based on the amount of gold they hold
+    top10 = heapq.nlargest(10, users, key=c_func)
+    txt = "**Top Collectors**"
+    txt += "\n\n"
+    for x, y in enumerate(top10):
+        txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Display the gold amount
+    await m.reply(txt)
