@@ -5,12 +5,8 @@ import heapq
 from ..load_attr import load_attr
     
 def key_func(user):
-    try:
-        return sum([user.mine[x] for x in user.mine])
-    except AttributeError:
-        user = await load_attr(user.user.id)
-        return sum([user.mine[x] for x in user.mine])
-
+    return sum([user.mine[x] for x in user.mine])
+        
 @Client.on_message(filters.command("top"))
 @YxH()
 async def top(_, m, u):
