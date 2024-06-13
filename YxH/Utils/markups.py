@@ -14,10 +14,6 @@ async def start_markup():
       [
         ikb("Group", url=f"https://t.me/{SUPPORT_GROUP}"),
         ikb("Channel", url=f"https://t.me/{SUPPORT_CHANNEL}")
-      ],
-      [
-        ikb("Owner", user_id=1965472544),
-        ikb("Coder", user_id=6110294479)
       ]
     ]
   )
