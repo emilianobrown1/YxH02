@@ -25,6 +25,7 @@ class User:
     self.spins = {} # {date-hour: 0}
     self.clan_id = None
     self.deals = {}
+    self.mine = {} # {date-hour: 0}
     
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
