@@ -14,7 +14,7 @@ async def top(_, m, u):
     users = await get_all_users()
     # This will get the top 10 users based on the amount of gold they hold
     top10 = heapq.nlargest(10, users, key=key_func)
-    txt = "**Top Gold Holders**"
+    txt = "**Top Miner**"
     txt += "\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"  # Display the gold amount
