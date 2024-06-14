@@ -20,6 +20,9 @@ async def attack(_, m, u):
     if t.shield:
         await u.update()
         return await m.reply('Oops, target user having shield equipped.')
+    if t.latest_defend:
+        if int(time.time() - t.latest_defend) <= 10800:
+            return await m.reply("Target user got attacked recently by some other, try after some time.")
     gold_per = random.randint(5, 10)
     gems_per = random.randint(5, 10)
     gold_val = int(t.gold * gold_per / 100)
