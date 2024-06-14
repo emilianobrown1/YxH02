@@ -26,7 +26,9 @@ class User:
     self.clan_id = None
     self.deals = {}
     self.mine = {} # {date-hour: 0}
-    
+    self.shield = [] # [shield_time, time.time() object]
+    self.latest_defend = None # time.time() object
+
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
 
