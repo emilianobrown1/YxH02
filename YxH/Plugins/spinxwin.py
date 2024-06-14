@@ -43,6 +43,7 @@ async def spin_cbq(_, q, u):
         return await q.answer(f"You need `{500000-u.gold}` more gold to spin.", show_alert=True)
     u.spins[now] = cur + 1
     x = get_res()
+    u.gold -= 500000
     if x <= 5:
         txt = "You got 2 Crystals."
         u.crystals += 2
