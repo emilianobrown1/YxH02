@@ -121,7 +121,7 @@ async def task():
             for char in deals_dic[x]:
                 user_id = deals_dic[x][char]
                 user = await get_user(user_id)
-                user.collection[char] += user.collection.get(char, 0) + 1
+                user.collection[char] = user.collection.get(char, 0) + 1
                 await user.update()
                 await app.send_message(user_id, f'Character of ID `{char}` has been added to your collection.')
                 to_rem[x] = to_rem.get(x, []) + [char]
