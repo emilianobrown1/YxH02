@@ -127,7 +127,7 @@ async def task():
                 to_rem[x] = to_rem.get(x, []) + [char]
         for x in to_rem:
             for y in to_rem[x]:
-                deals_dic[x].remove(y)
+                del deals_dic[x][y]
         await asyncio.sleep(1)
 
 asyncio.create_task(task())
