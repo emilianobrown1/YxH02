@@ -21,10 +21,7 @@ async def get_all():
     new = {}
     for y in x:
       info = pickle.loads(y["info"])
-      path = f"Characters/{info.id}.jpg"
-      await download_image(info.image, path)
-      info.image = path
-      new[y.id] = info
+      new[info.id] = info
     chars = new
   return chars
 
