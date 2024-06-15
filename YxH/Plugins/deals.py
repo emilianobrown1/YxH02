@@ -58,7 +58,7 @@ async def deals(_, m, u):
         char = await get_anime_character(y)
         txt += f'`{x+1}.` {char.name} ({char.id}): `{t_u.deals[y]}` Gems\n'
     txt += '\n'
-    txt += f'For purchasing, use `/buy {t_id}` [character]'
+    txt += f'For purchasing, use `/buy {t_id} `[character_id]'
     return await m.reply(txt, reply_markup=deals_markup(list(t_u.deals)))
 
 @Client.on_message(filters.command("rdeal"))
@@ -95,7 +95,7 @@ async def buy(_, m, u):
         t_id = int(m.text.split()[1])
         char_id = int(m.text.split()[2])
     except:
-        return await m.reply('**Usage:** `/buy [user id] [character]`')
+        return await m.reply('**Usage:** `/buy [user_id] [character_id]`')
     t_u = await get_user(t_id)
     if not t_u:
         return await m.reply('**User Not Found.**')
