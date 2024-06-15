@@ -4,7 +4,7 @@ import random
 from .equipments import equipment_data as equipments_data, check_expiry
 from datetime import datetime
 
-percentage_range: list[int] = list(range(10, 51))
+percentage_range: list[int] = list(range(10, 71))
 
 @Client.on_message(filters.command("mine"))
 @YxH(private=False)
