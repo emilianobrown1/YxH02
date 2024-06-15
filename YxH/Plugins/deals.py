@@ -96,6 +96,8 @@ async def buy(_, m, u):
         char_id = int(m.text.split()[2])
     except:
         return await m.reply('**Usage:** `/buy [user_id] [character_id]`')
+    if t_id == m.from_user.id:
+        return
     t_u = await get_user(t_id)
     if not t_u:
         return await m.reply('**User Not Found.**')
