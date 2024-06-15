@@ -4,3 +4,4 @@ telegraph
 motor
 Pillow==8.2.0
 english-words
+aiohttp
