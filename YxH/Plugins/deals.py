@@ -118,16 +118,16 @@ async def task():
     while True:
         to_rem = {}
         for x in deals_dic:
-            for char in x:
-                user_id = x[char]
+            for char in deals_dic[x]:
+                user_id = deals_dic[x][char]
                 user = await get_user(user_id)
                 user.collection[char] += user.collection.get(char, 0) + 1
                 await user.update()
                 await app.send_message(user_id, f'Character of ID `{char}` has been added to your collection.')
                 to_rem[x] = to_rem.get(x, []) + [char]
         for x in to_rem:
-            for y in x:
-                del deals_dic[x][y]
+            for y in to_rem[x]:
+                deals_dic[x].remove(y)
         await asyncio.sleep(1)
 
 asyncio.create_task(task())
