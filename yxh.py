@@ -1,5 +1,6 @@
 from pyrogram import Client, idle
 from config import *
+import os
 
 YxH = Client(
     ":YxH:",
@@ -10,6 +11,7 @@ YxH = Client(
 )
 
 def __init__():
+    os.makedirs("Characters", exist_ok=True)
     YxH.start()
     print("Bot Started.")
     idle()
