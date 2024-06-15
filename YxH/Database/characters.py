@@ -4,6 +4,15 @@ import asyncio
 
 chars: dict = {}
 
+import aiohttp
+
+async def download_image(url, save_path):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status == 200:
+                with open(save_path, 'wb') as f:
+                    f.write(await response.read())
+
 async def get_all():
   global chars
   if not chars:
@@ -11,7 +20,11 @@ async def get_all():
     x = await x.to_list(length=None)
     new = {}
     for y in x:
-      new[y['id']] = pickle.loads(y['info'])
+      info = pickle.loads(y["info"])
+      path = f"Characters/{info.id}.jpg"
+      await download_image(info.image, path)
+      info.image = path
+      new[y.id] = info
     chars = new
   return chars
 
