@@ -4,9 +4,9 @@ from ..Class.character import AnimeCharacter, YaoiYuriCharacter
 from config import ANIME_CHAR_CHANNEL_ID
 import asyncio
 import os
-from telegraph import Telegraph
+from telegraph.aio import TelegraphApi
 
-t = Telegraph()
+t = TelegraphApi()
 
 async def upload(m):
     # m = await cli.get_messages(ANIME_CHAR_CHANNEL_ID, msg_id)
@@ -14,7 +14,7 @@ async def upload(m):
         return
     spl = m.caption.split(";")
     try:
-        image = "https://telegra.ph/" + t.upload_file(await m.download())[0]['src']
+        image = "https://telegra.ph/" + await t.upload_file(await m.download())[0]['src']
         name = spl[0].strip()
         anime = spl[1].strip()
         rarity = spl[2].strip()
