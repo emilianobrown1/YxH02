@@ -29,8 +29,14 @@ async def upload(m):
 async def aupl(_, m, u):
     ok = await m.reply("Processing...")
     spl = m.text.split()
-    st = int(spl[1])
-    end = int(spl[2]) + 1
+    if len(spl) == 3:
+        st = int(spl[1])
+        end = int(spl[2]) + 1
+    elif len(spl) == 2:
+        st = int(spl[1])
+        end = st + 1
+    else:
+        return await m.reply("**Invalid Usage.**")
     batches = []
     while end - st > 200:
         batches.append(list(range(st, st+200)))
