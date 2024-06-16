@@ -152,7 +152,7 @@ async def cbq(_, q: CallbackQuery):
     cry = u.crystals
     if cry < 500:
       req = 500 - cry
-      return await q.answer(f"You need `{req}` more crystals to unlock treasure.", show_alert=True)
+      return await q.answer(f"You need {req} more crystals to unlock treasure.", show_alert=True)
     u.crystals -= 500
     u.treasure_state = True
     markup = xprofile_markup(u)
