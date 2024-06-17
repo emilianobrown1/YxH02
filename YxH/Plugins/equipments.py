@@ -66,7 +66,7 @@ async def e_cbq(_, q, u):
         req = equipment_data["Axe"]["cost"]
         if u.gold < req:
             r = req - u.gold
-            return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
+            return await q.answer(f"You need {r} more gold to rent it.", show_alert=True)
         u.gold -= req
         u.rented_items["a"] = time.time()
         markup = equipments_markup(u)
@@ -81,7 +81,7 @@ async def e_cbq(_, q, u):
         req = equipment_data["Hammer"]["cost"]
         if u.gold < req:
             r = req - u.gold
-            return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
+            return await q.answer(f"You need {r} more gold to rent it.", show_alert=True)
         u.gold -= req
         u.rented_items["h"] = time.time()
         markup = equipments_markup(u)
@@ -96,7 +96,7 @@ async def e_cbq(_, q, u):
         req = equipment_data["Shovel"]["cost"]
         if u.gold < req:
             r = req - u.gold
-            return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
+            return await q.answer(f"You need {r} more gold to rent it.", show_alert=True)
         u.gold -= req
         u.rented_items["s"] = time.time()
         markup = equipments_markup(u)
@@ -111,7 +111,7 @@ async def e_cbq(_, q, u):
         req = equipment_data["Pickaxe"]["cost"]
         if u.gold < req:
             r = req - u.gold
-            return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
+            return await q.answer(f"You need {r} more gold to rent it.", show_alert=True)
         u.gold -= req
         u.rented_items["p"] = time.time()
         markup = equipments_markup(u)
@@ -126,7 +126,7 @@ async def e_cbq(_, q, u):
         req = equipment_data["Bomb"]["cost"]
         if u.gold < req:
             r = req - u.gold
-            return await q.answer("You need `{r}` more gold to rent it.", show_alert=True)
+            return await q.answer(f"You need {r} more gold to rent it.", show_alert=True)
         u.gold -= req
         u.rented_items["b"] = time.time()
         markup = equipments_markup(u)
