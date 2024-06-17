@@ -26,7 +26,7 @@ async def mine(_, m, user):
     val = user.mine.get(now, 0)
     if val >= 45:
         min = int(str(datetime.now()).split(":")[1])
-        after = 30-min if min < 30 else 90-min
+        after = 60-min
         return await m.reply(f"Mining limit reached, try again after `{after}` minutes.")
     user.mine[now] = val + 1
     success = random.choice([True, False])
