@@ -22,11 +22,20 @@ def build_markup(user_id):
 @Client.on_message(filters.command("shield"))
 @YxH()
 async def sh(_, m, u):
-    if t.shield:
-        if int(time.time()-t.shield[1]) > t.shield[0]:
-            t.shield = []
-    if t.shield:
-        left = t.shield[0] - int(time.time()-t.shield[1])
+    if u.shield:
+        if int(time.time()-u.shield[1]) > u.shield[0]:
+            u.shield = []
+    if u.shield:
+        left = u.shield[0] - int(time.time()-u.shield[1])
         return await m.reply(f"You already having a shield equipped and will be expired after `{grt(left)}`.")
     markup = build_markup(u.user.id)
     await m.reply("**Shields Store**", reply_markup=markup)
+    
+async def shield_cbq(_, q, u):
+    if u.shield:
+        if int(time.time()-u.shield[1]) > u.shield[0]:
+            u.shield = []
+    if u.shield:
+        left = u.shield[0] - int(time.time()-u.shield[1])
+        await q.answer(f"You already having a shield equipped and will be expired after {grt(left)}.", show_alert=True)
+        return await q.message.delete()
