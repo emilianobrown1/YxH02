@@ -36,6 +36,7 @@ from .clan import (
     join_clan,
     clan_cbq
 )
+from .shield import shield_cbq
 
 @Client.on_callback_query()
 async def cbq(_, q: CallbackQuery):
@@ -179,5 +180,7 @@ async def cbq(_, q: CallbackQuery):
     await join_clan(_, q, u, int(data.split("_")[0].split("|")[1]))
   elif data.startswith("clan"):
     await clan_cbq(_, q, u)
+  elif data.startswith("shield"):
+    await shield_cbq(_, q, u)
   else:
     return await q.answer("Under maintenance.", show_alert=True)
