@@ -16,7 +16,7 @@ def build_markup(user_id):
     lis = []
     for x in shields:
         lis.append([ikb(f"{x} ({shields[x][1]}h) - {shields[x][1]} Gold", callback_data=f"shield|{x}_{user_id}")])
-    lis.append(ikb("Close", callback_data=f"close_{user_id}"))
+    lis.append([ikb("Close", callback_data=f"close_{user_id}")])
     return ikm(lis)
 
 @Client.on_message(filters.command("shield"))
