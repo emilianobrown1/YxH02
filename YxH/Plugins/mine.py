@@ -57,6 +57,5 @@ async def mine(_, m, user):
             f"Lost: `{gold}` gold.😞\n\n"
             f"Your gold after loss: `{user.gold}`"
         )
-    
-    await m.reply_animation("Images/mine.mp4", caption=txt)
     await user.update()
+    await m.reply_animation("Images/mine.mp4", caption=txt)
