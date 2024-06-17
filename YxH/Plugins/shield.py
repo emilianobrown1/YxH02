@@ -16,4 +16,4 @@ async def sh(_, m, u):
             t.shield = []
     if t.shield:
         left = t.shield[0] - int(time.time()-t.shield[1])
-        return await m.reply("**You already having a shield equipped and will be expired after `{grt(left)}`.")
+        return await m.reply(f"You already having a shield equipped and will be expired after `{grt(left)}`.")
