@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
-from . import YxH
+from . import YxH, grt
+import time
 
 shields = {
     "Gold": [500000000, 24*3600],
@@ -10,4 +11,9 @@ shields = {
 @Client.on_message(filters.command("shield"))
 @YxH()
 async def sh(_, m, u):
-    ...
+    if t.shield:
+        if int(time.time()-t.shield[1]) > t.shield[0]:
+            t.shield = []
+    if t.shield:
+        left = t.shield[0] - int(time.time()-t.shield[1])
+        return await m.reply("**You already having a shield equipped and will be expired after `{grt(left)}`.")
