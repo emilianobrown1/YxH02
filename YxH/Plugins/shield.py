@@ -39,3 +39,14 @@ async def shield_cbq(_, q, u):
         left = u.shield[0] - int(time.time()-u.shield[1])
         await q.answer(f"You already having a shield equipped and will be expired after {grt(left)}.", show_alert=True)
         return await q.message.delete()
+    shield_name = q.data.split("_")[0].split("|")[1]
+    shield_info = shields[shield_name]
+    need = shield_info[0] - u.gold
+    if need > 0:
+        return await q.answer(f"You need {need} more gold.", show_alert=True)
+    u.gold -= shield_info[0]
+    u.shield = [shield_info[1]*3600, time.time()]
+    await u.update()
+    ma = ikm([[ikb("Close", callback_data=f"close_{u.user.id}")]])
+    await q.answer()
+    return await q.edit_message_text(f"Done, You have equipped **{shield_name}** Shield for `{shield_info[1]}` Hours.", reply_markup=ma)
