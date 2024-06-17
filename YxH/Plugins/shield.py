@@ -28,4 +28,5 @@ async def sh(_, m, u):
     if t.shield:
         left = t.shield[0] - int(time.time()-t.shield[1])
         return await m.reply(f"You already having a shield equipped and will be expired after `{grt(left)}`.")
-    
+    markup = build_markup(u.user.id)
+    await m.reply("**Shields Store**", reply_markup=markup)
