@@ -3,6 +3,7 @@ from .Utils.force_start import force_start
 from .Utils.strings import block_text, negate_private_text, negate_group_text
 from config import SUDO_USERS, OWNER_ID, MAIN_GROUP_ID
 from .load_attr import load_attr, load_clan_attr
+import traceback
 
 me = None
 
@@ -11,7 +12,8 @@ def YxH(
   group=True,
   sudo=False,
   owner=False,
-  main_only=False
+  main_only=False,
+  min_old=0
 ):
   def fun(func):
     async def wrapper(_, m, *args):
@@ -41,20 +43,13 @@ def YxH(
       if owner:
         if user_id != OWNER_ID:
           return
-      while True:
-        try:
-          await func(_, m, user)
-          break
-        except AttributeError as e:
-          user = await load_attr(user_id)
-          await load_clan_attr(user.clan_id)
-          import traceback
-          tb = traceback.format_exc()
-          print(f'Error: {e} at function: {func.__name__}, line: {tb.splitlines()[-2]}')
-        except Exception as e:
-          import traceback
-          tb = traceback.format_exc()
-          await m.reply(f'Error: {e} at function: {func.__name__}, line: {tb.splitlines()[-2]}')
-          break
+      if min_old > 0:
+        if await user.get_old() < min_old:
+          return await m.reply(f"You must be atleast `{min_old}` day(s) old to use this command.")
+      try:
+        await func(_, m, user)
+      except Exception as e:
+        tb = traceback.format_exc()
+        await m.reply(f'Error: {e} at function: {func.__name__}, line: {tb.splitlines()[-2]}')
     return wrapper
   return fun
