@@ -56,7 +56,7 @@ async def deals(_, m, u):
     txt = f'**{t_u.user.first_name}**\'s Deals\n\n'
     for x, y in enumerate(t_u.deals):
         char = await get_anime_character(y)
-        txt += f'`{x+1}.` {char.name} ({char.id}): `{t_u.deals[y]}` Gems\n'
+        txt += f'`{x+1}.` {char.name} (`{char.id}`)\nPrice: `{t_u.deals[y]}` Gems\n'
     txt += '\n'
     txt += f'For purchasing, use `/buy {t_id} `[character_id]'
     return await m.reply(txt, reply_markup=deals_markup(list(t_u.deals)))
