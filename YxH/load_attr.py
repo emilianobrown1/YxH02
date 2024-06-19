@@ -12,6 +12,8 @@ chat_attr = [x for x in dir(ex_chat) if not callable(x)]
 clan_attr = [x for x in dir(ex_clan) if not callable(x)]
 
 async def load_attr(user) -> User:
+  if len(dir(user)) == len(dir(attr)):
+    return user
   for x in attr:
     if hasattr(user, x):
       continue
@@ -20,6 +22,8 @@ async def load_attr(user) -> User:
   return user
 
 async def load_chat_attr(chat) -> Chat:
+  if len(dir(chat)) == len(dir(chat_attr)):
+    return user
   for x in chat_attr:
     if hasattr(chat, x):
       continue
@@ -28,6 +32,8 @@ async def load_chat_attr(chat) -> Chat:
   return chat
   
 async def load_clan_attr(clan) -> Clan:
+  if len(dir(clan)) == len(dir(clan_attr)):
+    return user
   for x in clan_attr:
     if hasattr(clan, x):
       continue
