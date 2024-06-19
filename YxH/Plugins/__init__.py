@@ -4,6 +4,10 @@ from ..Database.users import get_user
 from ..Database.chats import get_chat
 from ..Database.characters import get_anime_character, anime_characters_count
 from ..universal_decorator import YxH
+from pyrogram.types import (
+    InlineKeyboardMarkup as ikm,
+    InlineKeyboardButton as ikb
+)
 
 def grt(seconds: int) -> str:
     count = 0
