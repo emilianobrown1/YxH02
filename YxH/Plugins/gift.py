@@ -42,8 +42,9 @@ async def xgifts(_, m, u):
     cost = math.ceil(count/5)
     txt = f"Gifts: `{count}`\nCost: `{cost}` Crystals\n\nYou have: `{u.gifts}`."
     await m.reply(txt, reply_markup=markup(u.user.id, count))
-    
-ma = ikm([[ikb("Close", callback_data=f"close_{user_id}")]])
+
+def close(user_id):    
+    return ikm([[ikb("Close", callback_data=f"close_{user_id}")]])
 
 async def gifts_cbq(_, q, u):
     count = int(q.data.split("_")[0].split("|")[1])
@@ -55,4 +56,4 @@ async def gifts_cbq(_, q, u):
     txt = f"Successfully bought `{count}` gifts for `{cost}` crystals.\n\nYou have: `{u.gifts}`."
     await u.update()
     await q.answer()
-    await q.edit_message_text(txt, reply_markup=ma)
+    await q.edit_message_text(txt, reply_markup=close(u.user.id))
