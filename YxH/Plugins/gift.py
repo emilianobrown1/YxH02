@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from . import YxH, get_date, get_user
+import math
 
 @Client.on_message(filters.command("xgift"))
 @YxH(min_old=3)
@@ -27,3 +28,20 @@ async def xgift(_, m, u):
     await u.update()
     await m.reply(f"Successfully gifted the character of ID `{id}` to {t.user.first_name}.\n\nGifts left for today: `{u.gifts}`.")
     await _.send_message(t.user.id, f"{u.user.first_name} has gifted you the character of ID `{id}`.")
+
+def markup(user_id, gifts):
+    return ikm([[ikb("Buy", callback_data=f"gifts|{gifts}_{user_id}")], [ikb("Close", callback_data=f"close_{user_id}")]])
+
+@Client.on_message(filters.command("xgifts"))
+@YxH(min_old=3)
+async def xgifts(_, m, u):
+    try:
+        count = int(m.text.split()[1])
+    except:
+        return await m.reply(f"Usage: /xgifts [count]\n\nYou have: `{u.gifts}`.")
+    cost = math.ceil(count/5)
+    txt = f"Gifts: `{}`\nCost: `{cost}`\n\nYou have: `{u.gifts}`."
+    await m.reply(txt, reply_markup=markup(u.user.id, count))
+    
+async def gifts_cbq(_, q, u):
+    count = int(q.data.split("_")[0].split("|")[1]) 
