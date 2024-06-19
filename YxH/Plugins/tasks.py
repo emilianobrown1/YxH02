@@ -13,12 +13,12 @@ async def func():
     users = await get_all_chats()
     tasks = []
     for x in users:
-        tasks.append(asyncio.create_task(load_attr(x)))
+        tasks.append(asyncio.create_task(load_chat_attr(x)))
     await asyncio.gather(*tasks)
     users = await get_clans()
     tasks = []
     for x in users:
-        tasks.append(asyncio.create_task(load_attr(x)))
+        tasks.append(asyncio.create_task(load_clan_attr(x)))
     await asyncio.gather(*tasks)
 
 asyncio.create_task(func())
