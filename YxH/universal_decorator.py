@@ -44,7 +44,7 @@ def YxH(
         if user_id != OWNER_ID:
           return
       if min_old > 0:
-        if await user.get_old() < min_old:
+        if user.get_old() < min_old:
           return await m.reply(f"You must be atleast `{min_old}` day(s) old to use this command.")
       try:
         await func(_, m, user)
