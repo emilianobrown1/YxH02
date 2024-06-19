@@ -29,7 +29,8 @@ class User:
     self.shield = [] # [shield_time, time.time() object]
     self.latest_defend = None # time.time() object
     self.favourite_character = None # char_id
-
+    self.gifts_sent = {} # {date: 0}
+    
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
 
