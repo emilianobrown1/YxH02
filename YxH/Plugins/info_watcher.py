@@ -1,6 +1,5 @@
 from .watchers import info_watcher
 from . import get_user, get_chat
-from ..load_attr import load_attr, load_chat_attr
 from ..Class import Chat
 import asyncio
 
@@ -13,7 +12,6 @@ async def cwf(_, m):
     u.user = m.from_user
     await asyncio.gather(
       u.update(),
-      load_attr(m.from_user.id)
     )
   if m.chat.id < 0:
     if c:
@@ -22,5 +20,4 @@ async def cwf(_, m):
       c: Chat = Chat(m.chat)
     await asyncio.gather(
       c.update(),
-      load_chat_attr(m.chat.id)
     )
