@@ -6,7 +6,7 @@ async def get_anime_image_and_caption(id: int) -> str:
   return c.image, "🎭 𝙉𝘼𝙈𝙀 : {}\n\n🎖𝘼𝙉𝙄𝙈𝙀 : {}\n\n💰 𝙋𝙍𝙄𝘾𝙀 : {} 💎\n\n♦️ {}\n\n🆔 : {}\n\n".format(c.name, c.anime, c.price, c.rarity, c.id)
 
 async def xprofile_template(user):
-  name = (await get_clan(user.clan_id)).name
+  name = (await get_clan(user.clan_id)).name or "-"
   return f'𝑼𝒔𝒆𝒓: {user.user.first_name}\n\nClan: {name}\n𝑮𝒆𝒏𝒅𝒆𝒓: {user.gl[user.gender]}\n\n𝑰𝑫: `{user.user.id}`\n𝑶𝒍𝒅: `{user.get_old()}` Day(s)\n\n𝑪𝒓𝒚𝒔𝒕𝒂𝒍𝒔: `{user.crystals}` 🔮\n𝑮𝒆𝒎𝒔: `{user.gems}` 💎\n𝑮𝒐𝒍𝒅: `{user.gold}` 📯\n𝑻𝒓𝒆𝒂𝒔𝒖𝒓𝒆: {"Locked" if not user.treasure_state else "0, 0, 0"}\n\n𝑪𝒐𝒍𝒍𝒆𝒄𝒕𝒆𝒅 𝒄𝒉𝒂𝒓𝒂𝒄𝒕𝒆𝒓𝒔: {len(user.collection)}'
 
 
