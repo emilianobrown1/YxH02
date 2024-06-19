@@ -22,7 +22,7 @@ from pyrogram.types import InputMediaPhoto as imp
 from ..Utils.datetime import get_date
 from ..Class import User, AnimeCharacter
 from .spinxwin import spin_cbq
-from .gift import gift_cbq
+from .gift import gifts_cbq
 
 # MODULE FUNCTIONS IMPORTS
 
@@ -184,6 +184,6 @@ async def cbq(_, q: CallbackQuery):
   elif data.startswith("shield"):
     await shield_cbq(_, q, u)
   elif data.startswith("gifts"):
-    await gift_cbq(_, q, u)
+    await gifts_cbq(_, q, u)
   else:
     return await q.answer("Under maintenance.", show_alert=True)
