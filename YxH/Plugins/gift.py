@@ -28,4 +28,4 @@ async def xgift(_, m, u):
     await t.update()
     await u.update()
     await m.reply(f"Successfully gifted the character of ID `{id}` to {t.user.first_name}.\n\nGifts left for today: `{4-gifts}`.")
-    await _.send_message(f"{u.user.first_name} has gifted you the character of ID `{id}`.")
+    await _.send_message(t.user.id, f"{u.user.first_name} has gifted you the character of ID `{id}`.")
