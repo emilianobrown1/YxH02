@@ -9,7 +9,7 @@ from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as 
 deals_dic = {} # {seller: {ID: buyer}}
 
 @Client.on_message(filters.command('deal'))
-@YxH(private=False)
+@YxH(private=False, min_old=3)
 async def deal(_, m, u):
     try:
         char_id = int(m.text.split()[1])
