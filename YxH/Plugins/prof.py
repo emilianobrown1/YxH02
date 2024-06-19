@@ -7,6 +7,6 @@ from ..Utils.markups import xprofile_markup
 @YxH()
 async def xprof(_, m, u):
   return await m.reply(
-    xprofile_template(u),
+    await xprofile_template(u),
     reply_markup=xprofile_markup(u)
   )
