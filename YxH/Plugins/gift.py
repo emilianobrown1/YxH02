@@ -40,7 +40,7 @@ async def xgifts(_, m, u):
     except:
         return await m.reply(f"Usage: /xgifts [count]\n\nYou have: `{u.gifts}`.")
     cost = math.ceil(count/5)
-    txt = f"Gifts: `{}`\nCost: `{cost}` Crystals\n\nYou have: `{u.gifts}`."
+    txt = f"Gifts: `{count}`\nCost: `{cost}` Crystals\n\nYou have: `{u.gifts}`."
     await m.reply(txt, reply_markup=markup(u.user.id, count))
     
 ma = ikm([[ikb("Close", callback_data=f"close_{user_id}")]])
