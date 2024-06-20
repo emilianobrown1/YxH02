@@ -12,7 +12,11 @@ async def mine(_, m, user):
     await check_expiry(user)
     min_gold_required = 500
     try:
-        inp = int(m.text.split()[1])
+        inp = m.text.split()[1]
+        if inp == "*":
+            inp = user.gold
+        else:
+            inp = int(inp)
     except IndexError:
         return await m.reply('Usage: `/mine [amount]`')
     
