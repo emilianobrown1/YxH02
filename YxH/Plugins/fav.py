@@ -7,7 +7,7 @@ async def xf(_, m, u):
     try:
         id = int(m.text.split()[1])
     except:
-        return await m.reply("Usage: /xfav [character_id]\n\nTo remove favourite character, `/xfav 0`."
+        return await m.reply("Usage: /xfav [character_id]\n\nTo remove favourite character, `/xfav 0`.")
     if id == 0:
         if not u.favourite_character:
             return await m.reply("There is no favourite character to remove.")
