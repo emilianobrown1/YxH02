@@ -18,7 +18,7 @@ class AnimeCharacter:
       self.price = price
 
   async def add(self):
-    mk = ikm([[ikb("How many I have❓", callback_data=f"howmany{id}")]])
+    mk = ikm([[ikb("How many I have❓", callback_data=f"howmany{self.id}")]])
     inline = iqrp(photo_url=self.image, thumb_url=self.image, caption=inline_template(self), reply_markup=mk)
     self.inline = inline
     await db.anime_characters.update_one(

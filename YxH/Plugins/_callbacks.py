@@ -50,9 +50,9 @@ async def cbq(_, q: CallbackQuery):
   elif q.data.startswith("answer"):
     return await q.answer()
   elif q.data.startswith("howmany"):
-    id = int(q.data[7:])
+    cid = int(q.data[7:])
     u = await get_user(q.from_user.id)
-    count = u.collection.get(id, 0)
+    count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
   data, actual = q.data.split("_")
   actual = int(actual)
