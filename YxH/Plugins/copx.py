@@ -23,6 +23,8 @@ async def cwf(_, m):
         )
     except:
         return
+    if not user:
+        return
     if user.blocked:
         return
     if chat_id in count:
