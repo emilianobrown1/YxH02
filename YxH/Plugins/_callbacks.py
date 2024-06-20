@@ -38,6 +38,7 @@ from .clan import (
     clan_cbq
 )
 from .shield import shield_cbq
+from ..universal_decorator import download_image
 
 @Client.on_callback_query()
 async def cbq(_, q: CallbackQuery):
@@ -101,7 +102,11 @@ async def cbq(_, q: CallbackQuery):
     image, caption = await get_anime_image_and_caption(chars[page-1])
     markup = store_markup(actual, page, u.store_purchases[date][page - 1])
     await q.answer()
-    await q.edit_message_media(imp(image, caption=caption), reply_markup=markup)
+    try:
+        await q.edit_message_media(imp(image, caption=caption), reply_markup=markup)
+    except:
+        await download_image(image, "dl.jpg")
+        await q.edit_message_media(imp("dl.jpg", caption=caption), reply_markup=markup)
   elif data.startswith('buy'):
     page = int(data.split("|")[1])
     date = get_date()
