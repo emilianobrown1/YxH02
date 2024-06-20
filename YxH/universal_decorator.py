@@ -5,6 +5,15 @@ from config import SUDO_USERS, OWNER_ID, MAIN_GROUP_ID
 from .load_attr import load_attr, load_clan_attr
 import traceback
 
+import aiohttp
+
+async def download_image(url, save_path):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status == 200:
+                with open(save_path, 'wb') as f:
+                    f.write(await response.read())
+
 me = None
 
 def YxH(
@@ -24,6 +33,17 @@ def YxH(
       user_id = m.from_user.id
       chat_id = m.chat.id
       user = await get_user(user_id)
+      
+      # ---------
+      async def reply_image(url, *args, **kwargs):
+        try:
+          await m.reply_photo(url, *args, **kwargs)
+        except:
+          await download_image(url, "dl.jpg")
+          await m.reply_photo("dl.jpg", *args, **kwargs)
+      m.reply_photo = reply_image
+      # ---------
+      
       if not user:
         return await force_start(m)
       if user.blocked:
