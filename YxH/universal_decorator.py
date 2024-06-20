@@ -1,4 +1,4 @@
-from .Database.users import get_user
+hi from .Database.users import get_user
 from .Utils.force_start import force_start
 from .Utils.strings import block_text, negate_private_text, negate_group_text
 from config import SUDO_USERS, OWNER_ID, MAIN_GROUP_ID
@@ -35,12 +35,13 @@ def YxH(
       user = await get_user(user_id)
       
       # ---------
+      x = m.reply_photo
       async def reply_image(url, *args, **kwargs):
         try:
-          await m.reply_photo(url, *args, **kwargs)
+          await x(url, *args, **kwargs)
         except:
           await download_image(url, "dl.jpg")
-          await m.reply_photo("dl.jpg", *args, **kwargs)
+          await x("dl.jpg", *args, **kwargs)
       m.reply_photo = reply_image
       # ---------
       
