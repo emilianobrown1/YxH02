@@ -40,7 +40,11 @@ async def xgifts(_, m, u):
     except:
         return await m.reply(f"Usage: /xgifts [count]\n\nYou have: `{u.gifts}`.")
     cost = math.ceil(count/5)
-    txt = f"Gifts: `{count}`\nCost: `{cost}` Crystals\n\nYou have: `{u.gifts}`."
+    txt = ''
+    if count % 5 != 0:
+        count = 5 * cost
+        txt += 'Gifts will be round off to the number which gives you maximum number for same cost.\n\n'
+    txt += f"Gifts: `{count}`\nCost: `{cost}` Crystals\n\nYou have: `{u.gifts}`."
     await m.reply(txt, reply_markup=markup(u.user.id, count))
 
 def close(user_id):    
@@ -49,6 +53,8 @@ def close(user_id):
 async def gifts_cbq(_, q, u):
     count = int(q.data.split("_")[0].split("|")[1])
     cost = math.ceil(count/5)
+    if count % 5 != 0:
+        count = 5 * cost
     if u.crystals < cost:
         return await q.answer(f"You need {cost-u.crystals} crystals more to buy.", show_alert=True)
     u.crystals -= cost
