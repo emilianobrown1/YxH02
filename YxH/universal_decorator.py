@@ -1,4 +1,4 @@
-hi from .Database.users import get_user
+from .Database.users import get_user
 from .Utils.force_start import force_start
 from .Utils.strings import block_text, negate_private_text, negate_group_text
 from config import SUDO_USERS, OWNER_ID, MAIN_GROUP_ID
