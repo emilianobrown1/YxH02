@@ -50,7 +50,7 @@ async def gifts_cbq(_, q, u):
     count = int(q.data.split("_")[0].split("|")[1])
     cost = math.ceil(count/5)
     if u.crystals < cost:
-        return await q.answer(f"You need {cost-u.crystals} crystals more to buy.")
+        return await q.answer(f"You need {cost-u.crystals} crystals more to buy.", show_alert=True)
     u.crystals -= cost
     u.gifts += count
     txt = f"Successfully bought `{count}` gifts for `{cost}` crystals.\n\nYou have: `{u.gifts}`."
