@@ -14,7 +14,7 @@ async def xgold(_, m, u):
             gold = int(gold)
     except:
         return await m.reply("Usage: /xgold [gold_amount]")
-    if gold < u.gold:
+    if u.gold < gold:
         return await m.reply(f"⚠️ You having `{u.gold}` Gold.")
     t = await get_user(m.reply_to_message.from_user.id)
     if not t:
