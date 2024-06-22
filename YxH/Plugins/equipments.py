@@ -26,10 +26,10 @@ async def check_expiry(u):
     await u.update()
 
 equipment_data = {
-    "Axe": {"emoji": "🪓", "increase": 3, "cost": 10000},
-    "Hammer": {"emoji": "🔨", "increase": 7, "cost": 15000},
-    "Shovel": {"emoji": "🛠", "increase": 5, "cost": 12000},
-    "Pickaxe": {"emoji": "⛏", "increase": 5, "cost": 12000},
+    "Axe": {"emoji": "🪓", "increase": 10, "cost": 10000},
+    "Hammer": {"emoji": "🔨", "increase": 10, "cost": 15000},
+    "Shovel": {"emoji": "🛠", "increase": 10, "cost": 12000},
+    "Pickaxe": {"emoji": "⛏", "increase": 10, "cost": 12000},
     "Bomb": {"emoji": "💣", "increase": 10, "cost": 50000}
 }
 
