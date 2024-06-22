@@ -4,7 +4,7 @@ import random
 from .equipments import equipment_data as equipments_data, check_expiry
 from datetime import datetime
 
-percentage_range: list[int] = list(range(10, 71))
+percentage_range: list[int] = list(range(20, 80))
 
 @Client.on_message(filters.command("mine"))
 @YxH(private=False)
@@ -33,7 +33,7 @@ async def mine(_, m, user):
         after = 60-min
         return await m.reply(f"Mining limit reached, try again after `{after}` minutes.")
     user.mine[now] = val + 1
-    success = random.choice([True, False])
+    success = random.choices([True, False], weights=[65, 35], k=1)[0]
     
     percentage = random.choice(percentage_range)
     gold = int((inp * percentage) / 100)
