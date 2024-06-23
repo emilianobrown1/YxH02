@@ -33,7 +33,7 @@ async def mine(_, m, user):
         after = 60-min
         return await m.reply(f"Mining limit reached, try again after `{after}` minutes.")
     user.mine[now] = val + 1
-    success = random.choices([True, False])
+    success = random.choices([True, False], weights=[40, 60], k=1)[0])
     
     percentage = random.choice(percentage_range)
     gold = int((inp * percentage) / 100)
