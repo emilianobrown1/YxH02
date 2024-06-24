@@ -1,10 +1,11 @@
 from pyrogram import Client, filters
 from ..universal_decorator import YxH
-from ..Database.users import get_user
+from ..Database.users import get_user, get_all_users
 from ..Database.characters import get_anime_character
 import asyncio
 from yxh import YxH as app
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
+import random
 
 deals_dic = {} # {seller: {ID: buyer}}
 
@@ -45,7 +46,13 @@ async def deals(_, m, u):
         else:
             t_id = int(m.text.split()[1])
     except:
-        return await m.reply('**Either reply to an user or provide their ID.**')
+        #return await m.reply('**Either reply to an user or provide their ID.**')
+        some = [user for user in await get_all_users() if user.deals]
+        if not some or (len(some) == 1 and some[0].user.id == u.user.id):
+            return await m.reply("**No Dealers Available Right Now.**")
+        t_id = m.from_user.id
+        while t_id == m.from_user.id:
+            t_id = random.choice(some).user.id
     if t_id == m.from_user.id:
         return
     t_u = await get_user(t_id)
