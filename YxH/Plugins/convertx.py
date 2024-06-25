@@ -12,7 +12,7 @@ async def convertx(_, m, user):
     # Check if today is Wednesday
     today = datetime.now().strftime("%A")
     if today != "Wednesday":
-        return await m.reply("You can only convert gold to gems on Sunday.")
+        return await m.reply("You can only convert gold to gems on Wednesday.")
 
     # Check if user has already converted today
     now = datetime.now().strftime("%Y-%m-%d")
