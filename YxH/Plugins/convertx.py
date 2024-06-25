@@ -7,7 +7,7 @@ GOLD_REQUIRED = 10000000
 GEMS_RECEIVED = 300000
 
 @Client.on_message(filters.command("convertx"))
-@YxH(private=False)
+@YxH(main_only=True)
 async def convertx(_, m, user):
     # Check if today is Wednesday
     today = datetime.now().strftime("%A")
