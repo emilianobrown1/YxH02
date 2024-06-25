@@ -16,7 +16,7 @@ async def convertx(_, m, user):
 
     # Check if user has already converted today
     now = datetime.now().strftime("%Y-%m-%d")
-    if user.dbonus.get(now) == "converted":
+    if user.convertx.get(now) == "converted":
         return await m.reply("You have already converted gold to gems today. Try again next Wednesday.")
 
     try:
@@ -37,7 +37,7 @@ async def convertx(_, m, user):
 
     user.gold -= inp
     user.gems += total_gems
-    user.dbonus[now] = "converted"
+    user.convertx[now] = "converted"
 
     await user.update()  # Ensure this persists the changes to the data store
 
