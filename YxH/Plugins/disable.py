@@ -20,4 +20,4 @@ async def ena(_, m, u):
   except:
     return
   await enable(command)
-  await m.reply(f'Enabled `/{command}`.)
+  await m.reply(f'Enabled `/{command}`.')
