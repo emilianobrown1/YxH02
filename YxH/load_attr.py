@@ -7,12 +7,13 @@ ex_user = User('YxH')
 ex_chat = Chat('YxH')
 ex_clan = Clan(-69, "YxH", 0)
 
-attr = [x for x in dir(ex_user) if not callable(x)]
+attr = [x for x in dir(ex_user)]
 chat_attr = [x for x in dir(ex_chat) if not callable(x)]
 clan_attr = [x for x in dir(ex_clan) if not callable(x)]
 
 async def load_attr(user) -> User:
   for x in attr:
+    
     if hasattr(user, x):
       continue
     setattr(user, x, getattr(ex_user, x))
