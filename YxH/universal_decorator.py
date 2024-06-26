@@ -1,4 +1,5 @@
 from .Database.users import get_user
+from .Database.disabled import get_disabled
 from .Utils.force_start import force_start
 from .Utils.strings import block_text, negate_private_text, negate_group_text
 from config import SUDO_USERS, OWNER_ID, MAIN_GROUP_ID
@@ -64,6 +65,8 @@ def YxH(
       if owner:
         if user_id != OWNER_ID:
           return
+      if m.text.split()[0][1:] in await get_disabled():
+          return await m.reply('**This command is disabled.**')
       if min_old > 0:
         if user.get_old() < min_old:
           return await m.reply(f"You must be atleast `{min_old}` day(s) old to use this command.")
