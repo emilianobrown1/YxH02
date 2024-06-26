@@ -4,6 +4,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineQuery
 import asyncio
 from ..universal_decorator import YxH
+from . import ikm, ikb
 
 answers = {}
 names = {}
@@ -29,7 +30,8 @@ async def load():
 @Client.on_message(filters.command("inline"))
 @YxH()
 async def inl_short_button(_, m, u):
-    markup = 
+    markup = ikm([[ikb("Inline", switch_inline_query_current_chat="")]])
+    return await m.reply("Inline", reply_markup=markup)
         
 @Client.on_message(filters.command("reload"))
 @YxH(sudo=True)
