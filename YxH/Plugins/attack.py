@@ -11,6 +11,8 @@ async def attack(_, m, u):
     if not m.reply_to_message:
         return await m.reply('Reply to an user to attack.')
     t = await get_user(m.reply_to_message.from_user.id)
+    if u.clan_id == t.clan_id:
+        return await m.reply("You cannot attack on your clan mates.")
     if u.gold < 10000000:
         return await m.reply(f'You need `{10000000-u.gold}` more gold to attack.')
     u.gold -= 10000000
