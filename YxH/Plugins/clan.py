@@ -167,10 +167,8 @@ async def members_cbq(_, q, u):
     members = [clan.leader] + clan.members
     members = await asyncio.gather(*[asyncio.create_task(get_user(x)) for x in members])
     for x, y in enumerate(members):
-        if x == 0:
-            emo = "👑"
-        else:
-            emo = "👤"
+        dic = {0: "👑"}
+        emo = dic.get(x, "👤")
         txt += f"{emo} **{y.user.first_name}**"
         txt += "\n"
     await q.answer()
