@@ -81,7 +81,7 @@ async def cr(_, m, u):
   if u.clan_id:
     return
   if len(m.text.split()) > 1:
-    clan_name = "".join(m.text.split()[1:])
+    clan_name = " ".join(m.text.split()[1:])
   else:
     return await m.reply("Usage: /create [clan name]")
   if u.crystals < 500:
