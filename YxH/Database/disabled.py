@@ -10,7 +10,7 @@ async def enable(comm: str) -> None:
 
 async def get_disabled() -> list[str]:
   x = db.find()
-  x = await db.to_list(length=None)
+  x = await x.to_list(length=None)
   if not x:
     return []
   return [i['command'] for i in x]
