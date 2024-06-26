@@ -25,6 +25,11 @@ async def load():
         else:
             xd[x.anime.lower()] = [x.id]
     names = xd
+    
+@Client.on_message(filters.command("inline"))
+@YxH()
+async def inl_short_button(_, m, u):
+    markup = 
         
 @Client.on_message(filters.command("reload"))
 @YxH(sudo=True)
