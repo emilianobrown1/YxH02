@@ -23,4 +23,4 @@ async def xgold(_, m, u):
     t.gold += gold
     await u.update()
     await t.update()
-    await m.reply(f"You have paid `{gold}` Gold to **{t.user.first_name}**.")
+    await m.reply(f"**{u.user.first_name}** have paid `{gold}` Gold to **{t.user.first_name}**.")
