@@ -65,7 +65,7 @@ def YxH(
       if owner:
         if user_id != OWNER_ID:
           return
-      if m.text.split()[0][1:] in await get_disabled():
+      if m.text.split()[0].lower()[1:] in await get_disabled():
           return await m.reply('**This command is disabled.**')
       if min_old > 0:
         if user.get_old() < min_old:
