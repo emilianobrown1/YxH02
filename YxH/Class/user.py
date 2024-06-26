@@ -37,6 +37,8 @@ class User:
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
 
   async def update(self):
+    self.gems == 5_000_000 if self.gems > 5_000_000 else self.gems
+    self.gold == 1_000_000_000_0 if self.gold > 1_000_000_000_0 else self.gold
     await db.users.update_one(
       {'user_id': self.user.id},
       {'$set': {'info': pickle.dumps(self)}},
