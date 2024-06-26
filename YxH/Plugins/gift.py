@@ -26,7 +26,7 @@ async def xgift(_, m, u):
     u.gifts -= 1
     await t.update()
     await u.update()
-    await m.reply(f"Successfully gifted the character of ID `{id}` to **{t.user.first_name}**.\n\nGifts left: `{u.gifts}`.")
+    await m.reply(f"**{u.user.first_name}** has gifted the character of ID `{id}` to **{t.user.first_name}**.\n\nGifts left: `{u.gifts}`.")
     #await _.send_message(t.user.id, f"{u.user.first_name} has gifted you the character of ID `{id}`.")
 
 def markup(user_id, gifts):
