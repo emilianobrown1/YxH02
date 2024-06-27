@@ -42,7 +42,7 @@ async def scramble(_, message, user):
     await message.reply(f"{intro_message}\n\n**{scrambled_word}**\n\n⏳ *You have 30 seconds to respond.*")
 
 @Client.on_message(filters.text & filters.group)
-async def catch_scramble_response(client, message):
+async def catch_scramble_response(_, message):
     user_id = message.from_user.id
 
     if user_id in active_scrambles:
