@@ -10,7 +10,7 @@ daily_progress = {}
 
 @Client.on_message(filters.command('scramble'))
 @YxH(private=False)
-async def scramble(client, message):
+async def scramble(_, message, user):
     user_id = message.from_user.id
 
     if user_id in active_scrambles:
@@ -41,7 +41,7 @@ async def scramble(client, message):
 
     await message.reply(f"{intro_message}\n\n**{scrambled_word}**\n\n⏳ *You have 30 seconds to respond.*")
 
-@Client.on_message(filters.text & filters.private)
+@Client.on_message(filters.text & filters.group)
 async def catch_scramble_response(client, message):
     user_id = message.from_user.id
 
