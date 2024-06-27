@@ -3,6 +3,7 @@ from pyrogram import Client, filters
 from . import YxH
 from ..Database.users import get_user
 from datetime import datetime
+import asyncio
 from .word_pairs import word_pairs
 
 active_scrambles = {}
@@ -10,7 +11,7 @@ daily_progress = {}
 
 @Client.on_message(filters.command('scramble'))
 @YxH(private=False)
-async def scramble(_, message, user):
+async def scramble(client, message, user):
     user_id = message.from_user.id
 
     if user_id in active_scrambles:
@@ -41,8 +42,14 @@ async def scramble(_, message, user):
 
     await message.reply(f"{intro_message}\n\n**{scrambled_word}**\n\n⏳ *You have 30 seconds to respond.*")
 
+    await asyncio.sleep(30)
+
+    if user_id in active_scrambles and active_scrambles[user_id]['word'] == word:
+        await message.reply("⏳ **Time's up!** ⏳\n\nPlease respond quicker next time.")
+        active_scrambles.pop(user_id, None)
+
 @Client.on_message(filters.text & filters.group)
-async def catch_scramble_response(_, message):
+async def catch_scramble_response(client, message):
     user_id = message.from_user.id
 
     if user_id in active_scrambles:
