@@ -2,12 +2,11 @@ import random
 from pyrogram import Client, filters
 from . import YxH
 from ..Database.users import get_user
-from datetime import datetime
+from datetime import datetime, timedelta
 import asyncio
 from .word_pairs import word_pairs
 
 active_scrambles = {}
-daily_progress = {}
 
 @Client.on_message(filters.command('scramble'))
 @YxH(private=False)
@@ -20,11 +19,23 @@ async def scramble(client, message, user):
     user = await get_user(user_id)
     today = datetime.now().strftime("%Y-%m-%d")
 
-    if user_id in daily_progress and daily_progress[user_id]['date'] == today and daily_progress[user_id]['completed']:
+    if user.scramble_completion.get(today, False):
         return await message.reply("You've already completed today's challenge. Come back tomorrow!")
 
-    if user_id not in daily_progress or daily_progress[user_id]['date'] != today:
-        daily_progress[user_id] = {'date': today, 'count': 0, 'completed': False, 'skips': 0}
+    if user.scramble_progress.get('blocked_until') and datetime.now() < user.scramble_progress['blocked_until']:
+        block_time_left = user.scramble_progress['blocked_until'] - datetime.now()
+        return await message.reply(f"You are blocked from playing for another {block_time_left.seconds // 60} minutes.")
+
+    if user.scramble_progress.get('incorrect_attempts') is None:
+        user.scramble_progress['incorrect_attempts'] = 0
+    if user.scramble_progress.get('stops') is None:
+        user.scramble_progress['stops'] = 0
+    if user.scramble_progress.get('skips') is None:
+        user.scramble_progress['skips'] = 0
+    if user.scramble_progress.get('count') is None:
+        user.scramble_progress['count'] = 0
+    if user.scramble_progress.get('completed') is None:
+        user.scramble_progress['completed'] = False
 
     intro_message = (
         f"🔠 **Welcome to Word Scramble!** 🔠\n\n"
@@ -48,8 +59,26 @@ async def scramble(client, message, user):
         await message.reply("⏳ **Time's up!** ⏳\n\nPlease respond quicker next time.")
         active_scrambles.pop(user_id, None)
 
+def generate_hint(word, attempts):
+    length = len(word)
+    if length <= 2:
+        return word
+    middle_indices = [i for i in range(1, length - 1)]
+    random.shuffle(middle_indices)
+    middle_indices = sorted(middle_indices[:attempts])
+    hint = (
+        f"{word[0]}"
+        f"{'_' * (middle_indices[0] - 1)}{word[middle_indices[0]]}"
+        f"{'_' * (middle_indices[1] - middle_indices[0] - 1)}{word[middle_indices[1]]}"
+        f"{'_' * (length - middle_indices[1] - 1)}{word[-1]}"
+    )
+    return hint
+
+@Client.on_message(filters.text & filters.private)
 async def catch_scramble_response(client, message):
     user_id = message.from_user.id
+    user = await get_user(user_id)
+    today = datetime.now().strftime("%Y-%m-%d")
 
     if user_id in active_scrambles:
         scramble_data = active_scrambles[user_id]
@@ -57,12 +86,18 @@ async def catch_scramble_response(client, message):
         user_answer = message.text.strip().lower()
 
         if user_answer == "stop":
+            user.scramble_progress['stops'] += 1
+            if user.scramble_progress['stops'] > 2:
+                await message.reply("You have stopped the game too many times. You cannot play for the next 3 hours.")
+                user.scramble_progress['blocked_until'] = datetime.now() + timedelta(hours=3)
+                active_scrambles.pop(user_id, None)
+                await user.update()
+                return
             await message.reply("🚫 **Game Stopped.** 🚫\n\nThank you for playing!")
             active_scrambles.pop(user_id, None)
         elif user_answer == "skip":
-            daily_progress[user_id]['skips'] += 1
-            if daily_progress[user_id]['skips'] > 2:
-                user = await get_user(user_id)
+            user.scramble_progress['skips'] += 1
+            if user.scramble_progress['skips'] > 2:
                 if user.crystals > 0:
                     user.crystals -= 1
                     await user.update()
@@ -75,19 +110,13 @@ async def catch_scramble_response(client, message):
             active_scrambles[user_id]['attempts'] = 0
             await message.reply(f"⏭ **Word Skipped!** ⏭\n\nNext word:\n\n**{scrambled_word}**\n\n⏳ *You have 30 seconds to respond.*")
         elif user_answer == original_word:
-            user = await get_user(user_id)
+            user.scramble_progress['count'] += 1
+            await message.reply(f"🎉 **Correct Answer!** 🎉\n\nYou've solved {user.scramble_progress['count']} words today.")
 
-            today = datetime.now().strftime("%Y-%m-%d")
-
-            if user_id not in daily_progress or daily_progress[user_id]['date'] != today:
-                daily_progress[user_id] = {'date': today, 'count': 0, 'completed': False}
-
-            daily_progress[user_id]['count'] += 1
-            await message.reply(f"🎉 **Correct Answer!** 🎉\n\nYou've solved {daily_progress[user_id]['count']} words today.")
-
-            if daily_progress[user_id]['count'] >= 20:
+            if user.scramble_progress['count'] >= 20:
                 user.crystals += 8
-                daily_progress[user_id]['completed'] = True
+                user.scramble_progress['completed'] = True
+                user.scramble_completion[today] = True
                 await user.update()
                 await message.reply("🏆 **Congratulations!** 🏆\n\nYou've completed today's challenge and earned 8 crystals! 💎💎💎💎💎💎💎💎")
                 active_scrambles.pop(user_id, None)
@@ -99,9 +128,17 @@ async def catch_scramble_response(client, message):
             await message.reply(f"Next word:\n\n**{scrambled_word}**\n\n⏳ *You have 30 seconds to respond.*")
         else:
             active_scrambles[user_id]['attempts'] += 1
+            user.scramble_progress['incorrect_attempts'] += 1
+
             if active_scrambles[user_id]['attempts'] >= 3:
                 await message.reply(f"❌ **Incorrect Answer!** ❌\n\nThe correct word was: **{original_word}**")
                 active_scrambles.pop(user_id, None)
+                if user.scramble_progress['incorrect_attempts'] >= 3:
+                    user.scramble_progress['blocked_until'] = datetime.now() + timedelta(minutes=3)
+                    await message.reply("You have failed too many times. You cannot play for the next 3 minutes.")
             else:
-                hint = f"{original_word[0]}{'_' * (len(original_word) - 2)}{original_word[-1]}"
+                attempts = active_scrambles[user_id]['attempts']
+                hint = generate_hint(original_word, attempts)
                 await message.reply(f"❌ **Incorrect Answer!** ❌\n\nHint: **{hint}**\n\nTry again.")
+
+    await user.update()
