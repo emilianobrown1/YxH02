@@ -123,9 +123,9 @@ async def catch_scramble_response(client, message):
         else:
             active_scrambles[user_id]['attempts'] += 1
             if active_scrambles[user_id]['attempts'] >= 3:
-                user.scramble_progress['blocked_until'] = datetime.now() + timedelta(minutes=30)
+                user.scramble_progress['blocked_until'] = datetime.now() + timedelta(minutes=5)
                 await user.update()
-                await message.reply(f"❌ **Incorrect Answer!** ❌\n\nThe correct word was: **{original_word}**\nYou are blocked from playing for 30 minutes.")
+                await message.reply(f"❌ **Incorrect Answer!** ❌\n\nThe correct word was: **{original_word}**\nYou are blocked from playing for 5 minutes.")
                 active_scrambles.pop(user_id, None)
             else:
                 hint = generate_hint(original_word)
