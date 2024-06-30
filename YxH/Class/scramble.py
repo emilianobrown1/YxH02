@@ -1,4 +1,4 @@
-from ..Database.clan import db
+from ..Database.scramble import db
 import pickle
 
 from datetime import datetime
