@@ -35,7 +35,7 @@ class User:
     self.current_scramble_answer = None
     self.scramble_completion = {} # {date: False}
     self.scramble_progress = {'incorrect_attempts': 0, 'stops': 0, 'skips': 0, 'count': 0, 'completed': False, 'blocked_until': None}
-reset_daily_state = {}
+    self.reset_daily_state = {}
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
     self.max_gems = 5_000_000
