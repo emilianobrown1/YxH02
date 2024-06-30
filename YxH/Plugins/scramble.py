@@ -3,6 +3,7 @@ from pyrogram import Client, filters
 from . import YxH
 from ..Class.scramble import Scramble 
 from ..Database.scramble import get_scramble, get_scrambles_count, get_scrambles
+from ..Database.users import get_user
 from datetime import datetime, timedelta
 import asyncio
 from .word_pairs import word_pairs
