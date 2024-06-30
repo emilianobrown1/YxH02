@@ -106,7 +106,7 @@ async def catch_scramble_response(client, message):
                 user.scramble_completion[today] = True
                 user.scramble_progress['count'] = 0
                 await user.update()
-                await message.reply("🏆 **Congratulations!** 🏆\n\nYou've completed today's challenge and earned 8 crystals! 💎💎💎💎💎💎💎💎")
+                await message.reply("🏆 **Congratulations!** 🏆\n\nYou've completed today's challenge and earned 8 crystals! 🔮🔮🔮🔮🔮🔮🔮🔮")
                 active_scrambles.pop(user_id, None)
                 return
 
