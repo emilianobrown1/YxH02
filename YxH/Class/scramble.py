@@ -1,3 +1,6 @@
+from ..Database.clan import db
+import pickle
+
 def reset_daily_state(self):
         if datetime.today().date() != self.last_played_date:
             self.scramble_progress = {
