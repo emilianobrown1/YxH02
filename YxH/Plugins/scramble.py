@@ -26,6 +26,8 @@ async def scramble(client, message, user):
     user = await get_user(user_id)
     today = datetime.now().strftime("%Y-%m-%d")
 
+    user.reset_daily_state()
+
     if user.scramble_completion.get(today, False):
         return await message.reply("You've already completed today's challenge. Come back tomorrow!")
 
@@ -70,7 +72,7 @@ async def catch_scramble_response(client, message):
         user = await get_user(user_id)
 
         if user_answer == "stop":
-            user.scramble_progress['stops'] = user.scramble_progress.get('stops', 0) + 1
+            user.scramble_progress['stops'] += 1
             if user.scramble_progress['stops'] > 2:
                 user.scramble_progress['blocked_until'] = datetime.now() + timedelta(hours=3)
                 await user.update()
@@ -81,7 +83,7 @@ async def catch_scramble_response(client, message):
             return
 
         elif user_answer == "skip":
-            user.scramble_progress['skips'] = user.scramble_progress.get('skips', 0) + 1
+            user.scramble_progress['skips'] += 1
             if user.scramble_progress['skips'] > 2:
                 if user.crystals > 0:
                     user.crystals -= 1
@@ -96,12 +98,12 @@ async def catch_scramble_response(client, message):
             await message.reply(f"⏭ **Word Skipped!** ⏭\n\nNext word:\n\n**{scrambled_word}**\n\n⏳ *You have 30 seconds to respond.*")
 
         elif user_answer == original_word:
-            user.scramble_progress['count'] = user.scramble_progress.get('count', 0) + 1
+            user.scramble_progress['count'] += 1
             await message.reply(f"🎉 **Correct Answer!** 🎉\n\nYou've solved {user.scramble_progress['count']} words today.")
 
             if user.scramble_progress['count'] >= 20:
                 user.crystals += 8
-                user.scramble_completion[datetime.now().strftime("%Y-%m-%d")] = True
+                user.scramble_completion[today] = True
                 user.scramble_progress['count'] = 0
                 await user.update()
                 await message.reply("🏆 **Congratulations!** 🏆\n\nYou've completed today's challenge and earned 8 crystals! 💎💎💎💎💎💎💎💎")
