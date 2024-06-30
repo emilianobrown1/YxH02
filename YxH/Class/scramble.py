@@ -2,7 +2,7 @@ from ..Database.clan import db
 import pickle
 
 class Scramble: 
-def reset_daily_state(self):
+def __init__ reset_daily_state(self):
         if datetime.today().date() != self.last_played_date:
             self.scramble_progress = {
                 'incorrect_attempts': 0,
