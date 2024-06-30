@@ -1,7 +1,7 @@
 import random
 from pyrogram import Client, filters
 from . import YxH
-from ..Class.clan import Scramble 
+from ..Class.scramble import Scramble 
 from ..Database.scramble import get_scramble, get_scrambles_count, get_scrambles
 from datetime import datetime, timedelta
 import asyncio
