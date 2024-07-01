@@ -50,10 +50,7 @@ class User:
       upsert=True
     )
 
-  def get_old(self) -> int:
-    return int((time.time() - self.init_time) / 86400)
-
-   def add_scramble_completion(self, date):
+  def add_scramble_completion(self, date):
         if date not in self.scramble:
             self.scramble.append(date)
 
