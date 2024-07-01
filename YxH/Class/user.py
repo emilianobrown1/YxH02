@@ -45,6 +45,7 @@ class User:
       {'$set': {'info': pickle.dumps(self)}},
       upsert=True
     )
+
     def is_blocked(self):
         return self.blocked
 
