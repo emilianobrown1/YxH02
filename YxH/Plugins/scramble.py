@@ -1,8 +1,9 @@
+
 import random
 from pyrogram import Client, filters
 from . import YxH
 from ..Database.users import get_user
-from datetime import datetime, timedelta
+from datetime import datetime
 import asyncio
 from .word_pairs import word_pairs
 
@@ -30,7 +31,7 @@ async def scramble(client, message, user):
     user = await get_user(user_id)
     today = datetime.now().strftime("%Y-%m-%d")
 
-    if user.is_scramble_completed_today(today):
+    if today in user.scramble:
         return await message.reply("You've already completed today's challenge. Come back tomorrow!")
 
     if user_id in active_scrambles:
@@ -83,8 +84,9 @@ async def catch_scramble_response(client, message):
         elif user_answer == original_word:
             await message.reply("🎉 **Correct Answer!** 🎉\n\nYou've solved the word scramble challenge!")
 
-            user.add_scramble_completion(datetime.now().strftime("%Y-%m-%d"))
-            await user.update()
+            if today not in user.scramble:
+                user.scramble.append(today)
+                await user.update()
             active_scrambles.pop(user_id, None)
         else:
             active_scrambles[user_id]['attempts'] += 1
