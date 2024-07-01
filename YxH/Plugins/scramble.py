@@ -30,7 +30,7 @@ async def scramble(client, message, user):
     user = await get_user(user_id)
     today = datetime.now().strftime("%Y-%m-%d")
 
-    if user.scramble_completion.get(today, False):
+    if user.is_scramble_completed_today(today):
         return await message.reply("You've already completed today's challenge. Come back tomorrow!")
 
     if user.scramble_progress['blocked_until']:
@@ -109,7 +109,7 @@ async def catch_scramble_response(client, message):
 
             if user.scramble_progress['count'] >= 20:
                 user.crystals += 8
-                user.scramble_completion[datetime.now().strftime("%Y-%m-%d")] = True
+                user.add_scramble_completion(today)
                 await user.update()
                 await message.reply("🏆 **Congratulations!** 🏆\n\nYou've completed today's challenge and earned 8 crystals! 💎💎💎💎💎💎💎💎")
                 active_scrambles.pop(user_id, None)
