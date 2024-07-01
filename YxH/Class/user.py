@@ -35,7 +35,7 @@ class User:
     self.current_scramble = None
     self.current_scramble_answer = None
     self.scramble_completion = {}
-    }
+    
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
     self.max_gems = 5_000_000
