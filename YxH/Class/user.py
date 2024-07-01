@@ -32,7 +32,6 @@ class User:
     self.gifts = 0 # no.of gifts can be gifted
     self.convertx = {} # {date: "converted"}
      self.scramble = []
-    
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
     self.max_gems = 5_000_000
