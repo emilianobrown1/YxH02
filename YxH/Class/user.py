@@ -38,13 +38,27 @@ class User:
     self.max_gold = 1_000_000_000_0
 
   async def update(self):
-    self.gems == self.max_gems if self.gems > self.max_gems else self.gems
-    self.gold == self.max_gold if self.gold > self.max_gold else self.gold
+    self.gems = self.max_gems if self.gems > self.max_gems else self.gems
+    self.gold = self.max_gold if self.gold > self.max_gold else self.gold
     await db.users.update_one(
       {'user_id': self.user.id},
       {'$set': {'info': pickle.dumps(self)}},
       upsert=True
     )
+def is_blocked(self):
+        return self.blocked
+
+    def block_user(self):
+        self.blocked = True
+        # Perform additional actions if needed
+        # Example: Log the blocking action
+        # Example: Notify the user about the blocking
+
+    def unblock_user(self):
+        self.blocked = False
+        # Perform additional actions if needed
+        # Example: Log the unblocking action
+        # Example: Notify the user about the unblocking
 
   def get_old(self) -> int:
     return int((time.time() - self.init_time) / 86400)
