@@ -59,7 +59,7 @@ async def scramble(client, message, user):
         await message.reply("⏳ **Time's up!** ⏳\n\nPlease respond quicker next time.")
         active_scrambles.pop(user_id, None)
 
-@Client.on_message(filters.text & ~filters.command)
+@Client.on_message(filters.text & filters.command)
 async def catch_scramble_response(client, message):
     user_id = message.from_user.id
 
