@@ -49,7 +49,7 @@ class User:
       {'$set': {'info': pickle.dumps(self)}},
       upsert=True
     )
-   def get_old(self) -> int:
+   
+def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
-
   
