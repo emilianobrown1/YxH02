@@ -49,16 +49,7 @@ class User:
       {'$set': {'info': pickle.dumps(self)}},
       upsert=True
     )
+   def get_old(self) -> int:
+        return int((time.time() - self.init_time) / 86400)
 
-  def add_scramble_completion(self, date):
-        if date not in self.scramble:
-            self.scramble.append(date)
-
-    def is_scramble_completed_today(self, today):
-        return today in self.scramble
-
-async def get_user(user_id):
-    user_data = await db.users.find_one({"user_id": user_id})
-    if user_data:
-        return pickle.loads(user_data["info"])
-    return User(user_id)
+  
