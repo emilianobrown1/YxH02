@@ -66,7 +66,7 @@ async def cbq(_, q: CallbackQuery):
     if u.gender != 1:
       u.gender = 1
       await q.answer()
-      await q.edit_message_text(xprofile_template(u), reply_markup=xprofile_markup(u))
+      await q.edit_message_text(await xprofile_template(u), reply_markup=xprofile_markup(u))
       await u.update()
     else:
       await q.answer()
@@ -75,7 +75,7 @@ async def cbq(_, q: CallbackQuery):
     if u.gender != -1:
       u.gender = -1
       await q.answer()
-      await q.edit_message_text(xprofile_template(u), reply_markup=xprofile_markup(u))
+      await q.edit_message_text(await xprofile_template(u), reply_markup=xprofile_markup(u))
       await u.update()
     else:
       await q.answer()
@@ -84,7 +84,7 @@ async def cbq(_, q: CallbackQuery):
     if u.gender != 0:
       u.gender = 0
       await q.answer()
-      await q.edit_message_text(xprofile_template(u), reply_markup=xprofile_markup(u))
+      await q.edit_message_text(await xprofile_template(u), reply_markup=xprofile_markup(u))
       await u.update()
     else:
       await q.answer()
