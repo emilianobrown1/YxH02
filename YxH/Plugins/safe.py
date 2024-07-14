@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from YxH.Database import db
 import pickle
 
-@Client.on_message(filters.command("safegd"))
+@Client.on_message(filters.command("safexgd"))
 async def safegd(client, message, user):
     user = await get_user_from_message(message)
     if user is None:
