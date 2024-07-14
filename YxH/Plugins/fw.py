@@ -11,7 +11,7 @@ count: dict[int, int] = {}
 
 me = None
 
-markup = IKM([[IKB("Join 🚀", url="https://t.me/+6GxvSweDrPUwZTc1")]])
+markup = IKM([[IKB("Join 🚀", url="https://t.me/YxH_Homeland")]])
 
 async def cwf(_, m):
     global count, me
