@@ -25,3 +25,18 @@ async def get_user_from_message(message):
     else:
         await message.reply("User not found in database.")
         return None
+
+async def transfer_to_treasure(self, crystals, gems, gold):
+        if not self.treasure_state:
+            return "Transfer failed: Treasure is locked."
+
+        if self.gold < gold:
+            return "Transfer failed: Insufficient gold."
+
+        self.gold -= gold
+        self.treasure[0] += gold
+
+        # Update user in the database
+        await self.update()
+
+        return f"Transfer successful! Transferred {gold} 📯 to treasure"
