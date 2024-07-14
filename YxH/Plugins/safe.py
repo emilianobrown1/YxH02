@@ -3,7 +3,7 @@ from . import YxH
 from ..Database.users import get_user
 
 @Client.on_message(filters.command("safegd"))
-async def safe_gold(client, message, user):
+async def safegd(client, message, user):
     user = await get_user_from_message(message)  # Function to get User object from message
     if user is None:
         return
