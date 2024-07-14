@@ -1,10 +1,10 @@
 from pyrogram import Client, filters
-from . import YxH
-from ..Database.users import get_user
+from YxH.Database import db
+import pickle
 
 @Client.on_message(filters.command("safegd"))
-async def safegd(_, m, u):
-    user = await get_user_from_message(message)  # Function to get User object from message
+async def safegd(client, message, user):
+    user = await get_user_from_message(message)
     if user is None:
         return
     try:
@@ -12,8 +12,7 @@ async def safegd(_, m, u):
     except (IndexError, ValueError):
         await message.reply("Please provide a valid amount of gold to transfer.")
         return
-
-    result = await user.transfer_to_treasure(0, 0, amount)
+    result = await transfer_to_treasure(user, amount)
     await message.reply(result)
 
 async def get_user_from_message(message):
@@ -26,17 +25,14 @@ async def get_user_from_message(message):
         await message.reply("User not found in database.")
         return None
 
-async def transfer_to_treasure(self, crystals, gems, gold):
-        if not self.treasure_state:
-            return "Transfer failed: Treasure is locked."
-
-        if self.gold < gold:
-            return "Transfer failed: Insufficient gold."
-
-        self.gold -= gold
-        self.treasure[0] += gold
-
-        # Update user in the database
-        await self.update()
-
-        return f"Transfer successful! Transferred {gold} 📯 to treasure"
+async def transfer_to_treasure(user, gold):
+    if not user.treasure_state:
+        return "Transfer failed: Treasure is locked."
+    if user.gold < gold:
+        return "Transfer failed: Insufficient gold."
+    user.gold -= gold
+    if not user.treasure:
+        user.treasure = [0, 0, 0]
+    user.treasure[0] += gold
+    await user.update()
+    return f"Transfer successful! Transferred {gold} 📯 to treasure"
