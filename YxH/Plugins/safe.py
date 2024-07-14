@@ -7,6 +7,21 @@ async def safe_gold(client, message, user):
     user = await get_user_from_message(message)  # Function to get User object from message
     if user is None:
         return
-    amount = int(message.text.split()[1])
+    try:
+        amount = int(message.text.split()[1])
+    except (IndexError, ValueError):
+        await message.reply("Please provide a valid amount of gold to transfer.")
+        return
+
     result = await user.transfer_to_treasure(0, 0, amount)
     await message.reply(result)
+
+async def get_user_from_message(message):
+    user_id = message.from_user.id
+    user_data = await db.users.find_one({'user_id': user_id})
+    if user_data:
+        user = pickle.loads(user_data['info'])
+        return user
+    else:
+        await message.reply("User not found in database.")
+        return None
