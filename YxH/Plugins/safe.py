@@ -3,6 +3,7 @@ from YxH.Database import db
 import pickle
 
 @Client.on_message(filters.command("safexgd"))
+@YxH()
 async def safegd(client, message):
     user = await get_user_from_message(message)
     if user is None:
