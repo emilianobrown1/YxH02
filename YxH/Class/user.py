@@ -15,7 +15,7 @@ class User:
     self.dbonus = {} # {date: False}
     self.blocked = False
     self.treasure_state = False # Locked
-    self.treasure = [] # [coins, gems, crystals]
+    self.treasure = [] # [golds, gems, crystals]
     self.store = {} # {date: [id1, id2, id3]}
     self.store_purchases = {} # {date: [False, False, False]}
     self.gender = 0 # {0: None, 1: Male, -1: Female}
