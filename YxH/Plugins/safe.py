@@ -5,7 +5,7 @@ import pickle
 
 @Client.on_message(filters.command("safexgd"))
 @YxH(private=False)
-async def safegd(client, message):
+async def safegd(client, message, user):
     user = await get_user_from_message(message)
     if user is None:
         return
