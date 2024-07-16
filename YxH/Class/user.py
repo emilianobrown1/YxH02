@@ -31,6 +31,7 @@ class User:
     self.favourite_character = None # char_id
     self.gifts = 0 # no.of gifts can be gifted
     self.convertx = {} # {date: "converted"}
+    self.buy_crystals = {}
     self.scramble = []
     # Dev Requirements.
     self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
