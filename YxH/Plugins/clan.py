@@ -39,14 +39,14 @@ async def join_clan(_, q, user, id):
             return await q.answer("You are already in the clan you want to join.", show_alert=True)
         else:
             return await q.answer("You are already in a clan.", show_alert=True)
-    if user.crystals < 100:
-        return await q.answer(f"You need `{100-user.crystals}` more crystal(s) to join.", show_alert=True)
+    if user.crystals < 250:
+        return await q.answer(f"You need `{250-user.crystals}` more crystal(s) to join.", show_alert=True)
     clan = await get_clan(id)
     if clan.anyone_can_join:
         if len(clan.members) >= 15:
             return await q.answer("Clan is full!", show_alert=True)
         user.clan_id = id
-        user.crystals -= 100
+        user.crystals -= 250
         clan.members.append(q.from_user.id)
         await q.edit_message_text(f"You have joined **{clan.name}**.")
         await user.update()
