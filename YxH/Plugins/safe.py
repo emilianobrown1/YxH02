@@ -34,7 +34,7 @@ async def transfer_to_treasure(user, gold):
         return "Transfer failed: Insufficient gold."
     user.gold -= gold
     if not user.treasure:
-        user.treasure = ['crystal' 0, 'gems' 0, 'gold' 0]
+        user.treasure = ['crystal': 0, 'gems': 0, 'gold': 0]
     user.treasure[gold 0] += gold
     await user.update()
     return f"Transfer successful! Transferred {gold} 📯 to treasure"
