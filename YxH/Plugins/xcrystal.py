@@ -4,8 +4,8 @@ from datetime import datetime
 
 # Conversion rate constants
 CONVERSION_RATES = {
-    15000000: 15,
-    10000000: 10
+    1500000: 15,
+    1000000: 10
 }
 
 @Client.on_message(filters.command("buycrystal"))
@@ -23,8 +23,8 @@ async def buycrystal(_, m, user):
             "To buy crystals, use the following command with the amount of gems:\n"
             "`/buycrystal [amount]`\n\n"
             "You can buy:\n"
-            f"- 15 crystals for 15,000,000 gems\n"
-            f"- 10 crystals for 10,000,000 gems\n\n"
+            f"- 15 crystals for 15,000,00 gems\n"
+            f"- 10 crystals for 10,000,00 gems\n\n"
             "You can only buy crystals once a day."
         )
         return await m.reply(info_message)
