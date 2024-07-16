@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from YxH.Database import db
+from . import YxH
 import pickle
 
 @Client.on_message(filters.command("safexgd"))
