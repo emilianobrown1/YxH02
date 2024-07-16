@@ -52,7 +52,7 @@ async def buycrystal(_, m, user):
     # Success message with detailed balance information
     txt = (
         f"🎉 **Purchase Successful!** 🎉\n\n"
-        f"🔄 `{inp}` gems have been converted into `{total_crystals}` crystals. 💎\n\n"
+        f"🔄 `{inp}` gems have been used to purchase `{total_crystals}` crystals. 💎\n\n"
         f"**Your Balance:**\n"
         f"💎 Gems: `{user.gems}`\n"
         f"🔮 Crystals: `{user.crystals}`\n\n"
