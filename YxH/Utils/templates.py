@@ -12,7 +12,7 @@ async def xprofile_template(user):
       name = "-"
   gems_warn = "⚠️" if user.gems == user.max_gems else ""
   gold_warn = "⚠️" if user.gold == user.max_gold else ""
-  return f'𝑼𝒔𝒆𝒓: {user.user.first_name}\n\nClan: {name}\n𝑮𝒆𝒏𝒅𝒆𝒓: {user.gl[user.gender]}\n\n𝑰𝑫: `{user.user.id}`\n𝑶𝒍𝒅: `{user.get_old()}` Day(s)\n\n𝑪𝒓𝒚𝒔𝒕𝒂𝒍𝒔: `{user.crystals}` 🔮\n{gems_warn}𝑮𝒆𝒎𝒔: `{user.gems}` 💎\n{gold_warn}𝑮𝒐𝒍𝒅: `{user.gold}` 📯\n𝑻𝒓𝒆𝒂𝒔𝒖𝒓𝒆: {"Locked" if not user.treasure_state else f"{user.treasure[2]}, {user.treasure[1]}, {user.treasure[0]}\n\n𝑪𝒐𝒍𝒍𝒆𝒄𝒕𝒆𝒅 𝒄𝒉𝒂𝒓𝒂𝒄𝒕𝒆𝒓𝒔: {len(user.collection)}'
+  return f'𝑼𝒔𝒆𝒓: {user.user.first_name}\n\nClan: {name}\n𝑮𝒆𝒏𝒅𝒆𝒓: {user.gl[user.gender]}\n\n𝑰𝑫: `{user.user.id}`\n𝑶𝒍𝒅: `{user.get_old()}` Day(s)\n\n𝑪𝒓𝒚𝒔𝒕𝒂𝒍𝒔: `{user.crystals}` 🔮\n{gems_warn}𝑮𝒆𝒎𝒔: `{user.gems}` 💎\n{gold_warn}𝑮𝒐𝒍𝒅: `{user.gold}` 📯\n𝑻𝒓𝒆𝒂𝒔𝒖𝒓𝒆: {"Locked" if not user.treasure_state else f"{user.treasure[2]}, {user.treasure[1]}, {user.treasure[0]}"}\n\n𝑪𝒐𝒍𝒍𝒆𝒄𝒕𝒆𝒅 𝒄𝒉𝒂𝒓𝒂𝒄𝒕𝒆𝒓𝒔: {len(user.collection)}'
 
 
 def acollection_template(lis: list[dict], no: list[int]) -> str:
