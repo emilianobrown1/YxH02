@@ -55,7 +55,7 @@ def get_reward(correct_guess: bool) -> int:
 #       if x in word:
 #         txt += '🟨'
 #       else:
-#         txt += '🟥'
+#         txt += '⬜'
 #         if not x.upper() in neg:
 #           neg.append(x.upper())
 #       q += "_" + ' '
