@@ -55,6 +55,10 @@ async def cbq(_, q: CallbackQuery):
     u = await get_user(q.from_user.id)
     count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
+elif q.data.startswith("terminate"):
+    await terminate(_, q)
+    return
+
   data, actual = q.data.split("_")
   actual = int(actual)
   if actual != q.from_user.id:
