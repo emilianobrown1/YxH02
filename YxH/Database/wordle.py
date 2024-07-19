@@ -82,3 +82,7 @@ async def get_all_games(user_id: int):
     if x:
         return x["dic"]
     return {}
+
+async def add_crystal(user_id: int, crystals: int):
+    user = wordle(user_id)
+    await user.add_crystals(crystals)
