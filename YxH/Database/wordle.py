@@ -2,7 +2,7 @@ from . import db
 import pickle 
 import time
 from datetime import datetime
-
+from ..Class.user import wordle
 
 adb = db.wordle
 cdb = db.wordle_avg
