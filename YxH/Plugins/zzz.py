@@ -32,6 +32,10 @@ async def info(_, m):
 async def scramble(_, m):
     await catch_scramble_response(_, m)
 
+@Client.on_message(filters.group, group=wordle_watcher)
+async def fw(_, m):
+    await fw_cwf(_, m)
+
 @Client.on_message(filters.group, group=info_watcher)
 async def info(_, m):
     await info_cwf(_, m)
