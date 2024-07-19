@@ -84,6 +84,5 @@ async def get_all_games(user_id: int):
     return {}
 
 async def add_crystal(user_id: int, amount: int):
-    
-    user = await wordle(user_id)
+        user = await wordle(user_id)
     await user.add_crystals(amount)
