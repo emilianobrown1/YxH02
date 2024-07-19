@@ -39,6 +39,7 @@ from .clan import (
 )
 from .shield import shield_cbq
 from ..universal_decorator import download_image
+from .wordle import terminate
 
 @Client.on_callback_query()
 async def cbq(_, q: CallbackQuery):
