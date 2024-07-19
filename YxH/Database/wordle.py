@@ -83,6 +83,11 @@ async def get_all_games(user_id: int):
         return x["dic"]
     return {}
 
-async def add_crystal(user_id: int, amount: int):
-        user = await wordle(user_id)
-    await user.add_crystals(amount)
+async def add_crystal(user_id: int, crystals: int):
+    user = await udb.find_one({"user_id": user_id})
+    if user:
+        current_crystals = user.get("crystals", 0)
+        new_crystals = current_crystals + crystals
+        await udb.update_one({"user_id": user_id}, {"$set": {"crystals": new_crystals}})
+    else:
+        await udb.update_one({"user_id": user_id}, {"$set": {"crystals": crystals}}, upsert=True)
