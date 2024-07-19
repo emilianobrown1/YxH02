@@ -1,10 +1,15 @@
 from . import db
 import pickle 
-import time 
+import time
+from datetime import datetime
+
 
 adb = db.wordle
 cdb = db.wordle_avg
 ldb = db.wordle_limit
+
+def today():
+    return datetime.now().strftime("%Y-%m-%d")
 
 async def add_game(user_id: int):
     user_id = str(user_id)
