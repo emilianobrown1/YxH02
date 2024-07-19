@@ -2,7 +2,7 @@ from . import db
 import pickle 
 import time
 from datetime import datetime
-from ..Class.wordle import wordle
+
 
 adb = db.wordle
 cdb = db.wordle_avg
@@ -83,6 +83,7 @@ async def get_all_games(user_id: int):
         return x["dic"]
     return {}
 
-async def add_crystal(user_id: int, crystals: int):
-    user = wordle(user_id)
-    await user.add_crystals(crystals)
+async def add_crystal(user_id: int, amount: int):
+    from ..Class.wordle import wordle  # Delayed import to avoid circular dependency
+    user = await wordle(user_id)
+    await user.add_crystals(amount)
