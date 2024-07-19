@@ -84,6 +84,6 @@ async def get_all_games(user_id: int):
     return {}
 
 async def add_crystal(user_id: int, amount: int):
-    from ..Class.wordle import wordle  # Delayed import to avoid circular dependency
+    
     user = await wordle(user_id)
     await user.add_crystals(amount)
