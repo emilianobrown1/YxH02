@@ -22,5 +22,4 @@ async def func():
         tasks.append(asyncio.create_task(load_clan_attr(x)))
     await asyncio.gather(*tasks)
 
-
 asyncio.create_task(func())
