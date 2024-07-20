@@ -6,33 +6,12 @@ from ..Database.wordle import add_game, get_wordle_dic, get_avg, incr_game, get_
 from .wordle_image import make_secured_image
 from easy_words import words
 import random
-import re
-import time
-import asyncio
-from bs4 import BeautifulSoup
-import requests
 import string
 
 asc = string.ascii_letters
 
-async def _get_soup_object(url, parser="html.parser"):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            return BeautifulSoup(await response.text(), parser)
-
-async def is_valid(text: str) -> bool:
-    term: str = text
-    try:
-        html = await _get_soup_object(f"http://wordnetweb.princeton.edu/perl/webwn?s={term}")
-        types = html.findAll("h3")
-        lists = html.findAll("ul")
-        for a in types:
-            reg = str(lists[types.index(a)])
-            if any(len(x) > 5 or ' ' in str(x) for x in re.findall(r'\((.*?)\)', reg)):
-                return True
-        return False
-    except:
-        return False
+def is_valid(word: str) -> bool:
+    return word.lower() in words
 
 def get_reward(correct_guess: bool) -> int:
     return 1 if correct_guess else 0
@@ -83,7 +62,7 @@ async def cwf(client, message):
         await message.reply('Word has been entered already!')
         return
 
-    if not await is_valid(message.text.lower()):
+    if not is_valid(message.text.lower()):
         await message.reply('Invalid English word!')
         return
 
