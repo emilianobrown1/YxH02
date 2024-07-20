@@ -23,3 +23,11 @@ async def func():
     await asyncio.gather(*tasks)
 
 asyncio.create_task(func())
+
+async def main():
+    await asyncio.gather(
+        func(),
+        time_out_func()
+    )
+
+asyncio.run(main())
