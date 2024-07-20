@@ -114,6 +114,7 @@ async def cwf(client, message):
             await add_crystal(user_id, rew)
             await incr_game(user_id)
             await add_crystal(user_id, com_len)
+            await user.update()
             return await message.reply(f'Guessed word in {com_len} attempts! You got {rew} crystal as reward. {cap}!', reply_markup=markup)
         else:
             await incr_game(user_id)
