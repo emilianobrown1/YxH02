@@ -1,5 +1,6 @@
 from ..Database.users import get_all_users
 from ..Database.clan import get_clans
+from wordle import time_out_func
 from ..Database.chats import get_all_chats
 from ..load_attr import load_attr, load_clan_attr, load_chat_attr
 import asyncio
