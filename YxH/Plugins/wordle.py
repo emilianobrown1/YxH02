@@ -111,9 +111,9 @@ async def cwf(client, message):
         gg = await get_today_games(user_id)
         if gg < 20:
             rew = get_reward(True)
-            await add_crystal(user_id, rew)
+            await add(user_id, rew)
             await incr_game(user_id)
-            await add(user_id, com_len)
+            await add_crystal(user_id, com_len)
             return await message.reply(f'Guessed word in {com_len} attempts! You got {rew} crystal as reward. {cap}!', reply_markup=markup)
         else:
             await incr_game(user_id)
