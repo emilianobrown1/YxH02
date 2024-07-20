@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from . import get_date, YxH
-from ..Class import user
 from ..Class.wordle import wordle
 from ..Database.wordle import add_game, get_wordle_dic, get_avg, incr_game, get_today_games, get_all_games, add_crystal
 from ..Database.users import get_user
@@ -59,6 +58,8 @@ async def wordle_command(client, message, user):
 
     word = random.choice(words)
     dic[user_id] = [word, [], [], time.time()]
+    user_wordle = wordle(user_id)
+    await user_wordle.start_wordle_game(word)
     txt = f'{message.from_user.mention}, Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
     await message.reply(txt, reply_markup=markup)
 
@@ -76,6 +77,8 @@ async def cwordle(client, message):
     word = random.choice(words)
     dic[user_id] = [word, [], [], time.time()]
     time_out_dic[user_id] = [message.chat.id, time.time()]
+    user_wordle = wordle(user_id)
+    await user_wordle.start_wordle_game(word)
     txt = f'{message.from_user.mention}, Challenge Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
     await message.reply(txt, reply_markup=markup)
 
@@ -90,9 +93,14 @@ async def cwf(client, message):
     if user_id not in dic or not message.text or len(message.text.split()) != 1 or len(message.text) != 5 or any(g not in asc for g in message.text):
         return
 
-    word = dic[user_id][0]
-    lis = dic[user_id][1]
-    neg = dic[user_id][2]
+    user_wordle = wordle(user_id)
+    game = await user_wordle.get_wordle_game()
+    if not game:
+        return
+
+    word = game['word']
+    lis = game.get('guesses', [])
+    neg = game.get('negated_letters', [])
 
     if message.text.lower() in lis:
         return await message.reply('Word has been entered already!')
@@ -103,27 +111,28 @@ async def cwf(client, message):
     if user_id in time_out_dic:
         time_out_dic[user_id] = [message.chat.id, time.time()]
 
-    update_negated(word, message.text, neg)
-    cap = f'Time taken: {int(time.time() - dic[user_id][3])} seconds'
+    neg = update_negated(word, message.text, neg)
+    await user_wordle.add_wordle_guess(message.text.lower())
+    for letter in neg:
+        await user_wordle.add_negated_letter(letter)
+
+    cap = f'Time taken: {int(time.time() - game["start_time"])} seconds'
     if message.text.lower() == word:
         com_len = len(lis) + 1
         dic.pop(user_id)
         await add_game(user_id)
-        gg = await get_today_games(user_id)
-        if gg < 20:
+        if await user_wordle.use_wordle_daily_limit():
             rew = get_reward(True)
-            await add_crystal(user_id, rew)
+            await user_wordle.add_crystals(rew)
             await incr_game(user_id)
-            await add_crystal(user_id, com_len)
-            await user.update()
+            await user_wordle.update()
             return await message.reply(f'Guessed word in {com_len} attempts! You got {rew} crystal as reward. {cap}!', reply_markup=markup)
         else:
             await incr_game(user_id)
-            await add_crystal(user_id, com_len)
+            await user_wordle.update()
             return await message.reply(f'Guessed word in {com_len} attempts! You got no tokens as daily limit reached. {cap}!', reply_markup=markup)
 
     lis.append(message.text.lower())
-    dic[user_id][2] = neg
     new = ', '.join(f'`{li}`' for li in lis)
     old = ', '.join(f'__{ne}__' for ne in neg)
 
@@ -135,6 +144,7 @@ async def cwf(client, message):
         dic.pop(user_id)
         if user_id in time_out_dic:
             time_out_dic.pop(user_id)
+        await user_wordle.terminate_wordle_game()
         return await message.reply(f"Out of attempts, the word is '{word}', better luck next time!", reply_markup=markup)
 
 @Client.on_callback_query(filters.regex(r'^terminate_'))
@@ -147,6 +157,8 @@ async def terminate(client, query):
     dic.pop(user_id)
     if user_id in time_out_dic:
         time_out_dic.pop(user_id)
+    user_wordle = wordle(user_id)
+    await user_wordle.terminate_wordle_game()
     await query.edit_message_text("Game terminated!", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Start Again", callback_data=f'startwordle_{user_id}')]]))
 
 @Client.on_callback_query(filters.regex(r'^startwordle_'))
@@ -158,6 +170,8 @@ async def start_again(client, query):
     await query.answer('Starting...')
     word = random.choice(words)
     dic[user_id] = [word, [], [], time.time()]
+    user_wordle = wordle(user_id)
+    await user_wordle.start_wordle_game(word)
     txt = f'{(await client.get_users(user_id)).mention}, Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
     await client.send_message(query.message.chat.id, txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Terminate", callback_data=f'terminate_{user_id}')]]))
 
@@ -193,5 +207,7 @@ async def time_out_func():
             time_out_dic.pop(user_id)
             if user_id in dic:
                 dic.pop(user_id)
+            user_wordle = wordle(user_id)
+            await user_wordle.terminate_wordle_game()
 
         await asyncio.sleep(60)
