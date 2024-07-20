@@ -42,26 +42,6 @@ def update_negated(word, text, lis):
             lis.append(i.upper())
     return lis
 
-# def blockify(word, query, neg):
-#     txt = ''
-#     q = ''
-#     for i, x in enumerate(query):
-#         if x == word[i]:
-#             txt += '🟩'
-#             q += x.upper() + ' '
-#         elif x in word:
-#             txt += '🟨'
-#         else:
-#             txt += '⬜'
-#             if x.upper() not in neg:
-#                 neg.append(x.upper())
-#             q += "_" + ' '
-#         txt += ' '
-#     return txt, q, neg
-
-dic = {}  # normal wordle
-time_out_dic = {}  # challenge wordle
-
 @Client.on_message(filters.command("wordle"))
 @YxH(private=False)
 async def wordle(client, message, user):
