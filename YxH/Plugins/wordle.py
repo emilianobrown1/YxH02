@@ -117,7 +117,7 @@ async def cwf(client, message):
             return await message.reply(f'Guessed word in {com_len} attempts! You got {rew} crystal as reward. {cap}!', reply_markup=markup)
         else:
             await incr_game(user_id)
-            await add(user_id, com_len)
+            await add_crystal(user_id, com_len)
             return await message.reply(f'Guessed word in {com_len} attempts! You got no tokens as daily limit reached. {cap}!', reply_markup=markup)
 
     lis.append(message.text.lower())
