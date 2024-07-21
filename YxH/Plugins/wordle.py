@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from . import get_date, YxH
 from ..Class.user import User
-from ..Database.wordle import add_game, get_wordle_dic, get_avg, incr_game, get_today_games, get_all_games, add_crystal, add
+from ..Database.wordle import add_game, get_wordle_dic, get_avg, incr_game, get_today_games, add_crystal, add
 from easy_words import words
 from .wordle_image import make_secured_image
 import random
@@ -85,6 +85,8 @@ async def cwf(client, message):
         [InlineKeyboardButton("Start Again", callback_data=f'startwordle_{user_id}')],
         [InlineKeyboardButton("Close", callback_data=f'close_{user_id}')]
     ])
+
+    # Validate message and user
     if user_id not in dic or not message.text or len(message.text.split()) != 1 or len(message.text) != 5 or any(g not in asc for g in message.text):
         return
 
@@ -92,25 +94,36 @@ async def cwf(client, message):
     lis = dic[user_id][1]
     neg = dic[user_id][2]
 
+    # Check if the word has already been entered
     if message.text.lower() in lis:
         return await message.reply('Word has been entered already!')
 
+    # Check if the word is valid
     if not is_valid(message.text.lower()):
         return await message.reply('Invalid English word!')
 
+    # Update timeout for challenge wordle
     if user_id in time_out_dic:
         time_out_dic[user_id] = [message.chat.id, time.time()]
 
     update_negated(word, message.text, neg)
     cap = f'Time taken: {int(time.time() - dic[user_id][3])} seconds'
+
+    # Check if the guess is correct
     if message.text.lower() == word:
         com_len = len(lis) + 1
         dic.pop(user_id)
         await add_game(user_id)
         gg = await get_today_games(user_id)
+
+        # Load user and update reward
+        user = User(message.from_user)
+        await user.load_from_db()
+
         if gg < 20:
             rew = get_reward(True)
-            await add_crystal(user_id, rew)
+            user.crystals += rew
+            await user.update()
             await incr_game(user_id)
             await add(user_id, com_len)
             return await message.reply(f'Guessed word in {com_len} attempts! You got {rew} crystal as reward. {cap}!', reply_markup=markup)
@@ -119,6 +132,7 @@ async def cwf(client, message):
             await add(user_id, com_len)
             return await message.reply(f'Guessed word in {com_len} attempts! You got no tokens as daily limit reached. {cap}!', reply_markup=markup)
 
+    # Update game state
     lis.append(message.text.lower())
     dic[user_id][2] = neg
     new = ', '.join(f'`{li}`' for li in lis)
@@ -128,6 +142,7 @@ async def cwf(client, message):
     image_path = await make_secured_image(user_id, word, lis)
     await client.send_photo(message.chat.id, photo=image_path, caption=f'Guess {len(lis)} / 6\n\nNegated: {old}\n\nUsed: {new}', reply_markup=markup)
 
+    # Handle out of attempts
     if len(lis) > 5:
         dic.pop(user_id)
         if user_id in time_out_dic:
