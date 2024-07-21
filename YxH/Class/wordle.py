@@ -12,6 +12,3 @@ class wordle:
         self.user.crystals += crystals
         await self.user.update()
 
-async def update(self):
-
-             print("Updating wordle instance")
