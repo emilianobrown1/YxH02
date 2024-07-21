@@ -17,7 +17,7 @@ def colourify(im, word: str, text: str, height):
         d.text((width, height), text[i].upper(), fill=clr, font=f)
         d.line((0, height + 5, wi, height + 5))
         d.line((0, height + h + 5, wi, height + h + 5))
-        width += 70
+        width += 90
 
 async def make_secured_image(user_id: int, word: str, lis: list) -> str:
     f = ImageFont.truetype("./Fonts/font.ttf", 10)
