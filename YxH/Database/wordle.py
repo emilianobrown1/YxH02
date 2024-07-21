@@ -1,5 +1,5 @@
 from . import db
-import pickle 
+import pickle
 import time
 from datetime import datetime
 
@@ -45,24 +45,16 @@ async def get_avg(user_id: int):
         lis = x['lis']
     else:
         lis = []
-    sum = 0
-    a = 0
-    for y in lis:
-        sum += y
-        a += 1
-    if a == 0:
-        return 0
-    return sum / a
+    total = sum(lis)
+    count = len(lis)
+    return total / count if count > 0 else 0
 
 async def incr_game(user_id: int):
     td = today()
     x = await ldb.find_one({"user_id": user_id})
     if x:
         dic = x["dic"]
-        if td in dic:
-            dic[td] += 1
-        else:
-            dic[td] = 1
+        dic[td] = dic.get(td, 0) + 1
     else:
         dic = {td: 1}
     await ldb.update_one({"user_id": user_id}, {"$set": {"dic": dic}}, upsert=True)
@@ -72,9 +64,7 @@ async def get_today_games(user_id: int):
     x = await ldb.find_one({"user_id": user_id})
     if x:
         dic = x["dic"]
-        if td in dic:
-            return dic[td]
-        return 0
+        return dic.get(td, 0)
     return 0
 
 async def get_all_games(user_id: int):
@@ -84,10 +74,8 @@ async def get_all_games(user_id: int):
     return {}
 
 async def add_crystal(user_id: int, crystals: int):
-    user = await udb.find_one({"user_id": user_id})
-    if user:
-        current_crystals = user.get("crystals", 0)
-        new_crystals = current_crystals + crystals
-        await udb.update_one({"user_id": user_id}, {"$set": {"crystals": new_crystals}})
-    else:
-        await udb.update_one({"user_id": user_id}, {"$set": {"crystals": crystals}}, upsert=True)
+    user_data = await udb.find_one({"user_id": user_id})
+    if user_data:
+        user_info = pickle.loads(user_data['info'])
+        user_info.crystals += crystals
+        await udb.update_one({"user_id": user_id}, {"$set": {"info": pickle.dumps(user_info)}})
