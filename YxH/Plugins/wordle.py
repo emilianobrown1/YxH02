@@ -4,6 +4,7 @@ from . import get_date, YxH
 from ..Class.user import User
 from ..Database.wordle import add_game, get_wordle_dic, get_avg, incr_game, get_today_games, get_all_games, add_crystal
 from easy_words import words
+from .wordle_image import make_secured_image
 import random
 import re
 import time
