@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 
 def colourify(im, word: str, text: str, height):
-    width = 25
+    width = 55
     wi = im.size[0]
     d = ImageDraw.Draw(im)
     f = ImageFont.truetype("./Fonts/font.ttf", 120)
