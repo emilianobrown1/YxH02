@@ -1,10 +1,10 @@
 from PIL import Image, ImageDraw, ImageFont
 
 def colourify(im, word: str, text: str, height):
-    width = 18
+    width = 25
     wi = im.size[0]
     d = ImageDraw.Draw(im)
-    f = ImageFont.truetype("./Fonts/font.ttf", 140)
+    f = ImageFont.truetype("./Fonts/font.ttf", 120)
     for i in range(0, 5):
         if text[i] == word[i]:
             clr = "green"
