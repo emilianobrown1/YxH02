@@ -1,10 +1,8 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from . import get_date, YxH
-from ..Class.wordle import wordle
+from ..Class.user import User
 from ..Database.wordle import add_game, get_wordle_dic, get_avg, incr_game, get_today_games, get_all_games, add_crystal
-from ..Database.users import get_user
-from .wordle_image import make_secured_image
 from easy_words import words
 import random
 import re
