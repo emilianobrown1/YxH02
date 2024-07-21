@@ -1,6 +1,5 @@
 from . import db
 import pickle
-import time
 from datetime import datetime
 
 udb = db.users
