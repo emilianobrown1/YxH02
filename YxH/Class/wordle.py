@@ -11,3 +11,5 @@ class wordle:
     async def update_user_crystals(self, crystals: int):
         self.user.crystals += crystals
         await self.user.update()
+
+async def update(self):
