@@ -4,7 +4,7 @@ def colourify(im, word: str, text: str, height):
     width = 18
     wi = im.size[0]
     d = ImageDraw.Draw(im)
-    f = ImageFont.truetype("./Fonts/font.ttf", 80)
+    f = ImageFont.truetype("./Fonts/font.ttf", 140)
     for i in range(0, 5):
         if text[i] == word[i]:
             clr = "green"
