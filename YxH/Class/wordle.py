@@ -13,3 +13,5 @@ class wordle:
         await self.user.update()
 
 async def update(self):
+
+             print("Updating wordle instance")
