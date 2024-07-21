@@ -12,3 +12,13 @@ class wordle:
         self.user.crystals += crystals
         await self.user.update()
 
+
+async def get_user(user_id):
+    data = await db.users.find_one({'user_id': user_id})
+    if data and 'info' in data:
+        user_info = pickle.loads(data['info'])
+        user = User(user_info.user)
+        user.__dict__.update(user_info.__dict__)
+        return user
+    return None
+
