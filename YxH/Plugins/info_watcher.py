@@ -1,6 +1,5 @@
 from .watchers import info_watcher
 from . import get_user, get_chat
-from ..Class.wordle import wordle
 from ..Class import Chat
 import asyncio
 
