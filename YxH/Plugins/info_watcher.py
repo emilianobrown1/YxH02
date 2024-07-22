@@ -1,7 +1,6 @@
 from .watchers import info_watcher
 from . import get_user, get_chat
 from ..Class import Chat
-from ..Class.wordle import wordle
 import asyncio
 
 async def cwf(_, m):
