@@ -1,10 +1,15 @@
 from . import db
-import pickle 
-import time 
+import pickle
+import time
+from datetime import datetime
 
+udb = db.users
 adb = db.wordle
 cdb = db.wordle_avg
 ldb = db.wordle_limit
+
+def today():
+    return datetime.now().strftime("%Y-%m-%d")
 
 async def add_game(user_id: int):
     user_id = str(user_id)
@@ -77,3 +82,12 @@ async def get_all_games(user_id: int):
     if x:
         return x["dic"]
     return {}
+
+async def add_crystal(user_id: int, crystals: int):
+    user = await udb.find_one({"user_id": user_id})
+    if user:
+        current_crystals = user.get("crystals", 0)
+        new_crystals = current_crystals + crystals
+        await udb.update_one({"user_id": user_id}, {"$set": {"crystals": new_crystals}})
+    else:
+        await udb.update_one({"user_id": user_id}, {"$set": {"crystals": crystals}}, upsert=True)
