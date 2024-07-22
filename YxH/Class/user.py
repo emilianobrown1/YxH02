@@ -33,8 +33,8 @@ class User:
         self.convertx = {} # {date: "converted"}
         self.buy_crystals = {}
         self.scramble = []
-        self.wordle = []
-        self.wordle_daily_limit = 20
+        self.wordle = UserWordle ()
+        
         # Dev Requirements.
         self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
         self.max_gems = 5_000_000
