@@ -1,5 +1,4 @@
-from.Database.wordle import db 
-from datetime import datetime
+ from datetime import datetime
 
 class UserWordle:
     def __init__(self):
