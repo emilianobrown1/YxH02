@@ -47,13 +47,13 @@ class User:
 
 
  async def update(self):
-        self.gems = self.max_gems if self.gems > self.max_gems else self.gems
-        self.gold = self.max_gold if self.gold > self.max_gold else self.gold
-        await db.users.update_one(
-            {'user_id': self.user.id},
-            {'$set': {'info': pickle.dumps(self)}},
-            upsert=True
-        )
+    self.gems = self.max_gems if self.gems > self.max_gems else self.gems
+    self.gold = self.max_gold if self.gold > self.max_gold else self.gold
+    await db.users.update_one(
+      {'user_id': self.user.id},
+      {'$set': {'info': pickle.dumps(self)}},
+      upsert=True
+    )
 
     def is_blocked(self):
         return self.blocked
