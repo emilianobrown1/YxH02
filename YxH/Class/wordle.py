@@ -1,4 +1,4 @@
-import.Database.wordle from db 
+from.Database.wordle import db 
 from datetime import datetime
 
 class UserWordle:
