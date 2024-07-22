@@ -1,63 +1,89 @@
-from typing import List, Dict
-from datetime import datetime
+from ..Database.wordle import db
+import time
+import pickle
 
-class UserWordle:
-    def __init__(self):
-        self.games = []
-        self.daily_limit = 20
-        self.daily_games = {}
+class wordle:
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.crystals = 0
+        self.wordle_daily_limit = 20
 
-    def add_game(self, word: str, attempts: List[str], success: bool):
-        game = {
-            'date': datetime.now().strftime("%Y-%m-%d"),
-            'word': word,
-            'attempts': attempts,
-            'success': success
+    async def update(self):
+        await db.users.update_one(
+            {'user_id': self.user_id},
+            {'$set': {'info': pickle.dumps(self)}},
+            upsert=True
+        )
+
+    async def add_crystals(self, amount):
+        self.crystals += amount
+        await self.update()
+
+    async def reset_wordle_daily_limit(self):
+        self.wordle_daily_limit = 20
+        await self.update()
+
+    async def use_wordle_daily_limit(self):
+        if self.wordle_daily_limit > 0:
+            self.wordle_daily_limit -= 1
+            await self.update()
+            return True
+        return False
+
+    async def start_wordle_game(self, word):
+        wordle_data = {
+            "word": word,
+            "guesses": [],
+            "negated_letters": [],
+            "start_time": time.time()
         }
-        self.games.append(game)
-        self.increment_daily_game()
+        await db.wordle_games.update_one(
+            {'user_id': self.user_id},
+            {'$set': wordle_data},
+            upsert=True
+        )
 
-    def increment_daily_game(self):
-        today = datetime.now().strftime("%Y-%m-%d")
-        self.daily_games[today] = self.daily_games.get(today, 0) + 1
+    async def terminate_wordle_game(self):
+        await db.wordle_games.delete_one({'user_id': self.user_id})
 
-    def get_today_games(self) -> List[Dict]:
-        today = datetime.now().strftime("%Y-%m-%d")
-        return [game for game in self.games if game['date'] == today]
+    async def get_wordle_game(self):
+        game = await db.wordle_games.find_one({'user_id': self.user_id})
+        return game
 
-    def get_today_game_count(self) -> int:
-        today = datetime.now().strftime("%Y-%m-%d")
-        return self.daily_games.get(today, 0)
+    async def add_wordle_guess(self, guess):
+        game = await self.get_wordle_game()
+        if game:
+            guesses = game.get('guesses', [])
+            guesses.append(guess)
+            await db.wordle_games.update_one(
+                {'user_id': self.user_id},
+                {'$set': {'guesses': guesses}}
+            )
 
-    def can_play_today(self) -> bool:
-        return self.get_today_game_count() < self.daily_limit
+    async def add_negated_letter(self, letter):
+        game = await self.get_wordle_game()
+        if game:
+            negated_letters = game.get('negated_letters', [])
+            negated_letters.append(letter)
+            await db.wordle_games.update_one(
+                {'user_id': self.user_id},
+                {'$set': {'negated_letters': negated_letters}}
+            )
 
-    def get_stats(self) -> Dict:
-        total_games = len(self.games)
-        wins = sum(1 for game in self.games if game['success'])
-        average_attempts = sum(len(game['attempts']) for game in self.games) / total_games if total_games > 0 else 0
+    async def get_negated_letters(self):
+        game = await self.get_wordle_game()
+        if game:
+            return game.get('negated_letters', [])
+        return []
 
-        return {
-            'total_games': total_games,
-            'wins': wins,
-            'win_rate': (wins / total_games) * 100 if total_games > 0 else 0,
-            'average_attempts': average_attempts
-        }
+    async def get_wordle_word(self):
+        game = await self.get_wordle_game()
+        if game:
+            return game.get('word')
+        return None
 
-    def get_average_attempts(self) -> List[int]:
-        return [len(game['attempts']) for game in self.games if game['success']]
-
-    def to_dict(self) -> Dict:
-        return {
-            'games': self.games,
-            'daily_limit': self.daily_limit,
-            'daily_games': self.daily_games
-        }
-
-    @classmethod
-    def from_dict(cls, data: Dict):
-        wordle = cls()
-        wordle.games = data.get('games', [])
-        wordle.daily_limit = data.get('daily_limit', 20)
-        wordle.daily_games = data.get('daily_games', {})
-        return wordle
+    async def get_wordle_guesses(self):
+        game = await self.get_wordle_game()
+        if game:
+            return game.get('guesses', [])
+        return []
