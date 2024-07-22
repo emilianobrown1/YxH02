@@ -54,6 +54,13 @@ class User:
             upsert=True
         )
 
+    async def update(self):
+        await self.user.update()
+
+    async def update_user_crystals(self, crystals: int):
+        self.user.crystals += crystals
+        await self.user.update()
+        
     def is_blocked(self) -> bool:
         return self.blocked
 
