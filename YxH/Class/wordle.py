@@ -1,4 +1,4 @@
-from typing import List, Dict
+import.Database.wordle from db 
 from datetime import datetime
 
 class UserWordle:
