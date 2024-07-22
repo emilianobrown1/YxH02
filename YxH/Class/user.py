@@ -39,11 +39,11 @@ class User:
     self.max_gems = 5_000_000
     self.max_gold = 1_000_000_000_0
 
-  async def load_from_db(self):
+   async def load_from_db(self):
         data = await db.users.find_one({'user_id': self.user.id})
         if data and 'info' in data:
             db_info = pickle.loads(data['info'])
-            self.crystals = db_info.crystals
+            self.__dict__.update(db_info.__dict__)
 
   async def update(self):
     self.gems = self.max_gems if self.gems > self.max_gems else self.gems
