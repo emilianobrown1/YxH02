@@ -57,8 +57,8 @@ async def cbq(_, q: CallbackQuery):
     return await q.answer(f"You have {count}.", show_alert=True)
   elif q.data.startswith("terminate"):
     await terminate(_, q)
-  elif q.data.startswith("startwordle"):
-    await startwordle(_, q)  
+  elif q.data.startswith("start_again"):
+    await start_again(_, q)  
     return
 
   data, actual = q.data.split("_")
