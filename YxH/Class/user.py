@@ -1,4 +1,5 @@
 from YxH.Database import db
+from YxH.Class.wordle import Wordle
 import pickle
 import time
 
