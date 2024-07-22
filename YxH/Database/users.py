@@ -1,4 +1,5 @@
 from . import db
+from YxH.Class.wordle import Wordle
 import pickle
 
 db = db.users
