@@ -3,7 +3,7 @@ from .user import User
 import time
 import pickle
 
-class wordle:
+class Wordle:
     def __init__(self, user: User):
         self.user = user
         self.wordle_daily_limit = 20
