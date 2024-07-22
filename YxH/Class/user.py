@@ -1,4 +1,5 @@
 from YxH.Database import db
+from .wordle import UserWordle
 import pickle
 import time
 
@@ -38,7 +39,7 @@ class User:
         # Dev Requirements.
         self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
         self.max_gems = 5_000_000
-        self.max_gold = 1_000_000_000_0
+        self.max_gold = 10_000_000_000
 
     async def load_from_db(self):
         data = await db.users.find_one({'user_id': self.user.id})
@@ -62,8 +63,8 @@ class User:
 
 
     async def update_user_crystals(self, crystals: int):
-        self.user.crystals += crystals
-        await self.user.update()
+        self.crystals += crystals
+        await self.update()
         
     def is_blocked(self) -> bool:
         return self.blocked
