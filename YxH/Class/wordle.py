@@ -8,11 +8,11 @@ class wordle:
         self.user = user
         self.wordle_daily_limit = 20
 
-    async def update_user_crystals(self, crystals: int):
-        self.user.crystals += crystals
+        async def update(self):
         await self.user.update()
 
 
-async def update(self):
+    async def update_user_crystals(self, crystals: int):
+        self.user.crystals += crystals
         await self.user.update()
 
