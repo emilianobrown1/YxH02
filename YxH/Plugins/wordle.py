@@ -95,7 +95,7 @@ async def cwf(client, message):
     neg = dic[user_id][2]
 
     # Check if the word has already been entered
-    if message.text.lower() in lis:
+    if message.text.lower() in (w.lower() for w in lis):
         return await message.reply('Word has been entered already!')
 
     # Check if the word is valid
