@@ -1,5 +1,5 @@
 from ..Database.wordle import db
-from Yxh.class.user import User
+from ..user import User
 import time
 import pickle
 
