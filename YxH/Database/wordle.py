@@ -1,76 +1,79 @@
 from . import db
-import pickle
-from datetime import datetime
+import pickle 
+import time 
 
 adb = db.wordle
 cdb = db.wordle_avg
 ldb = db.wordle_limit
-udb = db.users
 
 async def add_game(user_id: int):
     user_id = str(user_id)
-    await adb.update_one(
-        {"_": "_"},
-        {"$inc": {f"dic.{user_id}": 1}},
-        upsert=True
-    )
+    x = await adb.find_one({"_": "_"})
+    if x:
+        dic = x['dic']
+    else:
+        dic = {}
+    if user_id in dic:
+        dic[user_id] = str(int(dic[user_id]) + 1)
+    else:
+        dic[user_id] = '1'
+    await adb.update_one({"_": "_"}, {"$set": {"dic": dic}}, upsert=True)
 
 async def get_wordle_dic():
-    result = await adb.find_one({"_": "_"})
-    return result.get('dic', {}) if result else {}
+    x = await adb.find_one({"_": "_"})
+    if x:
+        return x['dic']
+    return {}
 
 async def add(user_id: int, guesses: int):
-    user_id = str(user_id)
-    await cdb.update_one(
-        {"user_id": user_id},
-        {"$push": {"lis": guesses}},
-        upsert=True
-    )
+    x = await cdb.find_one({"user_id": user_id})
+    if x:
+        lis = x['lis']
+    else:
+        lis = []
+    lis.append(guesses)
+    await cdb.update_one({"user_id": user_id}, {"$set": {"lis": lis}}, upsert=True)
 
 async def get_avg(user_id: int):
-    user_id = str(user_id)
-    result = await cdb.find_one({"user_id": user_id})
-    if result and 'lis' in result:
-        lis = result['lis']
-        return sum(lis) / len(lis) if lis else 0
-    return 0
+    x = await cdb.find_one({"user_id": user_id})
+    if x:
+        lis = x['lis']
+    else:
+        lis = []
+    sum = 0
+    a = 0
+    for y in lis:
+        sum += y
+        a += 1
+    if a == 0:
+        return 0
+    return sum / a
 
 async def incr_game(user_id: int):
-    user_id = str(user_id)
-    today = datetime.now().strftime("%Y-%m-%d")
-    await ldb.update_one(
-        {"user_id": user_id},
-        {"$inc": {f"dic.{today}": 1}},
-        upsert=True
-    )
+    td = today()
+    x = await ldb.find_one({"user_id": user_id})
+    if x:
+        dic = x["dic"]
+        if td in dic:
+            dic[td] += 1
+        else:
+            dic[td] = 1
+    else:
+        dic = {td: 1}
+    await ldb.update_one({"user_id": user_id}, {"$set": {"dic": dic}}, upsert=True)
 
 async def get_today_games(user_id: int):
-    user_id = str(user_id)
-    today = datetime.now().strftime("%Y-%m-%d")
-    result = await ldb.find_one({"user_id": user_id})
-    return result['dic'].get(today, 0) if result and 'dic' in result else 0
+    td = today()
+    x = await ldb.find_one({"user_id": user_id})
+    if x:
+        dic = x["dic"]
+        if td in dic:
+            return dic[td]
+        return 0
+    return 0
 
-async def add_crystal(user_id: int, crystals: int):
-    user_id = str(user_id)
-    user_data = await udb.find_one({'user_id': user_id})
-    if user_data:
-        user_info = pickle.loads(user_data['info'])
-        user_info.crystals += crystals
-        await udb.update_one(
-            {'user_id': user_id},
-            {'$set': {'info': pickle.dumps(user_info)}}
-        )
-
-async def get_all_wordle_users():
-    cursor = adb.find({"_": "_"})
-    result = await cursor.to_list(length=None)
-    return result[0]['dic'] if result else {}
-
-async def get_user_wordle_data(user_id: int):
-    user_id = str(user_id)
-    avg_data = await cdb.find_one({"user_id": user_id})
-    limit_data = await ldb.find_one({"user_id": user_id})
-    return {
-        'average': avg_data.get('lis', []) if avg_data else [],
-        'daily_games': limit_data.get('dic', {}) if limit_data else {}
-    }
+async def get_all_games(user_id: int):
+    x = await ldb.find_one({"user_id": user_id})
+    if x:
+        return x["dic"]
+    return {}
