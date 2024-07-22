@@ -46,7 +46,7 @@ class User:
             self.__dict__.update(db_info.__dict__)
 
 
-      async def update(self):
+ async def update(self):
         self.gems = self.max_gems if self.gems > self.max_gems else self.gems
         self.gold = self.max_gold if self.gold > self.max_gold else self.gold
         await db.users.update_one(
