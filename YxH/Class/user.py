@@ -45,13 +45,15 @@ class User:
         if data and 'info' in data:
             db_info = pickle.loads(data['info'])
             self.__dict__.update(db_info.__dict__)
-
-  if isinstance(self.wordle, dict):
-                self.wordle = UserWordle.from_dict(self.wordle)
+        if isinstance(self.wordle, dict):
+           self.wordle = UserWordle.from_dict(self.wordle)
 
     async def update(self):
         self.gems = self.max_gems if self.gems > self.max_gems else self.gems
         self.gold = self.max_gold if self.gold > self.max_gold else self.gold
+        wordle_dict = self.wordle.to_dict() if isinstance(self.wordle, UserWordle) else self.wordle
+        user_dict = self.__dict__.copy()
+        user_dict['wordle'] = wordle_dict
         await db.users.update_one(
             {'user_id': self.user.id},
             {'$set': {'info': pickle.dumps(self)}},
