@@ -46,6 +46,9 @@ class User:
             db_info = pickle.loads(data['info'])
             self.__dict__.update(db_info.__dict__)
 
+  if isinstance(self.wordle, dict):
+                self.wordle = UserWordle.from_dict(self.wordle)
+
     async def update(self):
         self.gems = self.max_gems if self.gems > self.max_gems else self.gems
         self.gold = self.max_gold if self.gold > self.max_gold else self.gold
