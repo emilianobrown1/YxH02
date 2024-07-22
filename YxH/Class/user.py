@@ -34,6 +34,7 @@ class User:
         self.buy_crystals = {}
         self.scramble = []
         self.wordle = []
+        self.wordle_daily_limit = 20
         # Dev Requirements.
         self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
         self.max_gems = 5_000_000
@@ -54,8 +55,6 @@ class User:
             upsert=True
         )
 
-    async def update(self):
-        await self.user.update()
 
     async def update_user_crystals(self, crystals: int):
         self.user.crystals += crystals
