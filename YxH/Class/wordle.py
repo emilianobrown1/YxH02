@@ -2,7 +2,7 @@ from ..Database.wordle import db
 import time
 import pickle
 
-class wordle:
+class Wordle:
     def __init__(self, user_id):
         self.user_id = user_id
         self.crystals = 0
