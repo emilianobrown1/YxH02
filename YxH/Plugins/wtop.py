@@ -1,4 +1,4 @@
-from pyrogram import Client
+from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from ..Database.users import get_all_users
 from ..Database.wordle import get_wordle_dic, get_avg
