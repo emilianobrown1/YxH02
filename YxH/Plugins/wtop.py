@@ -7,7 +7,7 @@ from ..universal_decorator import YxH
 
 @Client.on_message(filters.command("wtop"))
 @YxH(private=False)
-async def wtop(client, message):
+async def wtop(client, message, user):
     dic = await get_wordle_dic()
     if not dic:
         return await message.reply("Wordle leaderboard empty!")
