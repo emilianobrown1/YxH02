@@ -1,3 +1,9 @@
+from pyrogram import Client
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from ..Database.wordle import get_wordle_dic, get_avg
+from ..universal_decorator import YxH
+
+
 @Client.on_message(filters.command("wtop"))
 @YxH(private=False)
 async def wtop(client, message):
