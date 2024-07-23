@@ -6,7 +6,7 @@ from ..universal_decorator import YxH
 from ..load_attr import load_attr
 
 
-@Client.on_message(filters.command("wtop") & filters.groups)
+@Client.on_message(filters.command("wtop") & filters.group)
 @YxH(private=False)
 async def wtop(client, message, user):
     dic = await get_wordle_dic()
