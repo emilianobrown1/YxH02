@@ -173,7 +173,7 @@ async def start_again(client, query):
     txt = f'{(await client.get_users(user_id)).mention}, Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
     await client.send_message(query.message.chat.id, txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Terminate", callback_data=f'terminate_{user_id}')]]))
 
-@Client.on_message(filters.command("wtop") & filters.group)
+@Client.on_message(filters.command("wtop"))
 
 async def wtop(client, message):
     dic = await get_wordle_dic()
