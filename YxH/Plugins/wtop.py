@@ -3,6 +3,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from ..Database.users import get_all_users
 from ..Database.wordle import get_wordle_dic, get_avg
 from ..universal_decorator import YxH
+from ..load_attr import load_attr
 
 
 @Client.on_message(filters.command("wtop"))
