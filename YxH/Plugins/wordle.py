@@ -192,8 +192,7 @@ async def time_out_func():
 
         for user_id in to_pop:
             chat_id = time_out_dic[user_id][0]
-            
-await Client.send_message(chat_id, f"Challenge Wordle game for user {user_id} has timed out!")
+            await Client.send_message(chat_id, f"Challenge Wordle game for user {user_id} has timed out!")
             time_out_dic.pop(user_id)
             if user_id in dic:
                 dic.pop(user_id)
