@@ -86,7 +86,6 @@ async def cwf(client, message):
         [InlineKeyboardButton("Close", callback_data=f'close_{user_id}')]
     ])
 
-    # Validate message and user
     if user_id not in dic or not message.text or len(message.text.split()) != 1 or len(message.text) != 5 or any(g not in asc for g in message.text):
         return
 
@@ -94,29 +93,24 @@ async def cwf(client, message):
     lis = dic[user_id][1]
     neg = dic[user_id][2]
 
-    # Check if the word has already been entered
     if message.text.lower() in (w.lower() for w in lis):
         return await message.reply('Word has been entered already!')
 
-    # Check if the word is valid
     if not is_valid(message.text.lower()):
         return await message.reply('Invalid English word!')
 
-    # Update timeout for challenge wordle
     if user_id in time_out_dic:
         time_out_dic[user_id] = [message.chat.id, time.time()]
 
     update_negated(word, message.text, neg)
     cap = f'Time taken: {int(time.time() - dic[user_id][3])} seconds'
 
-    # Check if the guess is correct
     if message.text.lower() == word:
         com_len = len(lis) + 1
         dic.pop(user_id)
         await add_game(user_id)
         gg = await get_today_games(user_id)
 
-        # Load user and update reward
         user = User(message.from_user)
         await user.load_from_db()
 
@@ -132,17 +126,14 @@ async def cwf(client, message):
             await add(user_id, com_len)
             return await message.reply(f'Guessed word in {com_len} attempts! You got no tokens as daily limit reached. {cap}!', reply_markup=markup)
 
-    # Update game state
     lis.append(message.text.lower())
     dic[user_id][2] = neg
     new = ', '.join(f'`{li}`' for li in lis)
     old = ', '.join(f'__{ne}__' for ne in neg)
 
-    # Create and send image with the current game state
     image_path = await make_secured_image(user_id, word, lis)
     await client.send_photo(message.chat.id, photo=image_path, caption=f'Guess {len(lis)} / 6\n\nNegated: {old}\n\nUsed: {new}', reply_markup=markup)
 
-    # Handle out of attempts
     if len(lis) > 5:
         dic.pop(user_id)
         if user_id in time_out_dic:
@@ -174,7 +165,6 @@ async def start_again(client, query):
     await client.send_message(query.message.chat.id, txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Terminate", callback_data=f'terminate_{user_id}')]]))
 
 @Client.on_message(filters.command("wtop"))
-
 async def wtop(client, message):
     dic = await get_wordle_dic()
     if not dic:
@@ -202,7 +192,8 @@ async def time_out_func():
 
         for user_id in to_pop:
             chat_id = time_out_dic[user_id][0]
-            await Client.send_message(chat_id, f"Challenge Wordle game for user {user_id} has timed out!")
+            await 
+client.send_message(chat_id, f"Challenge Wordle game for user {user_id} has timed out!")
             time_out_dic.pop(user_id)
             if user_id in dic:
                 dic.pop(user_id)
