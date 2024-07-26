@@ -79,7 +79,6 @@ async def cwordle(_, m, u):
     await m.reply(txt, reply_markup=markup)
 
 @Client.on_message(filters.group)
-@YxH(private=False)
 async def cwf(_, m):
     global dic, time_out_dic
     user_id = m.from_user.id
@@ -168,7 +167,7 @@ async def start_again(_, query):
 
 @Client.on_message(filters.command("wtop"))
 @YxH(private=False)
-async def wtop(_, m):
+async def wtop(_, m, u):
     dic = await get_wordle_dic()
     if not dic:
         return await m.reply("Wordle leaderboard empty!")
