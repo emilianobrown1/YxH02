@@ -166,7 +166,7 @@ async def start_again(_, query):
     await _.send_message(query.message.chat.id, txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Terminate", callback_data=f'terminate_{user_id}')]]))
 
 @Client.on_message(filters.command("wtop"))
-@YxH(private=False)
+@YxH()
 async def wtop(_, m, u):
     dic = await get_wordle_dic()
     if not dic:
