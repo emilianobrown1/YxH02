@@ -47,71 +47,73 @@ def update_negated(word, text, lis):
 @YxH(private=False)
 async def wordle_command(_, m, u):
     global dic
-    user_id = message.from_user.id
+    user_id = m.from_user.id
     markup = InlineKeyboardMarkup([
         [InlineKeyboardButton("Terminate", callback_data=f'terminate_{user_id}')],
         [InlineKeyboardButton("Close", callback_data=f'close_{user_id}')]
     ])
     if user_id in dic:
-        return await message.reply('You are already in a game, wanna terminate it?', reply_markup=markup)
+        return await m.reply('You are already in a game, wanna terminate it?', reply_markup=markup)
 
     word = random.choice(words)
     dic[user_id] = [word, [], [], time.time()]
-    txt = f'{message.from_user.mention}, Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
-    await message.reply(txt, reply_markup=markup)
+    txt = f'{m.from_user.mention}, Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
+    await m.reply(txt, reply_markup=markup)
 
 @Client.on_message(filters.command("cwordle"))
-async def cwordle(client, message):
+@YxH(private=False)
+async def cwordle(_, m, u):
     global dic, time_out_dic
-    user_id = message.from_user.id
+    user_id = m.from_user.id
     markup = InlineKeyboardMarkup([
         [InlineKeyboardButton("Terminate", callback_data=f'terminate_{user_id}')],
         [InlineKeyboardButton("Close", callback_data=f'close_{user_id}')]
     ])
     if user_id in dic:
-        return await message.reply('You are already in a game, wanna terminate it?', reply_markup=markup)
+        return await m.reply('You are already in a game, wanna terminate it?', reply_markup=markup)
 
     word = random.choice(words)
     dic[user_id] = [word, [], [], time.time()]
-    time_out_dic[user_id] = [message.chat.id, time.time()]
-    txt = f'{message.from_user.mention}, Challenge Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
-    await message.reply(txt, reply_markup=markup)
+    time_out_dic[user_id] = [m.chat.id, time.time()]
+    txt = f'{m.from_user.mention}, Challenge Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
+    await m.reply(txt, reply_markup=markup)
 
 @Client.on_message(filters.group)
-async def cwf(client, message):
+@YxH(private=False)
+async def cwf(_, m, u):
     global dic, time_out_dic
-    user_id = message.from_user.id
+    user_id = m.from_user.id
     markup = InlineKeyboardMarkup([
         [InlineKeyboardButton("Start Again", callback_data=f'startwordle_{user_id}')],
         [InlineKeyboardButton("Close", callback_data=f'close_{user_id}')]
     ])
 
-    if user_id not in dic or not message.text or len(message.text.split()) != 1 or len(message.text) != 5 or any(g not in asc for g in message.text):
+    if user_id not in dic or not m.text or len(m.text.split()) != 1 or len(m.text) != 5 or any(g not in asc for g in m.text):
         return
 
     word = dic[user_id][0]
     lis = dic[user_id][1]
     neg = dic[user_id][2]
 
-    if message.text.lower() in (w.lower() for w in lis):
-        return await message.reply('Word has been entered already!')
+    if m.text.lower() in (w.lower() for w in lis):
+        return await m.reply('Word has been entered already!')
 
-    if not is_valid(message.text.lower()):
-        return await message.reply('Invalid English word!')
+    if not is_valid(m.text.lower()):
+        return await m.reply('Invalid English word!')
 
     if user_id in time_out_dic:
-        time_out_dic[user_id] = [message.chat.id, time.time()]
+        time_out_dic[user_id] = [m.chat.id, time.time()]
 
-    update_negated(word, message.text, neg)
+    update_negated(word, m.text, neg)
     cap = f'Time taken: {int(time.time() - dic[user_id][3])} seconds'
 
-    if message.text.lower() == word:
+    if m.text.lower() == word:
         com_len = len(lis) + 1
         dic.pop(user_id)
         await add_game(user_id)
         gg = await get_today_games(user_id)
 
-        user = User(message.from_user)
+        user = User(m.from_user)
         await user.load_from_db()
 
         if gg < 20:
@@ -120,28 +122,28 @@ async def cwf(client, message):
             await user.update()
             await incr_game(user_id)
             await add(user_id, com_len)
-            return await message.reply(f'Guessed word in {com_len} attempts! You got {rew} crystal as reward. {cap}!', reply_markup=markup)
+            return await m.reply(f'Guessed word in {com_len} attempts! You got {rew} crystal as reward. {cap}!', reply_markup=markup)
         else:
             await incr_game(user_id)
             await add(user_id, com_len)
-            return await message.reply(f'Guessed word in {com_len} attempts! You got no tokens as daily limit reached. {cap}!', reply_markup=markup)
+            return await m.reply(f'Guessed word in {com_len} attempts! You got no tokens as daily limit reached. {cap}!', reply_markup=markup)
 
-    lis.append(message.text.lower())
+    lis.append(m.text.lower())
     dic[user_id][2] = neg
     new = ', '.join(f'`{li}`' for li in lis)
     old = ', '.join(f'__{ne}__' for ne in neg)
 
     image_path = await make_secured_image(user_id, word, lis)
-    await client.send_photo(message.chat.id, photo=image_path, caption=f'Guess {len(lis)} / 6\n\nNegated: {old}\n\nUsed: {new}', reply_markup=markup)
+    await _.send_photo(m.chat.id, photo=image_path, caption=f'Guess {len(lis)} / 6\n\nNegated: {old}\n\nUsed: {new}', reply_markup=markup)
 
     if len(lis) > 5:
         dic.pop(user_id)
         if user_id in time_out_dic:
             time_out_dic.pop(user_id)
-        return await message.reply(f"Out of attempts, the word is '{word}', better luck next time!", reply_markup=markup)
+        return await m.reply(f"Out of attempts, the word is '{word}', better luck next time!", reply_markup=markup)
 
 @Client.on_callback_query(filters.regex(r'^terminate_'))
-async def terminate(client, query):
+async def terminate(_, query):
     global dic, time_out_dic
     user_id = int(query.data.split('_')[1])
     if user_id not in dic:
@@ -153,7 +155,7 @@ async def terminate(client, query):
     await query.edit_message_text("Game terminated!", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Start Again", callback_data=f'startwordle_{user_id}')]]))
 
 @Client.on_callback_query(filters.regex(r'^startwordle_'))
-async def start_again(client, query):
+async def start_again(_, query):
     global dic
     user_id = int(query.data.split('_')[1])
     if user_id in dic:
@@ -161,26 +163,27 @@ async def start_again(client, query):
     await query.answer('Starting...')
     word = random.choice(words)
     dic[user_id] = [word, [], [], time.time()]
-    txt = f'{(await client.get_users(user_id)).mention}, Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
-    await client.send_message(query.message.chat.id, txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Terminate", callback_data=f'terminate_{user_id}')]]))
+    txt = f'{(await _.get_users(user_id)).mention}, Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
+    await _.send_message(query.message.chat.id, txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Terminate", callback_data=f'terminate_{user_id}')]]))
 
 @Client.on_message(filters.command("wtop"))
-async def wtop(client, message):
+@YxH(private=False)
+async def wtop(_, m, u):
     dic = await get_wordle_dic()
     if not dic:
-        return await message.reply("Wordle leaderboard empty!")
-    ok = await message.reply("Getting Wordle leaderboard...")
+        return await m.reply("Wordle leaderboard empty!")
+    ok = await m.reply("Getting Wordle leaderboard...")
     nset = {y: int(dic[y]) for y in dic}
     dic = sorted(nset.items(), key=lambda x: x[1], reverse=True)
     txt = "Wordle Leaderboard\n\n"
     a = 1
     for i in dic:
         avg = await get_avg(int(i[0]))
-        txt += f'{a}. {(await client.get_users(int(i[0]))).mention} :- {i[1]} ({str(avg)[:4] if len(str(avg)) > 4 else str(avg)})\n'
+        txt += f'{a}. {(await _.get_users(int(i[0]))).mention} :- {i[1]} ({str(avg)[:4] if len(str(avg)) > 4 else str(avg)})\n'
         a += 1
         if a > 10:
             break
-    await ok.edit(txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Close", callback_data=f'close_{message.from_user.id}')]]))
+    await ok.edit(txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Close", callback_data=f'close_{m.from_user.id}')]]))
 
 async def time_out_func():
     global time_out_dic, dic
