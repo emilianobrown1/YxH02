@@ -168,7 +168,7 @@ async def start_again(_, query):
 
 @Client.on_message(filters.command("wtop"))
 @YxH(private=False)
-async def wtop(_, m, u):
+async def wtop(_, m):
     dic = await get_wordle_dic()
     if not dic:
         return await m.reply("Wordle leaderboard empty!")
