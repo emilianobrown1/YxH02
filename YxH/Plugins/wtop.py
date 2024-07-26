@@ -7,7 +7,7 @@ from ..load_attr import load_attr
 
 
 @Client.on_message(filters.command("wxtop") & filters.group)
-@YxH
+@YxH ()
 async def wtop(client, message, user):
     dic = await get_wordle_dic()
     if not dic:
