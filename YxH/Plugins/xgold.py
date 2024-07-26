@@ -5,7 +5,7 @@ import time
 # Define cooldown dictionary to track last payment times
 cooldown = {}
 
-@Client.on_message(filters.command("xgold"), filters.text)
+@Client.on_message(filters.command("xgold") & filters.text)
 @YxH(private=False, min_old=3)
 async def xgold(_, m, u):
     if not m.reply_to_message or not m.reply_to_message.from_user:
