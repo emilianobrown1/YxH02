@@ -60,6 +60,5 @@ async def xgold(_, m, u):
     
     await m.reply(f"**{u.user.first_name}** has paid `{gold}` Gold to **{t.user.first_name}**.")
 
-@Client.on_message(filters.all)
 async def debug_messages(client, message):
     print(f"Message received in group: {message.text}")
