@@ -80,7 +80,7 @@ async def cwordle(_, m, u):
 
 @Client.on_message(filters.group)
 @YxH(private=False)
-async def cwf(_, m, u):
+async def cwf(_, m):
     global dic, time_out_dic
     user_id = m.from_user.id
     markup = InlineKeyboardMarkup([
