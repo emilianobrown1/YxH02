@@ -6,15 +6,17 @@ import words
 import asyncio
 import random
 from pyrogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as IKB
+import time
 
 count: dict[int, int] = {}
+start_time: dict[int, float] = {}  # Dictionary to store start times for each chat
 
 me = None
 
 markup = IKM([[IKB("Join 🚀", url="https://t.me/YxH_Homeland")]])
 
 async def cwf(_, m):
-    global count, me
+    global count, start_time, me
     if not me:
         me = await _.get_me()
     try:
@@ -31,7 +33,8 @@ async def cwf(_, m):
             if m.text.lower() == chat.fw_status:
                 rew = random.randint(3000, 8001)
                 user.gems += rew
-                await m.reply(f'✦ ✧ ✧ Congratulations You Got ✧ ✧ ✦ `{rew}` 💎.')
+                time_taken = time.time() - start_time[chat_id]  # Calculate time taken
+                await m.reply(f'✦ ✧ ✧ Congratulations You Got ✧ ✧ ✦ `{rew}` 💎.\nTime taken: {time_taken:.2f} seconds.')
                 chat.fw_status = None
                 if user_id in chat.words:
                     chat.words[user_id] += 1
@@ -53,6 +56,7 @@ async def cwf(_, m):
         count[chat_id] = 0
         word = words.Word()
         chat.fw_status = word.lower()
+        start_time[chat_id] = time.time()  # Record the start time
         await chat.update()
         im = make_image(word, f'@{me.username}')
         await _.send_photo(chat_id, im, caption='ᴄᴏᴍᴘʟᴇᴛᴇ ᴛʜᴇ ᴡᴏʀᴅ!', reply_markup=markup)
