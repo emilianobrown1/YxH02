@@ -147,6 +147,8 @@ async def terminate(_, query):
     user_id = int(query.data.split('_')[1])
     if user_id not in dic:
         return await query.answer("You are not in a game!", show_alert=True)
+    if user_id != query.from_user.id:
+        return await query.answer("Only the user who started the game can terminate it!", show_alert=True)
     await query.answer('Terminating...')
     dic.pop(user_id)
     if user_id in time_out_dic:
