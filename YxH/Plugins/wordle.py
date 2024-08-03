@@ -79,7 +79,7 @@ async def cwordle(_, m, u):
     await m.reply(txt, reply_markup=markup)
 
 @Client.on_message(filters.group)
-async def cwf(_, m, u):
+async def cwf(_, m, user):
     global dic, time_out_dic
     user_id = m.from_user.id
     markup = InlineKeyboardMarkup([
