@@ -34,7 +34,7 @@ async def cwf(_, m):
                 rew = random.randint(3000, 8001)
                 user.gems += rew
                 time_taken = time.time() - start_time[chat_id]  # Calculate time taken
-                await m.reply(f'✦ ✧ ✧ Congratulations You Got ✧ ✧ ✦ `{rew}` 💎.\nTime taken: {time_taken:.2f} seconds.')
+                await m.reply(f'✦ ✧ ✧ Congratulations You Got ✧ ✧ ✦ `{rew}` 💎.\n\nTime taken: {time_taken:.2f} seconds.')
                 chat.fw_status = None
                 if user_id in chat.words:
                     chat.words[user_id] += 1
