@@ -7,9 +7,9 @@ from pyrogram.types import (
 import time
 
 shields = {
-    "Gold": [500000000, 24],
-    "Silver": [300000000, 12],
-    "Iron": [100000000, 8]
+    "Gold": [5000000, 24],
+    "Silver": [300000, 12],
+    "Iron": [100000, 8]
 }
 
 def build_markup(user_id):
