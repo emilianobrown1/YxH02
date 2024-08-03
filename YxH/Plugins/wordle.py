@@ -45,7 +45,7 @@ def update_negated(word, text, lis):
 
 @Client.on_message(filters.command("wordle"))
 @YxH(private=False)
-async def wordle_command(_, m):
+async def wordle_command(_, m, user):
     global dic
     user_id = m.from_user.id
     markup = InlineKeyboardMarkup([
