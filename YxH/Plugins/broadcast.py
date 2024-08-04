@@ -24,9 +24,15 @@ async def broadcast(client, message):
     
     sent = 0
     pinned = 0
-    chats = await get_all_chats()
+    try:
+        chats = await get_all_chats()
+        print(f"Retrieved {len(chats)} chats")
+    except Exception as e:
+        print(f"Error retrieving chats: {e}")
+        return
+
     CASTED = []
-    
+
     for chat in chats:
         chat_id = chat.chat_id  # Assuming chat_id is an attribute of the chat object
         if chat_id in CASTED:
@@ -48,18 +54,19 @@ async def broadcast(client, message):
                     pinned += 1
         except FloodWait as e:
             flood_time = int(e.x)
+            print(f"FloodWait of {flood_time} seconds for chat {chat_id}")
             if flood_time > 200:
                 continue
             await asyncio.sleep(flood_time)
-        except Exception:
-            continue
-    
+        except Exception as e:
+            print(f"Error in broadcasting to chat {chat_id}: {e}")
+
     try:
         await message.reply_text(
             f"**Broadcasted Message In {sent} Chats and pinned in {pinned} Chats**"
         )
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"Error in replying to message: {e}")
 
 @Client.on_message(filters.command("ubroadcast") & filters.user(DEV_USERS))
 async def ubr(client, message):
@@ -74,9 +81,15 @@ async def ubr(client, message):
         query = message.text.split(None, 1)[1]
     
     sent = 0
-    users = await get_all_users()
+    try:
+        users = await get_all_users()
+        print(f"Retrieved {len(users)} users")
+    except Exception as e:
+        print(f"Error retrieving users: {e}")
+        return
+
     CASTED = []
-    
+
     for user in users:
         user_id = user.user_id  # Assuming user_id is an attribute of the user object
         if user_id in CASTED:
@@ -92,15 +105,16 @@ async def ubr(client, message):
                 CASTED.append(user_id)
         except FloodWait as e:
             flood_time = int(e.x)
+            print(f"FloodWait of {flood_time} seconds for user {user_id}")
             if flood_time > 200:
                 continue
             await asyncio.sleep(flood_time)
-        except Exception:
-            continue
-    
+        except Exception as e:
+            print(f"Error in broadcasting to user {user_id}: {e}")
+
     try:
         await message.reply_text(
             f"**Broadcasted Message to {sent} Users !**"
         )
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"Error in replying to message: {e}")
