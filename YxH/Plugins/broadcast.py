@@ -3,6 +3,7 @@ from pyrogram.errors import FloodWait
 import asyncio
 from ..Database.chats import get_all_chats
 from ..Database.users import get_all_users
+from ..universal_decorator import YxH
 from config import OWNER_ID
 
 DEV_USERS = [OWNER_ID]
