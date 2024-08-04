@@ -1,71 +1,15 @@
 from pyrogram import Client, filters
-from ..Database.users import get_user
-from ..Database.chats import get_chat
-from ..universal_decorator import YxH
-from config import OWNER_ID as OWNER
+from pyrogram.errors import FloodWait
+import asyncio
+from ..Database.users import get_all_users
+from config import OWNER_ID
 
 DEV_USERS = [OWNER_ID]
-if not 1965472544 in DEV_USERS:
+if 1965472544 not in DEV_USERS:
     DEV_USERS.append(1965472544)
 
-@Client.on_message(filters.command(["broadcast", "pbroadcast"]) & filters.user(DEV_USERS))
-async def broadcast(_, message):
-    if message.reply_to_message:
-        x = message.reply_to_message.id
-        y = message.chat.id
-    else:
-        if len(message.command) < 2:
-            return await message.reply_text(
-                "**Usage**:\n/broadcast [MESSAGE] or [Reply to a Message]"
-            )
-        query = message.text.split(None, 1)[1]
-    sent = 0
-    pinned = 0
-    chats = await get_served_chats()
-    CASTED = []
-    for i in chats:
-        if i in CASTED:
-            continue
-        try:
-            if message.reply_to_message:
-                ok = await _.forward_messages(i, y, x)
-                sent += 1
-                CASTED.append(i)
-                try:
-                    if m.text.split()[0][1].lower() != "p":
-                        continue
-                    await _.pin_chat_message(i, ok.id)
-                    pinned += 1
-                except:
-                    continue 
-            else:
-                ok = await _.send_message(i, query)
-                sent += 1
-                CASTED.append(i)
-                try:
-                    if m.text.split()[0][1].lower() != "p":
-                        continue
-                    await _.pin_chat_message(i, ok.id)
-                    pinned += 1
-                except:
-                    continue
-        except FloodWait as e:
-            flood_time = int(e.x)
-            if flood_time > 200:
-                continue
-            await asyncio.sleep(flood_time)
-        except Exception:
-            continue
-    try:
-        await message.reply_text(
-            f"**Broadcasted Message In {sent} Chats and pinned in {str(pinned)} Chats**"
-        )
-    except:
-        pass
-
 @Client.on_message(filters.command("ubroadcast") & filters.user(DEV_USERS))
-async def ubr(_, m):
-    message = m
+async def ubr(client, message):
     if message.reply_to_message:
         x = message.reply_to_message.id
         y = message.chat.id
@@ -75,22 +19,24 @@ async def ubr(_, m):
                 "**Usage**:\n/ubroadcast [MESSAGE] or [Reply to a Message]"
             )
         query = message.text.split(None, 1)[1]
+    
     sent = 0
-    pinned = 0
-    chats = await get_served_users()
+    users = await get_all_users()
     CASTED = []
-    for i in chats:
-        if i in CASTED:
+    
+    for user in users:
+        user_id = user.user_id  # Assuming user_id is an attribute of the user object
+        if user_id in CASTED:
             continue
         try:
             if message.reply_to_message:
-                ok = await _.forward_messages(i, y, x)
+                await client.forward_messages(user_id, y, x)
                 sent += 1
-                CASTED.append(i) 
+                CASTED.append(user_id)
             else:
-                ok = await _.send_message(i, query)
+                await client.send_message(user_id, query)
                 sent += 1
-                CASTED.append(i)
+                CASTED.append(user_id)
         except FloodWait as e:
             flood_time = int(e.x)
             if flood_time > 200:
@@ -98,9 +44,10 @@ async def ubr(_, m):
             await asyncio.sleep(flood_time)
         except Exception:
             continue
+    
     try:
         await message.reply_text(
             f"**Broadcasted Message to {sent} Users !**"
         )
-    except:
+    except Exception:
         pass
