@@ -58,23 +58,18 @@ async def addch(_, m):
         else:
             id, character_id = int(spl[1]), int(spl[2])
     except:
-        return await m.reply("Usage:\n\n`/addch <id> <character_id>`\n`/addch <character_id> (Reply to an user)`")
-
-    character = await get_anime_character(character_id)
-    if not character:
-        return await m.reply(f"Character with ID `{character_id}` not found.")
-
+        return await m.reply("Usage:\n\n/addch <id> <character_id>\n/addch <character_id> (Reply to an user)")
+    
     u = await get_user(id)
-    if not isinstance(u, User):
-        return await m.reply("User not found or invalid user instance.")
-        
-    if not isinstance(u.collection, dict):
-        return await m.reply("User's collection attribute is not a dictionary.")
-        
-    if character_id in u.collection:
-        u.collection[character_id] += 1
+    character = await get_anime_character(character_id)
+    
+    if character:
+        # Add the character to the user's collection
+        if character_id not in u.collection:
+            u.collection[character_id] = character
+            await u.update()  # Save the updated user
+            await m.reply(f"Character `{character_id}` added to user `{id}`'s collection!")
+        else:
+            await m.reply(f"User `{id}` already has character `{character_id}` in their collection.")
     else:
-        u.collection[character_id] = 1
-        
-    await m.reply(f"Added character `{character.name}` with ID `{character_id}`")
-    await u.update()
+        await m.reply("Character not found.")
