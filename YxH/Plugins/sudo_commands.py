@@ -65,6 +65,16 @@ async def addch(_, m):
         return await m.reply(f"Character with ID `{character_id}` not found.")
 
     u = await get_user(id)
-    u.collection.append(character_id)
+    if not isinstance(u, User):
+        return await m.reply("User not found or invalid user instance.")
+        
+    if not isinstance(u.collection, dict):
+        return await m.reply("User's collection attribute is not a dictionary.")
+        
+    if character_id in u.collection:
+        u.collection[character_id] += 1
+    else:
+        u.collection[character_id] = 1
+        
     await m.reply(f"Added character `{character.name}` with ID `{character_id}`")
     await u.update()
