@@ -1,6 +1,7 @@
 from config import SUDO_USERS
 from pyrogram import Client, filters
 from ..Database.users import get_user
+from ..Database.characters import get_anime_character
 
 @Client.on_message(filters.command("gold") & filters.user(SUDO_USERS))
 async def gold(_, m):
@@ -46,4 +47,24 @@ async def crystals(_, m):
     u = await get_user(id)
     u.crystals += amount
     await m.reply(f"Added `{amount}`")
+    await u.update()
+
+@Client.on_message(filters.command("addch") & filters.user(SUDO_USERS))
+async def addch(_, m):
+    spl = m.text.split()
+    try:
+        if m.reply_to_message:
+            id, character_id = m.reply_to_message.from_user.id, int(spl[1])
+        else:
+            id, character_id = int(spl[1]), int(spl[2])
+    except:
+        return await m.reply("Usage:\n\n`/addch <id> <character_id>`\n`/addch <character_id> (Reply to an user)`")
+
+    character = await get_anime_character(character_id)
+    if not character:
+        return await m.reply(f"Character with ID `{character_id}` not found.")
+
+    u = await get_user(id)
+    u.collection.append(character_id)
+    await m.reply(f"Added character `{character.name}` with ID `{character_id}`")
     await u.update()
