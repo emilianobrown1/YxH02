@@ -33,7 +33,7 @@ async def scramble(_, m):
     await catch_scramble_response(_, m)
 
 @Client.on_message(filters.group & filters.command(["wordle", "cwordle"]), group=wordle_watcher)
-async def wordle(_, m):
+async def wordle_handler(_, m):
     await wordle_cwf(_, m)
 
 @Client.on_message(filters.group, group=info_watcher)
