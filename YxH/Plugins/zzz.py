@@ -6,7 +6,7 @@ from .fw import cwf as fw_cwf
 from .info_watcher import cwf as info_cwf
 from .copx import cwf as copx_cwf
 from .scramble import catch_scramble_response
-from .wordle import cwf as wordle_cwf, wordle_command
+from .wordle import cwf as wordle_cwf
 
 from .watchers import (
     info_watcher,
@@ -32,9 +32,9 @@ async def info(_, m):
 async def scramble(_, m):
     await catch_scramble_response(_, m)
 
-@Client.on_message(filters.group, group=wordle_watcher)
+@Client.on_message(filters.group & ~filters.command, group=wordle_watcher)
 async def wordle(_, m):
-    await wordle_command(_, m, m.from_user)
+    await wordle_cwf(_, m)
 
 @Client.on_message(filters.group, group=info_watcher)
 async def info(_, m):
