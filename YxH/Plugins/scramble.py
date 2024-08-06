@@ -1,6 +1,6 @@
 import random
 from pyrogram import Client, filters
-from . import YxH
+from .universal_decorator import YxH
 from ..Database.users import get_user
 from datetime import datetime
 import asyncio
@@ -42,6 +42,7 @@ async def scramble(client, message, user):
         await message.reply("⏳ **Time's up!** ⏳\n\nPlease respond quicker next time.")
         active_scrambles.pop(user_id, None)
 
+@Client.on_message(filters.text & filters.command)
 async def catch_scramble_response(client, message):
     user_id = message.from_user.id
 
@@ -64,7 +65,7 @@ async def catch_scramble_response(client, message):
             scramble_data['correct_count'] += 1
             await message.reply(f"🎉 **Correct Answer!** 🎉\n\nYou've solved {scramble_data['correct_count']} words.")
 
-            if scramble_data['correct_count'] % 10 == 0:
+            if scramble_data['correct_count'] % 5 == 0:
                 user.crystals += 1
                 await user.update()
                 await message.reply("🏆 **Congratulations!** 🏆\n\nYou've earned 1 crystal! 🔮")
@@ -81,4 +82,3 @@ async def catch_scramble_response(client, message):
             else:
                 hint = f"{original_word[0]}{'_' * (len(original_word) - 2)}{original_word[-1]}"
                 await message.reply(f"❌ **Incorrect Answer!** ❌\n\nHint: **{hint}**\n\nTry again.")
-
