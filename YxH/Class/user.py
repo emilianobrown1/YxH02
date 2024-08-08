@@ -72,9 +72,4 @@ class User:
   def get_old(self) -> int:
     return int((time.time() - self.init_time) / 86400)
       
-    @classmethod
-    async def get_user_by_id(cls, user_id):
-        user_data = await users.get_user(user_id)
-        if user_data:
-            return user_data
-        return None
+    
