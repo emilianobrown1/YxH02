@@ -1,4 +1,5 @@
 from pyrogram import Client, filters
+from pyrogram.errors import UserAlreadyParticipant
 from ..Class import User
 from ..Utils.strings import start_text
 from ..Utils.markups import start_markup
@@ -14,5 +15,20 @@ async def start(_, m):
   await m.reply_photo("Images/start.JPG", start_text.format(m.from_user.first_name), reply_markup=await start_markup())
   user = await get_user(m.from_user.id)
   if not user:
+    # Create new user
     u = User(m.from_user)
     await u.update()
+
+    # Award 100 crystals to the new user
+    u.crystals += 100
+    await u.update()  # Save the updated user data to the database
+
+else:
+    # Handle rewards for users who have been invited
+    if user.invited_by:
+        inviter = await get_user(user.invited_by)
+        if inviter:
+            inviter.crystals += 50
+            await inviter.update()
+            user.invited_by = None  # Reset after rewarding
+            await user.update()
