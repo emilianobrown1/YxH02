@@ -1,34 +1,46 @@
 from pyrogram import Client, filters
-from ..Database.users import get_user
-from ..Class import User
-from . import YxH
+from YxH.Class.user import User
+import random
 
 @Client.on_message(filters.command("invite"))
-@YxH(private=False)
-async def invite(_, m, u):
-    if not user.invite_link:
-        invite_link = await client.create_chat_invite_link(chat_id=message.chat.id, member_limit=1)
-        user.invite_link = invite_link.invite_link
-        await user.update()
+async def invite(client, message):
+    user_id = message.from_user.id
+    user = User(message.from_user)  # Assuming the User class is initialized this way
 
-    await message.reply(f"Share this link to invite friends and earn crystals: {user.invite_link}")
+    # Generate a unique invite link for the user
+    invite_code = str(random.randint(100000, 999999))  # Simple random code generation
+    invite_link = f"https://t.me/YourBotName?start={invite_code}"
 
-@Client.on_message(filters.new_chat_members)
-async def handle_new_member(client, message):
-    for member in message.new_chat_members:
-        if message.invite_link:
-            inviter_id = message.invite_link.inviter_id
-            inviter = await User.get_user_by_id(inviter_id)
+    # Store the invite link in the user's data (you can adjust this part)
+    user.invite_link = invite_link
+    await user.update()
 
-            if inviter:
-                inviter.crystals += 50
-                await inviter.update()
+    # Send the invite link to the user
+    await message.reply(f"Here is your invite link: {invite_link}")
 
-            new_user = await User.get_user_by_id(member.id)
-            new_user.crystals += 100
-            await new_user.update()
+@Client.on_message(filters.regex(r'^/start (\d+)$'))
+async def handle_invite(client, message):
+    invite_code = message.matches[0].group(1)
+    inviter_id = await find_inviter_by_code(invite_code)  # Implement this function to find the inviter by the code
+    if inviter_id:
+        inviter = await User.get_user_by_id(inviter_id)  # Fetch the inviter from the database
+        invitee = User(message.from_user)  # New user who clicked the link
 
-            await message.reply(
-                f"{member.mention} joined using an invite link! "
-                f"{inviter.user.mention} earned 50 crystals and {member.mention} earned 100 crystals."
-            )
+        # Award crystals
+        inviter.crystals += 50
+        invitee.crystals += 100
+
+        # Update both users
+        await inviter.update()
+        await invitee.update()
+
+        # Notify both users
+        await client.send_message(inviter.user.id, f"Congratulations! You've earned 50 crystals for inviting a new user.")
+        await message.reply(f"Welcome! You've earned 100 crystals for joining via an invite link.")
+    else:
+        await message.reply("Invalid or expired invite link.")
+
+async def find_inviter_by_code(invite_code):
+    # Implement this to search the database for a user with the given invite code
+    # Return the inviter's user ID if found, otherwise return None
+    pass
