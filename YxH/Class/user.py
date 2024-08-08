@@ -55,7 +55,15 @@ class User:
             {'$set': {'info': pickle.dumps(self)}},
             upsert=True
         )
+        
+   async def get_user_by_id(cls, user_id):
+        user_data = await db.users.find_one({'user_id': user_id})
+        if user_data and 'info' in user_data:
+            user_info = pickle.loads(user_data['info'])
+            return user_info
+        return None     
 
+    
     def is_blocked(self):
         return self.blocked
 
