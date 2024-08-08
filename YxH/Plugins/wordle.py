@@ -82,7 +82,7 @@ async def cwordle(_, m, u):
     txt = f'{m.from_user.mention}, Challenge Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
     await m.reply(txt, reply_markup=markup)
 
-@Client.on_message(filters.group)
+
 async def cwf(_, m):
     global dic, time_out_dic
     user_id = m.from_user.id
