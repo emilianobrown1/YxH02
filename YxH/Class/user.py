@@ -1,5 +1,6 @@
-from YxH.Database import users
+from YxH.Database import db from
 from YxH.Class.wordle import wordle
+import pickle
 import time
 
 class User:
