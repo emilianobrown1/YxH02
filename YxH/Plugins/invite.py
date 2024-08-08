@@ -3,7 +3,7 @@ from . import YxH
 
 @Client.on_message(filters.command("invite"))
 @YxH(private=False)
-async def invite(client, message, user):
+async def invite(_, m, u):
     if not user.invite_link:
         invite_link = await client.create_chat_invite_link(chat_id=message.chat.id, member_limit=1)
         user.invite_link = invite_link.invite_link
