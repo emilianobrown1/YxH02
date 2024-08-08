@@ -64,24 +64,6 @@ async def wordle_command(_, m, u):
     txt = f'{m.from_user.mention}, Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
     await m.reply(txt, reply_markup=markup)
 
-@Client.on_message(filters.command("cwordle"))
-@YxH(private=False)
-async def cwordle(_, m, u):
-    global dic, time_out_dic
-    user_id = m.from_user.id
-    markup = InlineKeyboardMarkup([
-        [InlineKeyboardButton("Terminate", callback_data=f'terminate_{user_id}')],
-        [InlineKeyboardButton("Close", callback_data=f'close_{user_id}')]
-    ])
-    if user_id in dic:
-        return await m.reply('You are already in a game, wanna terminate it?', reply_markup=markup)
-
-    word = random.choice(words)
-    dic[user_id] = [word, [], [], time.time()]
-    time_out_dic[user_id] = [m.chat.id, time.time()]
-    txt = f'{m.from_user.mention}, Challenge Wordle has been started, guess the 5-letter word within 6 chances!\n\nEnter your first word!'
-    await m.reply(txt, reply_markup=markup)
-
 
 async def cwf(_, m):
     global dic, time_out_dic
