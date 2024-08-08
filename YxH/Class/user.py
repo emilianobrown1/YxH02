@@ -46,10 +46,7 @@ class User:
         self.invite_link = link
         await self.update()
 
-    async def update(self):
-        # Update only specific fields if needed
-        # Example: update only invite_link and invited_by
-        pass
+    
 
     async def update(self):
         self.gems = min(self.gems, self.max_gems)
