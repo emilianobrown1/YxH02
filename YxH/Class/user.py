@@ -31,6 +31,8 @@ class User:
         self.latest_defend = None  # time.time() object
         self.favourite_character = None  # char_id
         self.gifts = 0  # no.of gifts can be gifted
+        self.invite_link = None
+        self.invited_by = None
         self.convertx = {}  # {date: "converted"}
         self.buy_crystals = {}
         self.scramble = []
@@ -45,6 +47,15 @@ class User:
         if data and 'info' in data:
             db_info = pickle.loads(data['info'])
             self.__dict__.update(db_info.__dict__)
+
+    async def update_invite_link(self, link):
+        self.invite_link = link
+        await self.update()
+
+    async def update(self):
+        # Update only specific fields if needed
+        # Example: update only invite_link and invited_by
+        pass
 
     async def update(self):
         self.gems = min(self.gems, self.max_gems)
