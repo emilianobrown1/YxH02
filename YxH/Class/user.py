@@ -1,6 +1,5 @@
-from YxH.Database import db
+from YxH.Database import users
 from YxH.Class.wordle import wordle
-import pickle
 import time
 
 class User:
@@ -35,49 +34,37 @@ class User:
         self.buy_crystals = {}
         self.scramble = []
         self.wordle = {}
-        self.invite_link = None
+        self.invite_link = None  # Add this line
         # Dev Requirements.
         self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
         self.max_gems = 5_000_000
         self.max_gold = 1_000_000_000_0
 
     async def load_from_db(self):
-        data = await db.users.find_one({'user_id': self.user.id})
-        if data and 'info' in data:
-            db_info = pickle.loads(data['info'])
-            self.__dict__.update(db_info.__dict__)
+        user_data = await users.get_user(self.user.id)
+        if user_data:
+            self.__dict__.update(user_data.__dict__)
 
     async def update(self):
         self.gems = min(self.gems, self.max_gems)
         self.gold = min(self.gold, self.max_gold)
-        await db.users.update_one(
-            {'user_id': self.user.id},
-            {'$set': {'info': pickle.dumps(self)}},
-            upsert=True
-        )
-        
-   async def get_user_by_id(cls, user_id):
-        user_data = await db.users.find_one({'user_id': user_id})
-        if user_data and 'info' in user_data:
-            user_info = pickle.loads(user_data['info'])
-            return user_info
-        return None     
+        await users.update_user(self.user.id, self)
 
-    
     def is_blocked(self):
         return self.blocked
 
     def block_user(self):
         self.blocked = True
-        # Perform additional actions if needed
-        # Example: Log the blocking action
-        # Example: Notify the user about the blocking
 
     def unblock_user(self):
         self.blocked = False
-        # Perform additional actions if needed
-        # Example: Log the unblocking action
-        # Example: Notify the user about the unblocking
 
     def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
+
+    @classmethod
+    async def get_user_by_id(cls, user_id):
+        user_data = await users.get_user(user_id)
+        if user_data:
+            return user_data
+        return None
