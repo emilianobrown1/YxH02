@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from ..Database.users import get_user
+from ..Class import User
 from . import YxH
 
 @Client.on_message(filters.command("invite"))
