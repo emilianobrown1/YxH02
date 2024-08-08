@@ -22,7 +22,6 @@ async def start(_, m):
     # Award 100 crystals to the new user
     u.crystals += 100
     await u.update()  # Save the updated user data to the database
-
 else:
     # Handle rewards for users who have been invited
     if user.invited_by:
