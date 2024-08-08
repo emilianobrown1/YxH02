@@ -43,7 +43,7 @@ def update_negated(word, text, lis):
             lis.append(i.upper())
     return lis
 
-@Client.on_message(filters.group & filters.command(["wordle", "cwordle"]), group=wordle_watcher)
+@Client.on_message(filters.group & filters.command(["wordle", "cwordle"]))
 @YxH(private=False)
 async def wordle_command(client, message):
     await wordle_cwf(client, message)
