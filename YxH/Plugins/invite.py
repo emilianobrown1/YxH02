@@ -9,7 +9,7 @@ async def invite(client, message):
 
     # Generate a unique invite link for the user
     invite_code = str(random.randint(100000, 999999))  # Simple random code generation
-    invite_link = f"https://t.me/YourBotName?start={invite_code}"
+    invite_link = f"https://t.me/YXH_GameBot?start={invite_code}"
 
     # Store the invite link in the user's data (you can adjust this part)
     user.invite_link = invite_link
