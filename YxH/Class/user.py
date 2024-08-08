@@ -40,6 +40,11 @@ class User:
     self.max_gems = 5_000_000
     self.max_gold = 1_000_000_000_0
 
+  async def load_from_db(self):
+        user_data = await users_db.get_user(self.user.id)
+        if user_data:
+            self.__dict__.update(user_data.__dict__)
+
   async def update(self):
     self.gems = self.max_gems if self.gems > self.max_gems else self.gems
     self.gold = self.max_gold if self.gold > self.max_gold else self.gold
