@@ -1,6 +1,5 @@
 from pyrogram import Client, filters
 from ..Class import User
-from ..Database.users import get_user, update_user
 
 @Client.on_message(filters.command("invite") & filters.private)
 async def invite(_, m):
