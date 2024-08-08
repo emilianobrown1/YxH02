@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from ..universal_decorator import YxH
 from ..Class.user import User
-from ..Database.wordle import add_game, get_wordle_dic, get_avg, incr_game, get_today_games, add_crystal, add
+from ..Database.wordle import add_game, get_wordle_dic, get_avg, incr_game, get_today_games, add
 from easy_words import words
 from .wordle_image import make_secured_image
 import random
@@ -18,12 +18,15 @@ dic = {}
 time_out_dic = {}
 
 def _get_soup_object(url, parser="html.parser"):
-    return BeautifulSoup(requests.get(url).text, parser)
+    try:
+        return BeautifulSoup(requests.get(url).text, parser)
+    except requests.RequestException as e:
+        print(f"Error fetching URL: {e}")
+        return BeautifulSoup("", parser)
 
 def is_valid(text: str) -> bool:
-    term: str = text
     try:
-        html = _get_soup_object(f"http://wordnetweb.princeton.edu/perl/webwn?s={term}")
+        html = _get_soup_object(f"http://wordnetweb.princeton.edu/perl/webwn?s={text}")
         types = html.findAll("h3")
         lists = html.findAll("ul")
         for a in types:
@@ -31,7 +34,8 @@ def is_valid(text: str) -> bool:
             if any(len(x) > 5 or ' ' in str(x) for x in re.findall(r'\((.*?)\)', reg)):
                 return True
         return False
-    except:
+    except Exception as e:
+        print(f"Error validating word: {e}")
         return False
 
 def get_reward(correct_guess: bool) -> int:
@@ -191,14 +195,18 @@ async def time_out_func():
     while True:
         to_pop = []
         for x in time_out_dic:
-            if time.time() - time_out_dic[x][1] > 300:  # 5 minutes timeout
+            if time.time() - time_out_dic[x][1] > 600:  # 10 minutes timeout
                 to_pop.append(x)
-
-        for user_id in to_pop:
-            chat_id = time_out_dic[user_id][0]
-            await Client.send_message(chat_id, f"Challenge Wordle game for user {user_id} has timed out!")
-            time_out_dic.pop(user_id)
-            if user_id in dic:
-                dic.pop(user_id)
-
+                chat_id = time_out_dic[x][0]
+                if x in dic:
+                    word = dic[x][0]
+                    await Client.send_message(chat_id, f"Challenge Wordle game for user {x} has timed out! The word was '{word}'.")
+        
+        for x in to_pop:
+            dic.pop(x, None)
+            time_out_dic.pop(x, None)
+        
         await asyncio.sleep(60)
+
+
+
