@@ -30,7 +30,7 @@ async def invite(_, m):
     if user.invited_by:
         inviter = await load_user_data(user.invited_by)  # Load the inviter's data from the database
         if inviter:
-            inviter.crystals += 50
+            inviter.crystals += 20
             await inviter.update()  # Update the inviter's data with the new crystal count
             # We're not clearing the invited_by field to preserve this information
-            await m.reply(f"Your inviter has been rewarded with 50 crystals!")
+            await m.reply(f"Your inviter has been rewarded with 20 crystals!")
