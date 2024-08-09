@@ -16,6 +16,7 @@ async def invite(_, m):
 
     if user is None:  # If the user doesn't exist in the database, create a new User instance
         user = User(m.from_user)
+        await user.update()  # Save the new user to the database
 
     if not user.invite_link:
         invite_link = f"https://t.me/YXH_GameBot?start={m.from_user.id}"  # Replace with your bot's username
@@ -29,7 +30,7 @@ async def invite(_, m):
     if user.invited_by:
         inviter = await load_user_data(user.invited_by)  # Load the inviter's data from the database
         if inviter:
-            inviter.crystals += 20
+            inviter.crystals += 50
             await inviter.update()  # Update the inviter's data with the new crystal count
-            user.invited_by = None  # Clear the invited_by field after rewarding
-            await user.update()  # Update the user's data with the reset invited_by field
+            # We're not clearing the invited_by field to preserve this information
+            await m.reply(f"Your inviter has been rewarded with 50 crystals!")
