@@ -29,7 +29,7 @@ async def invite(_, m):
     if user.invited_by:
         inviter = await load_user_data(user.invited_by)  # Load the inviter's data from the database
         if inviter:
-            inviter.crystals += 50
+            inviter.crystals += 20
             await inviter.update()  # Update the inviter's data with the new crystal count
             user.invited_by = None  # Clear the invited_by field after rewarding
             await user.update()  # Update the user's data with the reset invited_by field
