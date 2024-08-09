@@ -7,7 +7,7 @@ async def invite(_, m):
     user = await get_user(m.from_user.id)
     
     if not user.invite_link:
-        # Generate an invite link for the user
+        
         invite_link = f"https://t.me/YXH_GameBot?start={m.from_user.id}"  # Replace with your bot username
         await user.update_invite_link(invite_link)
         await m.reply(f"Share this link to invite others: {invite_link}")
