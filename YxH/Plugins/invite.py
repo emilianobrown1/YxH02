@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from ..Class import User
-from . import YxH
+from . import YxH, get user
 
 @Client.on_message(filters.command("invite") & filters.private)
 async def invite(_, m):
