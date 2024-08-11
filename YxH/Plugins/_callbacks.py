@@ -39,7 +39,6 @@ from .clan import (
 )
 from .shield import shield_cbq
 from ..universal_decorator import download_image
-from .wordle import terminate, start_again
 
 @Client.on_callback_query()
 async def cbq(_, q: CallbackQuery):
@@ -55,11 +54,7 @@ async def cbq(_, q: CallbackQuery):
     u = await get_user(q.from_user.id)
     count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
-  elif q.data.startswith("terminate"):
-    await terminate(_, q)
-  elif q.data.startswith("start_again"):
-    await start_again(_, q)  
-    return
+  
 
   data, actual = q.data.split("_")
   actual = int(actual)
