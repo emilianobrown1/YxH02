@@ -22,5 +22,3 @@ async def func():
     await asyncio.gather(*tasks)
 
 asyncio.create_task(func())
-
-asyncio.create_task(time_out_func())
