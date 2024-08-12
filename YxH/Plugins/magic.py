@@ -1,11 +1,11 @@
-from pyrogram import filters
-from . import YxH
+from pyrogram import Client, filters
 from class.user import User
+from ..Database.characters import get_anime_character_ids
 import time
 import random
 
 @Client.on_message(filters.command("magic"))
-async def get_magic_item(client, message,user):
+async def get_magic_item(client, message):
     user = await User.get_user(message.from_user.id)
 
     if user is None:
@@ -26,7 +26,7 @@ async def get_magic_item(client, message,user):
         await message.reply("You don't have enough gold! You need 25,000 gold to get a magic item.")
         return
 
-    # Deduct 15,000 gold
+    # Deduct 25,000 gold
     user.gold -= 25000
 
     # Randomly select a magic item
@@ -40,19 +40,19 @@ async def get_magic_item(client, message,user):
     await user.update()
 
     # Send the corresponding reply with an image
-    if selected_item == "Magic Key":
+    if selected_item == "Magic Key 🗝️":
         await message.reply_photo("Images/key.jpg", caption="You received a Magic Key 🗝️!")
-    elif selected_item == "Magic Diamond":
+    elif selected_item == "Magic Diamond 💎":
         await message.reply_photo("Images/diamond.jpg", caption="You received a Magic Diamond 💎!")
-    elif selected_item == "Magic Potion":
-        await message.reply_photo("Images/Potion.jpg", caption="You received a Magic Potion 🧪!")
-    elif selected_item == "Magic Stone":
+    elif selected_item == "Magic Potion 🧪":
+        await message.reply_photo("Images/potion.jpg", caption="You received a Magic Potion 🧪!")
+    elif selected_item == "Magic Stone 🪨":
         await message.reply_photo("Images/stone.jpg", caption="You received a Magic Stone 🪨!")
 
     await message.reply(f"Congratulations! You received a {selected_item}.")
 
 @Client.on_message(filters.command("inventory"))
-async def show_inventory(client, message, user):
+async def show_inventory(client, message):
     user = await User.get_user(message.from_user.id)
 
     if user is None:
@@ -63,7 +63,7 @@ async def show_inventory(client, message, user):
     await message.reply(f"Your inventory:\n{inventory}")
 
 @Client.on_message(filters.command("use_magic"))
-async def use_magic_item(client, message, user):
+async def use_magic_item(client, message):
     user = await User.get_user(message.from_user.id)
 
     if user is None:
@@ -72,7 +72,7 @@ async def use_magic_item(client, message, user):
 
     command = message.text.split()
     if len(command) < 2:
-        await message.reply("Please specify the magic item you want to use. (e.g., /use_magic Magic Key)")
+        await message.reply("Please specify the magic item you want to use. (e.g., /use_magic Magic Key 🗝️)")
         return
 
     magic_item = " ".join(command[1:])
@@ -80,19 +80,39 @@ async def use_magic_item(client, message, user):
         await message.reply(f"You don't have any {magic_item} in your inventory.")
         return
 
-    # Use the magic item and provide the corresponding reward
-    if magic_item == "Magic Key":
-        user.gold += 100_000
-    elif magic_item == "Magic Diamond":
-        user.gems += 200_000
-    elif magic_item == "Magic Potion":
-        # Logic for using Magic Potion (spell) would go here
-        await message.reply("You used a Magic Potion and sent a magical message to two characters!")
-    elif magic_item == "Magic Stone":
-        user.crystals += 10
+    # Logic to determine the rewards based on the quantity
+    if magic_item == "Magic Key 🗝️":
+        if user.inventory[magic_item] >= 5:
+            user.gold += 1_000_000
+            user.inventory[magic_item] -= 5
+            await message.reply("You used 5 Magic Keys 🗝️ and earned 1,000,000 gold!")
+        else:
+            await message.reply("You need at least 5 Magic Keys 🗝️ to use them.")
 
-    # Reduce the count of the used item in the inventory
-    user.inventory[magic_item] -= 1
+    elif magic_item == "Magic Diamond 💎":
+        if user.inventory[magic_item] >= 15:
+            user.gems += 2_000_000
+            user.inventory[magic_item] -= 15
+            await message.reply("You used 15 Magic Diamonds 💎 and earned 2,000,000 gems!")
+        else:
+            await message.reply("You need at least 15 Magic Diamonds 💎 to use them.")
+
+    elif magic_item == "Magic Potion 🧪":
+        if user.inventory[magic_item] >= 10:
+            character_ids = await get_anime_character_ids(2)
+            user.collection.update(character_ids)
+            user.inventory[magic_item] -= 10
+            await message.reply("You used 10 Magic Potions 🧪 and received 2 new characters!")
+        else:
+            await message.reply("You need at least 10 Magic Potions 🧪 to use them.")
+
+    elif magic_item == "Magic Stone 🪨":
+        if user.inventory[magic_item] >= 20:
+            user.crystals += 10
+            user.inventory[magic_item] -= 20
+            await message.reply("You used 20 Magic Stones 🪨 and earned 10 crystals!")
+        else:
+            await message.reply("You need at least 20 Magic Stones 🪨 to use them.")
+
     await user.update()
-
-    await message.reply(f"You used a {magic_item}. Your updated balance: {user.gold} gold, {user.gems} gems, {user.crystals} crystals.")
+    await message.reply(f"Your updated balance: {user.gold} gold, {user.gems} gems, {user.crystals} crystals.")
