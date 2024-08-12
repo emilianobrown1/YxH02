@@ -1,10 +1,12 @@
 from pyrogram import Client, filters
+from . import get_date, YxH
 from class.user import User
 from ..Database.characters import get_anime_character_ids
 import time
 import random
 
 @Client.on_message(filters.command("magic"))
+@YxH(private=False)
 async def get_magic_item(client, message):
     user = await User.get_user(message.from_user.id)
 
@@ -52,6 +54,7 @@ async def get_magic_item(client, message):
     await message.reply(f"Congratulations! You received a {selected_item}.")
 
 @Client.on_message(filters.command("inventory"))
+@YxH(private=False)
 async def show_inventory(client, message):
     user = await User.get_user(message.from_user.id)
 
@@ -63,6 +66,7 @@ async def show_inventory(client, message):
     await message.reply(f"Your inventory:\n{inventory}")
 
 @Client.on_message(filters.command("use_magic"))
+@YxH(private=False)
 async def use_magic_item(client, message):
     user = await User.get_user(message.from_user.id)
 
