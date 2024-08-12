@@ -37,6 +37,8 @@ class User:
         self.scramble = []
         self.wordle = {}
         self.inventory = {"Magic Key": 0, "Magic Diamond": 0, "Magic Potion": 0, "Magic Stone": 0}
+        self.magic_uses = 0  # Track magic command usage
+        self.last_magic_use_time = 0
         # Dev Requirements.
         self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
         self.max_gems = 5_000_000
