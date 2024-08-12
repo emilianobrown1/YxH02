@@ -8,7 +8,7 @@ import random
 
 @Client.on_message(filters.command("magic"))
 @YxH(private=False)
-async def get_magic_item(client, message, user):
+async def magic(client, message, user):
     # No need to fetch user again; user is already passed by YxH decorator
     
     # Check cooldown period
