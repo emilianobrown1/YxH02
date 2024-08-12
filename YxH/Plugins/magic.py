@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from . import get_date, YxH
+from . import YxH
 from ..Database.users import get_user
 from ..Class.user import User
 from ..Database.characters import get_anime_character_ids
@@ -9,12 +9,8 @@ import random
 @Client.on_message(filters.command("magic"))
 @YxH(private=False)
 async def get_magic_item(client, message, user):
-    user = await User.get_user(message.from_user.id)
-
-    if user is None:
-        await message.reply("User data not found.")
-        return
-
+    # No need to fetch user again; user is already passed by YxH decorator
+    
     # Check cooldown period
     current_time = time.time()
     if user.magic_uses > 0 and user.magic_uses % 2 == 0:
@@ -57,11 +53,7 @@ async def get_magic_item(client, message, user):
 @Client.on_message(filters.command("inventory"))
 @YxH(private=False)
 async def show_inventory(client, message, user):
-    user = await User.get_user(message.from_user.id)
-
-    if user is None:
-        await message.reply("User data not found.")
-        return
+    # No need to fetch user again; user is already passed by YxH decorator
 
     inventory = "\n".join([f"{item}: {quantity}" for item, quantity in user.inventory.items()])
     await message.reply(f"Your inventory:\n{inventory}")
@@ -69,11 +61,7 @@ async def show_inventory(client, message, user):
 @Client.on_message(filters.command("use_magic"))
 @YxH(private=False)
 async def use_magic_item(client, message, user):
-    user = await User.get_user(message.from_user.id)
-
-    if user is None:
-        await message.reply("User data not found.")
-        return
+    # No need to fetch user again; user is already passed by YxH decorator
 
     command = message.text.split()
     if len(command) < 2:
