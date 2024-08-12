@@ -7,7 +7,7 @@ import random
 
 @Client.on_message(filters.command("magic"))
 @YxH(private=False)
-async def get_magic_item(client, message):
+async def get_magic_item(client, message, user):
     user = await User.get_user(message.from_user.id)
 
     if user is None:
@@ -55,7 +55,7 @@ async def get_magic_item(client, message):
 
 @Client.on_message(filters.command("inventory"))
 @YxH(private=False)
-async def show_inventory(client, message):
+async def show_inventory(client, message, user):
     user = await User.get_user(message.from_user.id)
 
     if user is None:
@@ -67,7 +67,7 @@ async def show_inventory(client, message):
 
 @Client.on_message(filters.command("use_magic"))
 @YxH(private=False)
-async def use_magic_item(client, message):
+async def use_magic_item(client, message, user):
     user = await User.get_user(message.from_user.id)
 
     if user is None:
