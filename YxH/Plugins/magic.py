@@ -41,11 +41,30 @@ async def magic(client, message, user):
     await message.reply_photo(image_map[selected_item], caption=f"You received a {selected_item}!")
     await message.reply(f"Congratulations! You received a {selected_item}.")
 
+
 @Client.on_message(filters.command("inventory"))
 @YxH(private=False)
 async def show_inventory(client, message, user):
-    inventory = "\n".join([f"{item}: {quantity}" for item, quantity in user.inventory.items()])
-    await message.reply(f"Your inventory:\n{inventory}")
+    if not user.inventory:
+        await message.reply("Your inventory is empty.")
+        return
+
+    inventory_str = "🎒 Your Inventory:\n\n"
+    
+    magic_items = []
+    for item, quantity in user.inventory.items():
+        if "Magic" in item:
+            magic_items.append(f"  • {item}: {quantity}")
+    
+    if magic_items:
+        inventory_str += "✨ Magic Items:\n"
+        inventory_str += "\n".join(magic_items)
+        inventory_str += "\n\n"
+    
+    total_items = sum(user.inventory.values())
+    inventory_str += f"📊 Total Magic Items: {total_items}"
+
+    await message.reply(inventory_str)
 
 @Client.on_message(filters.command("use_magic"))
 @YxH(private=False)
