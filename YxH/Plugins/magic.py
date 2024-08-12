@@ -34,7 +34,7 @@ async def magic(client, message, user):
     image_map = {
         "Magic Key 🗝️": "Images/key.jpg",
         "Magic Diamond 💎": "Images/diamond.jpg",
-        "Magic Potion 🧪": "Images/potion.jpg",
+        "Magic Potion 🧪": "Images/Spell.jpg",
         "Magic Stone 🪨": "Images/stone.jpg"
     }
 
