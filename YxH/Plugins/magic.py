@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from . import get_date, YxH
-from class.user import User
+from ..Class.user import User
 from ..Database.characters import get_anime_character_ids
 import time
 import random
