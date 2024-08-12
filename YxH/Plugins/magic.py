@@ -49,7 +49,7 @@ async def show_inventory(client, message, user):
         await message.reply("Your inventory is empty.")
         return
 
-    inventory_str = "🎒 Your Inventory:\n\n"
+    inventory_str = "🧙 Your Inventory:\n\n"
     
     magic_items = []
     for item, quantity in user.inventory.items():
@@ -62,7 +62,7 @@ async def show_inventory(client, message, user):
         inventory_str += "\n\n"
     
     total_items = sum(user.inventory.values())
-    inventory_str += f"📊 Total Magic Items: {total_items}"
+    inventory_str += f"🧚 Total Magic Items: {total_items}"
 
     await message.reply(inventory_str)
 
