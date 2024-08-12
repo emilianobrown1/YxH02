@@ -10,7 +10,7 @@ import random
 @YxH(private=False)
 async def magic(client, message, user):
     current_time = time.time()
-    if user.magic_uses > 0 and user.magic_uses % 2 == 0:
+    if user.magic_uses > 0 and user.magic_uses % 5 == 0:
         if current_time - user.last_magic_use_time < 300:  # 5 minutes cooldown
             remaining_time = 300 - (current_time - user.last_magic_use_time)
             minutes, seconds = divmod(int(remaining_time), 60)
