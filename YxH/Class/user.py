@@ -48,7 +48,12 @@ class User:
         self.invite_link = link
         await self.update()
 
-    
+    async def get_user(user_id):
+        data = await db.users.find_one({"user_id": user_id})
+        if data:
+            return pickle.loads(data['info'])
+        else:
+            return None
 
     async def update(self):
         self.gems = min(self.gems, self.max_gems)
@@ -64,10 +69,7 @@ class User:
 
     def block_user(self):
         self.blocked = True
-        # Perform additional actions if needed
-        # Example: Log the blocking action
-        # Example: Notify the user about the blocking
-
+        
     def unblock_user(self):
         self.blocked = False
         # Perform additional actions if needed
