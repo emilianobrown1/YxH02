@@ -48,12 +48,7 @@ class User:
         self.invite_link = link
         await self.update()
 
-    async def get_user(user_id):
-        data = await db.users.find_one({"user_id": user_id})
-        if data:
-            return pickle.loads(data['info'])
-        else:
-            return None
+    
 
     async def update(self):
         self.gems = min(self.gems, self.max_gems)
