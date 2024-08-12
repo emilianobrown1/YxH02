@@ -36,7 +36,7 @@ class User:
         self.buy_crystals = {}
         self.scramble = []
         self.wordle = {}
-        self.inventory = {"Magic Key": 0, "Magic Diamond": 0, "Magic Potion": 0, "Magic Stone": 0}
+        self.inventory = {"Magic Key 🗝️": 0, "Magic Diamond 💎": 0, "Magic Potion 🧪": 0, "Magic Stone 🪨": 0}
         self.magic_uses = 0  # Track magic command usage
         self.last_magic_use_time = 0
         # Dev Requirements.
