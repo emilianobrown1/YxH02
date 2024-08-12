@@ -9,15 +9,11 @@ import random
 @Client.on_message(filters.command("magic"))
 @YxH(private=False)
 async def magic(client, message, user):
-    # No need to fetch user again; user is already passed by YxH decorator
-    
-    # Check cooldown period
     current_time = time.time()
     if user.magic_uses > 0 and user.magic_uses % 2 == 0:
         if current_time - user.last_magic_use_time < 300:  # 5 minutes cooldown
             remaining_time = 300 - (current_time - user.last_magic_use_time)
-            minutes = int(remaining_time // 60)
-            seconds = int(remaining_time % 60)
+            minutes, seconds = divmod(int(remaining_time), 60)
             await message.reply(f"Cooldown active. Please wait {minutes} minutes and {seconds} seconds before using the magic command again.")
             return
 
@@ -25,44 +21,35 @@ async def magic(client, message, user):
         await message.reply("You don't have enough gold! You need 25,000 gold to get a magic item.")
         return
 
-    # Deduct 25,000 gold
     user.gold -= 25000
 
-    # Randomly select a magic item
     items = ["Magic Key 🗝️", "Magic Diamond 💎", "Magic Potion 🧪", "Magic Stone 🪨"]
     selected_item = random.choice(items)
-    user.inventory[selected_item] += 1
+    user.inventory[selected_item] = user.inventory.get(selected_item, 0) + 1
 
-    # Update usage count and last use time
     user.magic_uses += 1
     user.last_magic_use_time = current_time
     await user.update()
 
-    # Send the corresponding reply with an image
-    if selected_item == "Magic Key 🗝️":
-        await message.reply_photo("Images/key.jpg", caption="You received a Magic Key 🗝️!")
-    elif selected_item == "Magic Diamond 💎":
-        await message.reply_photo("Images/diamond.jpg", caption="You received a Magic Diamond 💎!")
-    elif selected_item == "Magic Potion 🧪":
-        await message.reply_photo("Images/potion.jpg", caption="You received a Magic Potion 🧪!")
-    elif selected_item == "Magic Stone 🪨":
-        await message.reply_photo("Images/stone.jpg", caption="You received a Magic Stone 🪨!")
+    image_map = {
+        "Magic Key 🗝️": "Images/key.jpg",
+        "Magic Diamond 💎": "Images/diamond.jpg",
+        "Magic Potion 🧪": "Images/potion.jpg",
+        "Magic Stone 🪨": "Images/stone.jpg"
+    }
 
+    await message.reply_photo(image_map[selected_item], caption=f"You received a {selected_item}!")
     await message.reply(f"Congratulations! You received a {selected_item}.")
 
 @Client.on_message(filters.command("inventory"))
 @YxH(private=False)
 async def show_inventory(client, message, user):
-    # No need to fetch user again; user is already passed by YxH decorator
-
     inventory = "\n".join([f"{item}: {quantity}" for item, quantity in user.inventory.items()])
     await message.reply(f"Your inventory:\n{inventory}")
 
 @Client.on_message(filters.command("use_magic"))
 @YxH(private=False)
 async def use_magic_item(client, message, user):
-    # No need to fetch user again; user is already passed by YxH decorator
-
     command = message.text.split()
     if len(command) < 2:
         await message.reply("Please specify the magic item you want to use. (e.g., /use_magic Magic Key 🗝️)")
@@ -73,7 +60,6 @@ async def use_magic_item(client, message, user):
         await message.reply(f"You don't have any {magic_item} in your inventory.")
         return
 
-    # Logic to determine the rewards based on the quantity
     if magic_item == "Magic Key 🗝️":
         if user.inventory[magic_item] >= 5:
             user.gold += 1_000_000
