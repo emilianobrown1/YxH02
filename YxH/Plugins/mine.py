@@ -28,7 +28,7 @@ async def mine(_, m, user):
 
     now = str(datetime.now()).split(":")[0].replace(" ", "-")
     val = user.mine.get(now, 0)
-    if val >= 45:
+    if val >= 50:
         min = int(str(datetime.now()).split(":")[1])
         after = 60 - min
         return await m.reply(f"Mining limit reached, try again after `{after}` minutes.")
