@@ -38,9 +38,8 @@ async def magic(client, message, user):
         "Magic Stone 🪨": "Images/stone.jpg"
     }
 
-    await message.reply_photo(image_map[selected_item], caption=f"You received a {selected_item}!")
-    await message.reply(f"Congratulations! You received a {selected_item}.")
-
+    await message.reply_photo(image_map[selected_item], caption=f"Congratulations! You received a {selected_item}!")
+    
 
 @Client.on_message(filters.command("inventory"))
 @YxH(private=False)
