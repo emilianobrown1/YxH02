@@ -52,7 +52,7 @@ class User:
         self.gems = min(self.gems, self.max_gems)
         self.gold = min(self.gold, self.max_gold)
         await db.users.update_one(
-        {'user_id': self.user.id},  
+        {'user_id': self.user},  
         {'$set': {'info': pickle.dumps(self)}},
         upsert=True
     )
