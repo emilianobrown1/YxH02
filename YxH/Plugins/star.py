@@ -23,6 +23,7 @@ async def start(_, m):
         # Create a new user
         u = User(m.from_user.id)
         u.crystals += 50  # Add 50 crystals to the new user
+        await u.update()
 
         # Check if the user was invited via an invite link
         if len(m.command) > 1:
@@ -35,8 +36,6 @@ async def start(_, m):
                     await inviter.update()  # Update the inviter's data in the database
             except ValueError:
                 print(f"Invalid invite ID: {m.command[1]}")  # Log the invalid invite ID
-
-        await u.update()  # Update the new user's data in the database
 
         # Notify the new user and optionally the inviter
         await m.reply("Welcome! You've received 50 crystals as a new user!")
