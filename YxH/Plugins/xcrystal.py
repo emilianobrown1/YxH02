@@ -10,7 +10,7 @@ CONVERSION_RATES = {
 
 @Client.on_message(filters.command("buycrystal"))
 @YxH(main_only=True)
-async def buycrystal(_, m, user):
+async def buycrystal(_, m, u):
     now = datetime.now().strftime("%Y-%m-%d")
     
     # Check if user has already bought crystals today
@@ -40,22 +40,22 @@ async def buycrystal(_, m, user):
 
     total_crystals = CONVERSION_RATES[inp]
 
-    if inp > user.gems:
-        return await m.reply(f"You only have `{user.gems}` gems. You need `{inp}` gems for this purchase.")
+    if inp > u.gems:
+        return await m.reply(f"You only have `{u.gems}` gems. You need `{inp}` gems for this purchase.")
 
-    user.gems -= inp
-    user.crystals += total_crystals
-    user.buy_crystals[now] = "bought"
+    u.gems -= inp
+    u.crystals += total_crystals
+    u.buy_crystals[now] = "bought"
 
-    await user.update()  # Ensure this persists the changes to the data store
+    await u.update()  # Ensure this persists the changes to the data store
 
     # Success message with detailed balance information
     txt = (
         f"🎉 **Purchase Successful!** 🎉\n\n"
         f"🔄 `{inp}` gems have been used to purchase `{total_crystals}` crystals. 💎\n\n"
         f"**Your Balance:**\n"
-        f"💎 Gems: `{user.gems}`\n"
-        f"🔮 Crystals: `{user.crystals}`\n\n"
+        f"💎 Gems: `{u.gems}`\n"
+        f"🔮 Crystals: `{u.crystals}`\n\n"
         f"🚀 You can buy crystals again tomorrow!"
     )
 
