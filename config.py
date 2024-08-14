@@ -5,7 +5,7 @@ API_HASH = getenv("API_HASH", "83d8e423197251216303abfcbed9e820")
 
 BOT_TOKEN = getenv("BOT_TOKEN", "6410981698:AAE6fnYNPdtxhSGnKoAQGTXf0IsWpOKeE9s")
   
-MONGO_DB_URI = getenv("MONGO_DB_URI", "mongodb+srv://phil:phil@cluster0.vvs2pmw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+MONGO_DB_URI = getenv("MONGO_DB_URI", "mongodb+srv://phil9665:phil@cluster0.vvs2pmw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
 SUDO_USERS = getenv("SUDO_USERS",  "1086394021")
 OWNER_ID = int(getenv("OWNER_ID", "1965472544"))
