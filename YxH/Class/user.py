@@ -3,7 +3,7 @@ import pickle
 import time
 
 class User:
-    def __init__(self, user):
+    def __init__(self, user_id):
         self.user = user_id
         self.crystals = 0
         self.gems = 0
