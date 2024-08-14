@@ -8,7 +8,7 @@ GEMS_RECEIVED = 300000
 
 @Client.on_message(filters.command("convertx"))
 @YxH(main_only=True)
-async def convertx(_, m, user):
+async def convertx(_, m, u):
     # Check if today is Wednesday
     today = datetime.now().strftime("%A")
     if today != "Wednesday":
@@ -32,21 +32,21 @@ async def convertx(_, m, user):
 
     total_gems = (inp // GOLD_REQUIRED) * GEMS_RECEIVED
 
-    if inp > user.gold:
-        return await m.reply(f"You only have `{user.gold}` gold. You need `{inp}` gold for this conversion.")
+    if inp > u.gold:
+        return await m.reply(f"You only have `{u.gold}` gold. You need `{inp}` gold for this conversion.")
 
-    user.gold -= inp
-    user.gems += total_gems
-    user.convertx[now] = "converted"
+    u.gold -= inp
+    u.gems += total_gems
+    u.convertx[now] = "converted"
 
-    await user.update()  # Ensure this persists the changes to the data store
+    await u.update()  # Ensure this persists the changes to the data store
 
     txt = (
     f"🎉 **Conversion Successful!** 🎉\n\n"
     f"🔄 `{inp}` gold has been converted into `{total_gems}` gems. 💎\n\n"
     f"**Your Balance:**\n"
-    f"🪙 Gold: `{user.gold}`\n"
-    f"💎 Gems: `{user.gems}`\n\n"
+    f"🪙 Gold: `{u.gold}`\n"
+    f"💎 Gems: `{u.gems}`\n\n"
     f"🚀 You can convert again next Wednesday!"
     )
     
