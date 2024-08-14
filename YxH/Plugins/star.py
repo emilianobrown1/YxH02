@@ -18,7 +18,7 @@ async def start(_, m):
     await m.reply_photo("Images/start.JPG", start_text.format(m.from_user.first_name), reply_markup=await start_markup())
 
     user = await get_user(m.from_user.id)
-    
+
     if not user:
         # Create a new user
         u = User(m.from_user.id)
@@ -34,7 +34,7 @@ async def start(_, m):
                     inviter.crystals += 20  # Add 20 crystals to the inviter
                     await inviter.update()  # Update the inviter's data in the database
             except ValueError:
-                pass  # Handle cases where the invite ID is not a valid integer
+                print(f"Invalid invite ID: {m.command[1]}")  # Log the invalid invite ID
 
         await u.update()  # Update the new user's data in the database
 
