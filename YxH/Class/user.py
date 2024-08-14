@@ -4,7 +4,7 @@ import time
 
 class User:
     def __init__(self, user):
-        self.user = user_id
+        self.user = user
         self.crystals = 0
         self.gems = 0
         self.gold = 0
