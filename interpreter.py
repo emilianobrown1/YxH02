@@ -7,7 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorClient as MongoClient
 mongo = MongoClient(MONGO_DB_URI)
 db = mongo.YxH
 
-test_user: int = 5903688119
+test_user: int = 1086394021
 
 async def func():
     user = await db.users.find_one({'user_id': test_user})
