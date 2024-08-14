@@ -8,7 +8,7 @@ import random
 
 @Client.on_message(filters.command("magic"))
 @YxH(private=False)
-async def magic(client, message, user):
+async def magic(_, m, u):
     current_time = time.time()
     if user.magic_uses > 0 and user.magic_uses % 5 == 0:
         if current_time - user.last_magic_use_time < 300:  # 5 minutes cooldown
@@ -43,7 +43,7 @@ async def magic(client, message, user):
 
 @Client.on_message(filters.command("inventory"))
 @YxH(private=False)
-async def show_inventory(client, message, user):
+async def show_inventory(_, m, u):
     if not user.inventory:
         await message.reply("Your inventory is empty.")
         return
@@ -67,7 +67,7 @@ async def show_inventory(client, message, user):
 
 @Client.on_message(filters.command("use_magic"))
 @YxH(private=False)
-async def use_magic_item(client, message, user):
+async def use_magic_item(_, m, u):
     command = message.text.split()
     if len(command) < 2:
         await message.reply("Please specify the magic item you want to use. (e.g., /use_magic Magic Key 🗝️)")
