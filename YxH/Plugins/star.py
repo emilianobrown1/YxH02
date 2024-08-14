@@ -22,6 +22,6 @@ async def start(_, m):
     if not user:
         # Create a new user
         u = User(m.from_user.id)
-        await u.update()
+        
 
        
