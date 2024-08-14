@@ -20,8 +20,12 @@ async def start(_, m):
     user = await get_user(m.from_user.id)
 
     if not user:
-        # Create a new user
+        # Create a new user and save it to the database
         u = User(m.from_user.id)
-        
+        await u.update()  # Save the new user to the database
 
-       
+    # If the user exists, you might want to update or handle further
+    else:
+        # Do something with the existing user, like updating their last login time
+        user.last_login = some_function_to_get_current_time()
+        await user.update()
