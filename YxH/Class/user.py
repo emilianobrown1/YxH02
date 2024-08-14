@@ -46,7 +46,7 @@ class User:
 
     async def update_invite_link(self, link):
         self.invite_link = link
-        
+        await self.update()
 
     
 
