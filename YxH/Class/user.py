@@ -48,7 +48,7 @@ class User:
         self.invite_link = link
         await self.update()
 
-     async def update(self):
+    async def update(self):
         self.gems = min(self.gems, self.max_gems)
         self.gold = min(self.gold, self.max_gold)
         await db.users.update_one(
