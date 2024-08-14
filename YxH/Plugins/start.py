@@ -21,6 +21,7 @@ async def start(_, m):
     if not user:
         # Create new user
         u = User(m.from_user)
+        await u.update()
         u.crystals += 50  # Add 50 crystals to the new user
 
         # Check if the user was invited via an invite link
