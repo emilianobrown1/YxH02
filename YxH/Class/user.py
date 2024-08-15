@@ -49,7 +49,7 @@ class User:
         await self.update()
 
     async def get_user(cls, user_id):
-    user_data = await db.users.find_one({'user_id': user_id})
+        user_data = await db.users.find_one({'user_id': user_id})
     if user_data:
         return cls(user_data)
     return None
