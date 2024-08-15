@@ -3,8 +3,8 @@ import pickle
 import time
 
 class User:
-    def __init__(self, user_id):
-        self.user_id = user_id  # Renamed from `user` to `user_id` for clarity
+    def __init__(self, user):
+        self.user = user  # Keep the original attribute name
         self.crystals = 0
         self.gems = 0
         self.gold = 0
@@ -57,7 +57,7 @@ class User:
         self.gems = min(self.gems, self.max_gems)
         self.gold = min(self.gold, self.max_gold)
         await db.users.update_one(
-            {'user_id': self.user_id},  
+            {'user_id': self.user},  # Correct key with 'user' instead of 'user_id'
             {'$set': {'info': pickle.dumps(self)}},
             upsert=True
         )
