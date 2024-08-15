@@ -1,4 +1,4 @@
-from YxH.Database import db
+from ..Database import db
 import pickle
 import time
 
