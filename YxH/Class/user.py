@@ -3,8 +3,8 @@ import pickle
 import time
 
 class User:
-    def __init__(self, user):
-        self.user = user
+    def __init__(self, user_id):
+        self.user_id = user_id  # Renamed from `user` to `user_id` for clarity
         self.crystals = 0
         self.gems = 0
         self.gold = 0
@@ -36,7 +36,12 @@ class User:
         self.buy_crystals = {}
         self.scramble = []
         self.wordle = {}
-        self.inventory = {"Magic Key 🗝️": 0, "Magic Diamond 💎": 0, "Magic Potion 🧪": 0, "Magic Stone 🪨": 0}
+        self.inventory = {
+            "Magic Key 🗝️": 0,
+            "Magic Diamond 💎": 0,
+            "Magic Potion 🧪": 0,
+            "Magic Stone 🪨": 0
+        }
         self.magic_uses = 0  # Track magic command usage
         self.last_magic_use_time = 0
         # Dev Requirements.
@@ -48,24 +53,21 @@ class User:
         self.invite_link = link
         await self.update()
 
-    
-
     async def update(self):
         self.gems = min(self.gems, self.max_gems)
         self.gold = min(self.gold, self.max_gold)
         await db.users.update_one(
-        {'user_id': self.user},  
-        {'$set': {'info': pickle.dumps(self)}},
-        upsert=True
-    )
+            {'user_id': self.user_id},  
+            {'$set': {'info': pickle.dumps(self)}},
+            upsert=True
+        )
 
-    
     def is_blocked(self):
         return self.blocked
 
     def block_user(self):
         self.blocked = True
-        
+
     def unblock_user(self):
         self.blocked = False
         # Perform additional actions if needed
@@ -74,5 +76,3 @@ class User:
 
     def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
-
-    
