@@ -50,9 +50,9 @@ class User:
 
     async def get_user(cls, user_id):
         user_data = await db.users.find_one({'user_id': user_id})
-    if user_data:
-        return cls(user_data)
-    return None
+        if user_data and 'info' in user_data:
+            return pickle.loads(user_data['info'])
+        return None
 
     async def update(self):
         self.gems = min(self.gems, self.max_gems)
