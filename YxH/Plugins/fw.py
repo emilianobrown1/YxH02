@@ -13,7 +13,7 @@ start_time: dict[int, float] = {}  # Dictionary to store start times for each ch
 
 me = None
 
-markup = IKM([[IKB("Join 🚀", url="https://t.me/YxH_Homeland")]])
+markup = IKM([[IKB("Join 🚀", url="https://t.me/YxH_Homelanda")]])
 
 async def cwf(_, m):
     global count, start_time, me
