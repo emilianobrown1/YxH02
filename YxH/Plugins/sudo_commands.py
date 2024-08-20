@@ -49,29 +49,24 @@ async def crystals(_, m):
     await m.reply(f"Added `{amount}`")
     await u.update()
 
-
-@Client.on_message(filters.command("addcharacter") & filters.user(SUDO_USERS))
+@Client.on_message(filters.command("addch") & filters.user(SUDO_USERS))
 async def add_character(_, m):
     spl = m.text.split()
     try:
         if m.reply_to_message:
-            user_id = m.reply_to_message.from_user.id
-            character_id = int(spl[1])
+            id = m.reply_to_message.from_user.id
+            char_id = int(spl[1])
         else:
-            user_id, character_id = int(spl[1]), int(spl[2])
+            id, char_id = int(spl[1]), int(spl[2])
     except:
-        return await m.reply("Usage:\n\n`/addcharacter <user_id> <character_id>`\n`/addcharacter <character_id> (Reply to a user)`")
+        return await m.reply("Usage:\n\n`/addch <id> <char_id>`\n`/addch <char_id> (Reply to an user)`")
+
+    u = await get_user(id)
+    valid_character_ids = await get_anime_character_ids()
     
-    u = await get_user(user_id)
-    character = await get_anime_character(character_id)
-    
-    if not character:
-        return await m.reply(f"Character with ID {character_id} not found.")
-    
-    if str(character_id) in u.collection:
-        return await m.reply(f"User already has character {character.name} (ID: {character_id}) in their collection.")
-    
-    u.collection[str(character_id)] = 1  # or any other default value
+    if char_id not in valid_character_ids:
+        return await m.reply("Invalid character ID.")
+
+    u.collection[char_id] = u.collection.get(char_id, 0) + 1
+    await m.reply(f"Character ID `{char_id}` added to user's collection.")
     await u.update()
-    
-    await m.reply(f"Added character {character.name} (ID: {character_id}) to {u.name}'s collection.")
