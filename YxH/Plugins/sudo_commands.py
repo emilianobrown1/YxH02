@@ -62,11 +62,11 @@ async def add_character(_, m):
         return await m.reply("Usage:\n\n`/addch <id> <char_id>`\n`/addch <char_id> (Reply to an user)`")
 
     u = await get_user(id)
-    valid_character_ids = await get_anime_character_ids()
+    character = await get_anime_character(char_id)
     
-    if char_id not in valid_character_ids:
+    if not character:
         return await m.reply("Invalid character ID.")
 
-    u.collection[char_id] = u.collection.get(char_id, 0) + 1
+    u.collection[str(char_id)] = u.collection.get(str(char_id), 0) + 1
     await m.reply(f"Character ID `{char_id}` added to user's collection.")
     await u.update()
