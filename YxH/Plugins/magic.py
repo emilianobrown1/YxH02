@@ -96,13 +96,14 @@ async def use_magic_item(_, m, u):
 
     elif magic_item == "Magic Potion 🧪":
         if u.inventory[magic_item] >= 10:
-            character_ids = await get_anime_character_ids(2)
-            u.collection.update(character_ids)
+            character_ids = await get_anime_character_ids()  # Get all character IDs
+            selected_characters = random.sample(character_ids, 2)  # Randomly select 2 characters
+            u.collection.update({cid: 0 for cid in selected_characters})  # Update collection with selected characters
             u.inventory[magic_item] -= 10
-            await m.reply("You used 10 Magic Potions 🧪 and received 2 new characters!")
+            await message.reply("You used 10 Magic Potions 🧪 and received 2 new random characters!")
         else:
-            await m.reply("You need at least 10 Magic Potions 🧪 to use them.")
-
+            await message.reply("You need at least 10 Magic Potions 🧪 to use them.")
+            
     elif magic_item == "Magic Stone 🪨":
         if u.inventory[magic_item] >= 20:
             u.crystals += 10
