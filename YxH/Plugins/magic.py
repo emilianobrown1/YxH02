@@ -108,9 +108,9 @@ async def use_magic_item(_, m, u):
         
         # Create a reply message with the obtained character IDs
         char_ids_str = ", ".join(str(char) for char in obtained_characters)
-        await message.reply(f"You used 10 Magic Potions 🧪 and received 2 new random characters with IDs: {char_ids_str}!")
+        await m.reply(f"You used 10 Magic Potions 🧪 and received 2 new random characters with IDs: {char_ids_str}!")
     else:
-        await message.reply("You need at least 10 Magic Potions 🧪 to use them.")
+        await m.reply("You need at least 10 Magic Potions 🧪 to use them.")
         
     elif magic_item == "Magic Stone 🪨":
         if u.inventory[magic_item] >= 20:
