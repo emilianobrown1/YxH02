@@ -95,23 +95,23 @@ async def use_magic_item(_, m, u):
             await m.reply("You need at least 15 Magic Diamonds 💎 to use them.")
 
     elif magic_item == "Magic Potion 🧪":
-    if u.inventory[magic_item] >= 10:
-        character_ids = await get_anime_character_ids()  # Get all character IDs
-        selected_characters = random.sample(character_ids, 2)  # Randomly select 2 characters
-        
-        obtained_characters = []  # To store obtained character IDs for reply message
-        for char in selected_characters:
-            u.collection[char] = u.collection.get(char, 0) + 1  # Update collection with selected characters
-            obtained_characters.append(char)
-        
-        u.inventory[magic_item] -= 10  # Deduct 10 Magic Potions
-        
-        # Create a reply message with the obtained character IDs
-        char_ids_str = ", ".join(str(char) for char in obtained_characters)
-        await m.reply(f"You used 10 Magic Potions 🧪 and received 2 new random characters with IDs: {char_ids_str}!")
-    else:
-        await m.reply("You need at least 10 Magic Potions 🧪 to use them.")
-        
+        if u.inventory[magic_item] >= 10:
+            character_ids = await get_anime_character_ids()  # Get all character IDs
+            selected_characters = random.sample(character_ids, 2)  # Randomly select 2 characters
+            
+            obtained_characters = []  # To store obtained character IDs for the reply message
+            for char in selected_characters:
+                u.collection[char] = u.collection.get(char, 0) + 1  # Update collection with selected characters
+                obtained_characters.append(char)
+            
+            u.inventory[magic_item] -= 10  # Deduct 10 Magic Potions
+            
+            # Create a reply message with the obtained character IDs
+            char_ids_str = ", ".join(str(char) for char in obtained_characters)
+            await m.reply(f"You used 10 Magic Potions 🧪 and received 2 new random characters with IDs: {char_ids_str}!")
+        else:
+            await m.reply("You need at least 10 Magic Potions 🧪 to use them.")
+            
     elif magic_item == "Magic Stone 🪨":
         if u.inventory[magic_item] >= 20:
             u.crystals += 10
