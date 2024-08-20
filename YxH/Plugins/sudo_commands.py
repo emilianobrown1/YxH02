@@ -60,7 +60,7 @@ async def add_character(_, m):
     except:
         return await m.reply("Usage:\n\n`/addchar <user_id> <character_id>`\n`/addchar <character_id> (Reply to a user)`")
 
-    user = await get_user(user_id)
+    u = await get_user(user_id)
     if not user:
         return await m.reply("User not found.")
 
@@ -68,9 +68,9 @@ async def add_character(_, m):
     if not character:
         return await m.reply("Character not found.")
 
-    if char_id in user.collection:
+    if char_id in u.collection:
         return await m.reply("Character already in user's collection.")
 
-    user.collection.append(char_id)
-    await user.update()
+    u.collection.append(char_id)
+    await u.update()
     await m.reply(f"Added character `{character.name}` (ID: `{char_id}`) to `{user.username}`'s collection.")
