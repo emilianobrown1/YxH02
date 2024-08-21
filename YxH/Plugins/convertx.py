@@ -8,7 +8,7 @@ GEMS_RECEIVED = 300000
 
 @Client.on_message(filters.command("convertx"))
 @YxH(main_only=True)
-async def convertx(_, m, user):
+async def convertx(_, m, u):
     # Check if today is Wednesday
     today = datetime.now().strftime("%A")
     if today != "Wednesday":
@@ -16,7 +16,7 @@ async def convertx(_, m, user):
 
     # Check if user has already converted today
     now = datetime.now().strftime("%Y-%m-%d")
-    if user.convertx.get(now) == "converted":
+    if u.convertx.get(now) == "converted":
         return await m.reply("You have already converted gold to gems today. Try again next Wednesday.")
 
     try:
