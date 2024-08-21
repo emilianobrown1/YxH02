@@ -8,7 +8,7 @@ GEMS_RECEIVED = 300000
 
 @Client.on_message(filters.command("convertx"))
 @YxH(main_only=True)
-async def convertx(_, m, u):
+async def convertx(_, m, user):
     # Check if today is Wednesday
     today = datetime.now().strftime("%A")
     if today != "Wednesday":
