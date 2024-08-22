@@ -11,7 +11,7 @@ async def safe(_, m, u):
         inp = int(spl[1])
     except:
         return await m.reply("Enter the amount to be transferred.")
-    item = spl[0][4:]
+    item = spl[0][5:]
     if item == "gd":
         if u.gold < inp:
             return await m.reply(f"You only having `{inp}` gold.")
