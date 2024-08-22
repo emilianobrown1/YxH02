@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from ..Database.disabled import disable, enable
+from config import SUDO_USERS
 from . import YxH
 
 @Client.on_message(filters.command('disable'))
