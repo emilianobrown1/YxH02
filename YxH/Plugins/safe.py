@@ -41,6 +41,13 @@ async def rsafe(_, m, u):
         return await m.reply("Unlock Treasure First to withdraw.")
     
     spl = m.text.split()
+    
+    # Determine the item based on the command used
+    item = spl[0][8:]  # Extract 'gd', 'gm', or 'c' from the command name
+    
+    if item not in ["gd", "gm", "c"]:
+        return await m.reply("Invalid item. Use `rsafexgd`, `rsafexgm`, or `rsafexc`.")
+    
     if len(spl) < 2:
         return await m.reply("Enter the amount to be transferred.")
     
@@ -49,8 +56,7 @@ async def rsafe(_, m, u):
     except ValueError:
         return await m.reply("Please enter a valid number for the amount.")
     
-    item = spl[0][8:]
-    
+    # Handle the withdrawal based on the item type
     if item == "gd":
         if u.treasure[0] < inp:
             return await m.reply(f"You only have `{u.treasure[0]}` gold in the treasure.")
@@ -74,6 +80,3 @@ async def rsafe(_, m, u):
         u.crystals += inp
         await u.update()
         return await m.reply(f"`{inp}` crystals have been removed from treasure.")
-    
-    else:
-        return await m.reply("Invalid item. Use `rsafexgd`, `rsafexgm`, or `rsafexc`.")
