@@ -34,49 +34,36 @@ async def safe(_, m, u):
         await u.update()
         return await m.reply(f"`{inp}` crystals has been moved to treasure.")
 
-@Client.on_message(filters.command(["rsafexgd", "rsafexgm", "rsafexc"]))
+
+@Client.on_message(filters.command(["unsafexgd", "unsafexgm", "unsafexc"]))
 @YxH(private=False)
-async def rsafe(_, m, u):
+async def unsafe(_, m, u):
     if not u.treasure_state:
-        return await m.reply("Unlock Treasure First to withdraw.")
-    
+        return await m.reply("Unlock Treasure First to retrieve items.")
     spl = m.text.split()
-    
-    # Determine the item based on the command used
-    item = spl[0][8:]  # Extract 'gd', 'gm', or 'c' from the command name
-    
-    if item not in ["gd", "gm", "c"]:
-        return await m.reply("Invalid item. Use `rsafexgd`, `rsafexgm`, or `rsafexc`.")
-    
-    if len(spl) < 2:
-        return await m.reply("Enter the amount to be transferred.")
-    
     try:
         inp = int(spl[1])
-    except ValueError:
-        return await m.reply("Please enter a valid number for the amount.")
-    
-    # Handle the withdrawal based on the item type
+    except:
+        return await m.reply("Enter the amount to be transferred.")
+    item = spl[0][8:]  # Changed from 6 to 8 to account for "unsafe" prefix
     if item == "gd":
         if u.treasure[0] < inp:
-            return await m.reply(f"You only have `{u.treasure[0]}` gold in the treasure.")
+            return await m.reply(f"You only have `{u.treasure[0]}` gold in your treasure.")
         u.treasure[0] -= inp
         u.gold += inp
         await u.update()
-        return await m.reply(f"`{inp}` gold has been removed from treasure.")
-    
+        return await m.reply(f"`{inp}` gold has been moved from treasure to your inventory.")
     elif item == "gm":
         if u.treasure[1] < inp:
-            return await m.reply(f"You only have `{u.treasure[1]}` gems in the treasure.")
+            return await m.reply(f"You only have `{u.treasure[1]}` gems in your treasure.")
         u.treasure[1] -= inp
         u.gems += inp
         await u.update()
-        return await m.reply(f"`{inp}` gems have been removed from treasure.")
-    
+        return await m.reply(f"`{inp}` gems has been moved from treasure to your inventory.")
     elif item == "c":
         if u.treasure[2] < inp:
-            return await m.reply(f"You only have `{u.treasure[2]}` crystals in the treasure.")
+            return await m.reply(f"You only have `{u.treasure[2]}` crystals in your treasure.")
         u.treasure[2] -= inp
         u.crystals += inp
         await u.update()
-        return await m.reply(f"`{inp}` crystals have been removed from treasure.")
+        return await m.reply(f"`{inp}` crystals has been moved from treasure to your inventory.")
