@@ -56,7 +56,7 @@ async def spin_cbq(_, q, u):
         txt = f"You got 600000 Gold."
     elif x > 40 and x <= 70:
         u.gems += 7500
-        txt = f"You got 75000 Gems."
+        txt = f"You got 7500 Gems."
     else:
         txt = "You got nothing, Better Luck Next Time."
     spin_info_text = f"Spin - 500000 gold (cost) 🎰\n\n" \
