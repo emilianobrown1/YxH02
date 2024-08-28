@@ -88,9 +88,9 @@ async def use_magic_item(_, m, u):
 
     elif magic_item == "Magic Diamond 💎":
         if u.inventory[magic_item] >= 15:
-            u.gems += 2_000_000
+            u.gems += 2_000_00
             u.inventory[magic_item] -= 15
-            await m.reply("You used 15 Magic Diamonds 💎 and earned 2,000,000 gems!")
+            await m.reply("You used 15 Magic Diamonds 💎 and earned 2,000,00 gems!")
         else:
             await m.reply("You need at least 15 Magic Diamonds 💎 to use them.")
 
