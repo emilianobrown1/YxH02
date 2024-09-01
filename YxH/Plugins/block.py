@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from ..Database.users import get_user
+from ..Class.user import User
 from config import SUDO_USERS, OWNER_ID
 
 @Client.on_message(filters.command("block") & filters.user(SUDO_USERS + [OWNER_ID]))
