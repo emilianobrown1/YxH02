@@ -2,7 +2,6 @@ from pyrogram import Client, filters
 from ..Database.users import get_user
 from ..Class.user import User
 from config import SUDO_USERS, OWNER_ID
-import pickle
 
 @Client.on_message(filters.command("block") & filters.user(SUDO_USERS + [OWNER_ID]))
 async def block_user_command(client, message):
@@ -57,7 +56,7 @@ async def get_user_id(message):
     return None
 
 async def get_user_object(user_id):
-    user_data = await get_user(user_id)
-    if not user_data:
+    user = await get_user(user_id)
+    if not user:
         return None
-    return pickle.loads(user_data['info'])
+    return user  # Directly return the User object
