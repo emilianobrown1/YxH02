@@ -58,6 +58,18 @@ async def join_clan(_, q, user, id):
         await q.edit_message_text("Requested to join.")
         await clan.update()
 
+async def leave_clan(_, q, user):
+    if not user.clan_id:
+        return await q.answer("You are not in a clan.", show_alert=True)
+    clan = await get_clan(user.clan_id)
+    if user.user.id == clan.leader:
+        return await q.answer("You cannot leave the clan as you are the leader.", show_alert=True)
+    clan.members.remove(user.user.id)
+    user.clan_id = None
+    await q.edit_message_text(f"You have left **{clan.name}**.")
+    await user.update()
+    await clan.update()
+
 @Client.on_message(filters.command("myclan"))
 @YxH()
 async def myc(_, m, u):
