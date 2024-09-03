@@ -58,7 +58,7 @@ async def join_clan(_, q, user, id):
         await q.edit_message_text("Requested to join.")
         await clan.update()
 
-async def leave_clan(_, q, user):
+async def leave_clan(_, q, u):
     if not user.clan_id:
         return await q.answer("You are not in a clan.", show_alert=True)
     clan = await get_clan(user.clan_id)
