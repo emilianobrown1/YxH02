@@ -1,4 +1,5 @@
 from ..Database import db
+from ..Class.shift import Shift
 import pickle
 import time
 
@@ -73,6 +74,10 @@ class User:
         # Perform additional actions if needed
         # Example: Log the unblocking action
         # Example: Notify the user about the unblocking
+    
+    async def shift_user_data(self, old_user_id: int, new_user_id: int):
+        shifter = Shift(old_user_id, new_user_id)
+        return await shifter.shift_user_data()
 
     def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
