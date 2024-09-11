@@ -3,7 +3,7 @@ from . import YxH
 from ..Class.user import User
 
 @Client.on_message(filters.command("shift"))
-async def shift_command_handler(client, message, user):
+async def shift(client, message, user):
     if len(message.command) != 3:
         await message.reply("Usage: /shift <old_user_id> <new_user_id>")
         return
