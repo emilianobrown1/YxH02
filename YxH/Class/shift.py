@@ -1,6 +1,5 @@
-from ..Database import db
-from .user import User
-import pickle
+# Class/shift.py
+from ..Database.users import get_user, update_user
 
 class Shift:
     def __init__(self, old_user_id: int, new_user_id: int):
@@ -8,34 +7,22 @@ class Shift:
         self.new_user_id = new_user_id
 
     async def shift_user_data(self):
-        # Fetch old and new user data
-        old_user_data = await db.get_user(self.old_user_id)
-        new_user_data = await db.get_user(self.new_user_id)
+        old_user_data = await get_user(self.old_user_id)
+        new_user_data = await get_user(self.new_user_id)
 
         if old_user_data and new_user_data:
-            # Merge crystals, gems, and gold
+            # Perform merge logic here (e.g., merging crystals, gems, collections, etc.)
             new_user_data.crystals += old_user_data.crystals
             new_user_data.gems += old_user_data.gems
             new_user_data.gold += old_user_data.gold
 
-            # Merge collections
+            # Example: merging collections
             new_user_data.collection.update(old_user_data.collection)
 
-            # Merge inventory
-            for item, count in old_user_data.inventory.items():
-                new_user_data.inventory[item] += count
+            # Save the merged new user data
+            await update_user(self.new_user_id, new_user_data)
 
-            # Merge other relevant fields (wordle, scramble, etc.)
-            new_user_data.wordle.update(old_user_data.wordle)
-            new_user_data.scramble.extend(old_user_data.scramble)
-
-            # Save merged data for the new user
-            new_user = User(self.new_user_id)
-            await new_user.update()
-
-            # Delete old user data
-            await db.delete_user(self.old_user_id)
-
-            return f"Successfully merged data from user {self.old_user_id} into user {self.new_user_id}."
-        else:
-            return "Either old user or new user not found."
+            # No deletion of the old user; it remains in the database
+            return f"Data shifted from {self.old_user_id} to {self.new_user_id}."
+        
+        return "User not found."
