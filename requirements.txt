@@ -1,7 +1,6 @@
 pyrogram==2.0.100
 tgcrypto
 telegraph
-envs.sh
 motor
 Pillow==8.2.0
 english-words
