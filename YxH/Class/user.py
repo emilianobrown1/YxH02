@@ -1,5 +1,4 @@
 from ..Database import db
-from ..Class.shift import Shift
 import pickle
 import time
 
