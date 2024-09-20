@@ -35,7 +35,8 @@ from .clan import (
     toggle_jr,
     toggle_v,
     join_clan,
-    clan_cbq
+    clan_cbq,
+    leave_clan
 )
 from .shield import shield_cbq
 from ..universal_decorator import download_image
