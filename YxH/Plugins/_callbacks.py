@@ -194,6 +194,8 @@ async def cbq(_, q: CallbackQuery):
     await join_clan(_, q, u, int(data.split("_")[0].split("|")[1]))
   elif data.startswith("clan"):
     await clan_cbq(_, q, u)
+  elif data.startswith("leaveclan"):
+    await leave_clan(_, q, u)    
   elif data.startswith("shield"):
     await shield_cbq(_, q, u)
   elif data.startswith("gifts"):
