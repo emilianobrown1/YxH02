@@ -1,3 +1,4 @@
+from pyrogram import Client, filters
 import random
 from ..Database.characters import get_anime_character
 from ..Database.users import get_user
