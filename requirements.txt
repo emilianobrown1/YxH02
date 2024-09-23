@@ -7,3 +7,5 @@ english-words
 aiohttp
 psutil
 bs4
+flask
+numpy==1.21.0
