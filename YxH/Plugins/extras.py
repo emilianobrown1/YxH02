@@ -22,9 +22,11 @@ async def find_duplicates(_, m, u):
     for dup_id in duplicate_ids:
         char = await get_anime_character(dup_id)  # Fetch character info
         txt += f"• {char.name} (ID: {char.id})\n"
-        buttons.append([ikb(f"{char.name} (ID: {char.id})", callback_data=f"extra_{char.id}")])
+        # Create buttons to view details of each duplicate character
+        buttons.append([ikb(f"View {char.name}", callback_data=f"view|0|{char.id}")])
 
-    # Inline keyboard markup
+    # Inline keyboard markup for viewing each character
     reply_markup = ikm(buttons)
 
+    # Reply with the list of duplicates and the inline buttons
     await m.reply(txt, reply_markup=reply_markup)
