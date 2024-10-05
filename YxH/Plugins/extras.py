@@ -14,19 +14,14 @@ async def find_duplicates(_, m, u):
     if not duplicates:
         return await m.reply('No extras 🆔 found in your collection.')
 
-    duplicate_ids = list(duplicates.keys())
-
-    # Prepare response text with character names and IDs
-    txt = f"{u.user.first_name}'s duplicate characters:\n\n"
+    # Prepare the message with character names and IDs
+    txt = f"{u.user.first_name}'s Duplicate Characters:\n\n"
     buttons = []
-    for dup_id in duplicate_ids:
-        char = await get_anime_character(dup_id)  # Fetch character info
+    for dup_id in duplicates.keys():
+        char = await get_anime_character(dup_id)
         txt += f"• {char.name} (ID: {char.id})\n"
-        # Create buttons to view details of each duplicate character
-        buttons.append([ikb(f"View {char.name}", callback_data=f"view|0|{char.id}")])
+        # Add an inline button to view the character's image
+        buttons.append([ikb(f"View {char.name}", callback_data=f"view_char_image|{char.id}")])
 
-    # Inline keyboard markup for viewing each character
-    reply_markup = ikm(buttons)
-
-    # Reply with the list of duplicates and the inline buttons
-    await m.reply(txt, reply_markup=reply_markup)
+    # Reply with the character list and buttons
+    await m.reply(txt, reply_markup=ikm(buttons))
