@@ -35,7 +35,9 @@ class User:
         self.convertx = {}  # {date: "converted"}
         self.buy_crystals = {}
         self.scramble = []
-        self.swap = {}
+        self.swap = {
+            "count": 0  # Track the number of swaps
+        }
         self.inventory = {
             "Magic Key 🗝️": 0,
             "Magic Diamond 💎": 0,
