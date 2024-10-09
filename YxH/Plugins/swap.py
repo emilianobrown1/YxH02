@@ -6,7 +6,7 @@ from datetime import datetime
 import random
 
 @Client.on_message(filters.command("swapx"))
-@YxH()  
+@YxH()
 async def swapx(client, message, user):
     # Check if it's Wednesday
     current_day = datetime.now().strftime('%A')
@@ -14,8 +14,12 @@ async def swapx(client, message, user):
         await message.reply("Character exchange is only allowed on Wednesdays.")
         return
 
+    # Ensure 'swap' field exists and handle missing 'count' safely
+    if 'swap' not in user or 'count' not in user.swap:
+        user.swap = {"count": 0}  # Initialize swap count if missing
+
     # Check if user has reached the swap limit
-    if user.swap['count'] >= 3:
+    if user.swap.get('count', 0) >= 3:
         await message.reply("You can only exchange up to 3 characters on Wednesdays.")
         return
 
