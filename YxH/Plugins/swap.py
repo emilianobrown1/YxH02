@@ -5,7 +5,6 @@ from . import YxH
 from datetime import datetime
 import random
 
-
 @Client.on_message(filters.command("swapx"))
 @YxH()  
 async def swapx(client, message, user):
@@ -38,7 +37,7 @@ async def swapx(client, message, user):
         return
 
     # Check if the desired character exists in the database
-    all_anime_character_ids = await get_anime_character_ids()
+    all_anime_character_ids = await get_anime_character_ids()  # Get all character IDs from the database
     if db_char_id not in all_anime_character_ids:
         await message.reply(f"Character with ID {db_char_id} does not exist in the database.")
         return
@@ -50,8 +49,8 @@ async def swapx(client, message, user):
         return
 
     # Perform the swap
-    user.collection.remove(user_char_id)  # Remove the character from the user's collection
-    user.collection.append(db_char_id)    # Add the new character to the user's collection
+    del user.collection[user_char_id]  # Remove the character from the user's collection (use del for dict)
+    user.collection[db_char_id] = new_character  # Add the new character to the user's collection
 
     # Increment the swap count for the user
     user.swap['count'] += 1
