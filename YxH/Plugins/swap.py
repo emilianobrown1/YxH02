@@ -6,7 +6,7 @@ from datetime import datetime
 
 @Client.on_message(filters.command("swapx"))
 @YxH()
-async def swapx(client, message):
+async def swapx(client, message, user):
     user = await get_user(message.from_user.id)
 
     # Ensure the command is only used on Wednesday
