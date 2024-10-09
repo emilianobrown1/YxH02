@@ -10,8 +10,8 @@ import random
 async def swapx(client, message, user):
     # Check if it's Wednesday
     current_day = datetime.now().strftime('%A')
-    if current_day != 'Wednesday':
-        await message.reply("Character exchange is only allowed on Wednesdays.")
+    if current_day != 'Sunday':
+        await message.reply("Character exchange is only allowed on Sunday.")
         return
 
     # Ensure the 'swap' field exists and 'count' is being tracked
@@ -20,7 +20,7 @@ async def swapx(client, message, user):
 
     # Check if user has reached the swap limit
     if user.swap['count'] >= 3:
-        await message.reply("You can only exchange up to 3 characters on Wednesdays.")
+        await message.reply("You can only exchange up to 3 characters on Sunday.")
         return
 
     # Ensure the user provided both character IDs (their own and from the database)
@@ -60,6 +60,6 @@ async def swapx(client, message, user):
 
     # Notify the user of the successful swap
     await message.reply(
-        f"Exchange successful! You swapped your character (ID: {user_char_id}) "
+        f"Swap successful! You swapped your character (ID: {user_char_id}) "
         f"for a new character (ID: {db_char_id}) - {new_character.name}."
     )
