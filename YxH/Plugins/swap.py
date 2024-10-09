@@ -7,7 +7,7 @@ import random
 import pickle
 
 @Client.on_message(filters.command("swapx"))
-async def swapx(client, m):
+async def swapx(_, m, u):
     user_id = m.from_user.id  # Assuming the user ID is the sender's ID
     
     # Check if the command is used on Wednesday
