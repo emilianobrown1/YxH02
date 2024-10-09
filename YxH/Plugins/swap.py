@@ -6,7 +6,7 @@ from datetime import datetime
 import random
 
 @Client.on_message(filters.command("swapx"))
-@YxH()
+@YxH()  
 async def swapx(client, message, user):
     # Check if it's Wednesday
     current_day = datetime.now().strftime('%A')
