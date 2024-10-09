@@ -35,9 +35,17 @@ async def swapx(client, message, user):
     if from_id not in user.collection:
         return await message.reply(f'You do not own the character with ID `{from_id}`!')
 
-    # Perform the swap
-    user.collection.remove(from_id)
-    user.collection.append(to_id)
+    # Track the user's collection
+    if user.collection[from_id] == 1:
+        user.collection.pop(from_id)  # Remove the character if it's the last one
+    else:
+        user.collection[from_id] -= 1  # Decrement the count for the character
+
+    # Add the new character to the collection
+    if to_id in user.collection:
+        user.collection[to_id] += 1  # Increment the count if character already exists
+    else:
+        user.collection[to_id] = 1  # Add the new character with count 1
 
     # Increment the swap count
     user.swap["count"] = swap_count + 1
@@ -45,4 +53,4 @@ async def swapx(client, message, user):
     # Update the user data in the database
     await user.update()
 
-    await message.reply(f'Successfully swapped character {from_id} with {to_id}!')
+    await message.reply(f'Successfully swapped character ID `{from_id}` with character ID `{to_id}`!')
