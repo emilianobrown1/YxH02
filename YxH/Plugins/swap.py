@@ -1,56 +1,57 @@
 from pyrogram import Client, filters
 from ..Database.users import get_user
-from . import YxH
 from ..Database.characters import get_anime_character_ids
 from datetime import datetime
+import random
 
 @Client.on_message(filters.command("swapx"))
-@YxH()
+@YxH()  # Assuming YxH handles user validation and passes user object
 async def swapx(client, message, user):
-    user = await get_user(message.from_user.id)
+    # Check if it's Wednesday
+    current_day = datetime.now().strftime('%A')
+    if current_day != 'Wednesday':
+        await message.reply("Character exchange is only allowed on Wednesdays.")
+        return
 
-    # Ensure the command is only used on Wednesday
-    if datetime.now().strftime("%A").lower() != "wednesday":
-        return await message.reply("This command can only be used on Wednesday.")
+    # Check if user has reached the swap limit
+    if user.swap['count'] >= 3:
+        await message.reply("You can only exchange up to 3 characters on Wednesdays.")
+        return
 
-    # Check if the user has performed 3 swaps today
-    swap_count = user.swap.get("count", 0)
-    if swap_count >= 3:
-        return await message.reply("Maximum swaps reached for today!")
-
-    # Parse the old and new character IDs
+    # Ensure the user provided a character ID to swap
     try:
-        from_id, to_id = map(str, message.text.split()[1:3])  # Convert to strings
+        user_char_id = int(message.command[1])  # The user character ID they want to exchange
     except (IndexError, ValueError):
-        return await message.reply('Usage:\n\n`/swapx [old_id] [new_id]`')
+        await message.reply("Please specify a valid character ID from your collection. Example: /swapx 123")
+        return
 
-    # Get all valid character IDs from the database
-    all_ids = set(map(str, await get_anime_character_ids()))  # Convert to set of strings
+    # Check if the user owns the character they want to swap
+    if user_char_id not in user.collection:
+        await message.reply(f"You don't own the character with ID: {user_char_id}.")
+        return
 
-    # Check if both character IDs are valid
-    if to_id not in all_ids:
-        return await message.reply("Invalid new character ID.")
+    # Fetch all available anime character IDs from the database
+    all_anime_character_ids = await get_anime_character_ids()
+    
+    if not all_anime_character_ids:
+        await message.reply("No anime characters are available for exchange.")
+        return
 
-    # Check if the user owns the character to be swapped
-    if from_id not in user.collection:
-        return await message.reply(f'You do not own the character with ID `{from_id}`!')
+    # Randomly select a new character ID from the database
+    random_character_id = random.choice(all_anime_character_ids)
 
-    # Track the user's collection
-    if user.collection[from_id] == 1:
-        user.collection.pop(from_id)  # Remove the character if it's the last one
-    else:
-        user.collection[from_id] -= 1  # Decrement the count for the character
+    # Perform the swap
+    user.collection.remove(user_char_id)  # Remove the user's character
+    user.collection.append(random_character_id)  # Add the new random character
 
-    # Add the new character to the collection
-    if to_id in user.collection:
-        user.collection[to_id] += 1  # Increment the count if character already exists
-    else:
-        user.collection[to_id] = 1  # Add the new character with count 1
+    # Increment the swap count for the user
+    user.swap['count'] += 1
 
-    # Increment the swap count
-    user.swap["count"] = swap_count + 1
-
-    # Update the user data in the database
+    # Update the user in the database
     await user.update()
 
-    await message.reply(f'Successfully swapped character ID `{from_id}` with character ID `{to_id}`!')
+    # Notify the user of the successful swap
+    await message.reply(
+        f"Exchange successful! You swapped your character (ID: {user_char_id}) "
+        f"for a new character (ID: {random_character_id})."
+    )
