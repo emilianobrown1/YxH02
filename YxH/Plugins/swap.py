@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from ..Database.users import get_user, db
+from ..Database.users import get_user
 from . import YxH
 from ..Class.user import User
 from ..Database.characters import get_anime_character_ids
@@ -19,7 +19,7 @@ async def swapx(_, m):
         return await m.reply("User data not found.")
 
     # Check if the user has performed 3 swaps today
-    swap_count = user_data.get("swap", 0)
+    swap_count = user_data.swap.get("count", 0)  # Using the `swap` attribute
     if swap_count >= 3:
         return await m.reply("Maximum swaps reached for today!")
 
@@ -36,7 +36,7 @@ async def swapx(_, m):
         return await m.reply("Invalid new character ID.")
 
     # Verify if the user owns the character to be swapped
-    if str(from_id) not in user_data["characters"]:
+    if str(from_id) not in user_data.collection:
         return await m.reply(f'You do not own the character with ID `{from_id}`!')
 
     # Perform the swap: remove the old character and add the new one
@@ -45,7 +45,7 @@ async def swapx(_, m):
     await user.add_character(to_id)
 
     # Increment the swap count and update the user data in the database
-    user_data["swap"] = swap_count + 1
+    user_data.swap["count"] = swap_count + 1
     await user.update()  # Save the updated user data using the User class
 
     await m.reply(f'Successfully swapped character {from_id} with {to_id}!')
