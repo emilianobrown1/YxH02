@@ -25,9 +25,11 @@ async def swapx(_, m, u):
     except (IndexError, ValueError):
         return await m.reply('Usage:\n\n`/swapx [old_id] [new_id]`')
 
+    # Get all character IDs from the database
+    all_ids = await get_anime_character_ids()  # Fetch all character IDs as a list
+
     # Check if the new character ID is valid
-    total_characters = await get_anime_character_ids()
-    if to_id > total_characters:
+    if to_id not in all_ids:  # Check if to_id exists in the list of IDs
         return await m.reply("Invalid new character ID.")
 
     # Verify if the user owns the character to be swapped
@@ -35,10 +37,10 @@ async def swapx(_, m, u):
         return await m.reply(f'You do not own the character with ID `{from_id}`!')
 
     # Remove the old character from the user's collection
-    u.collection.remove(str(from_id))  # Assuming collection is a list; otherwise use `del u.collection[str(from_id)]`
+    u.collection.remove(str(from_id))  # Remove old character ID from the collection
 
     # Add the new character to the user's collection
-    u.collection.append(str(to_id))  # Adding the new character ID
+    u.collection.append(str(to_id))  # Add the new character ID
 
     # Increment the swap count and update the user data in the database
     u.swap["count"] = swap_count + 1
