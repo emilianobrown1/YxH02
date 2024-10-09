@@ -35,7 +35,7 @@ class User:
         self.convertx = {}  # {date: "converted"}
         self.buy_crystals = {}
         self.scramble = []
-        self.swap = {}
+        self.swapx = {}
         self.inventory = {
             "Magic Key 🗝️": 0,
             "Magic Diamond 💎": 0,
