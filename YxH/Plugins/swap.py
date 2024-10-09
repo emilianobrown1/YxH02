@@ -15,8 +15,8 @@ async def swapx(client, message, user):
         return
 
     # Ensure 'swap' field exists and handle missing 'count' safely
-    if 'swap' not in user or 'count' not in user.swap:
-        user.swap = {"count": 0}  # Initialize swap count if missing
+    if not hasattr(user, 'swap'):
+        user.swap = {"count": 0}  # Initialize swap if it doesn't exist
 
     # Check if user has reached the swap limit
     if user.swap.get('count', 0) >= 3:
