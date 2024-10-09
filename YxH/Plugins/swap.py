@@ -5,6 +5,7 @@ from ..Database.characters import get_anime_character_ids
 import time
 
 @Client.on_message(filters.command("swapx"))
+@YxH()
 async def swapx(_, m, u):
     user_id = u.user.id  # Get the user ID from the User instance
 
