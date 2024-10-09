@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
-from pyrogram.types import CallbackQuery
-from YxH.Database.characters import get_all_anime_characters
+from . import YxH, get_anime_character
+from YxH.Database.characters import get_all_anime_characters  # Adjust path as needed
 
 # Extras (Duplicates) Command
 @Client.on_message(filters.command('extras'))
@@ -39,15 +39,15 @@ async def uncollected_characters(_, m, u):
         return await m.reply("No characters are available.")
 
     # Filter out characters the user hasn't collected
-    uncollected = [char for char in all_characters if char.id not in coll_dict]
+    uncollected = [char for char in all_characters if char["id"] not in coll_dict]
 
     if not uncollected:
         return await m.reply("You have collected all characters!")
 
     # Prepare the message with uncollected character names and IDs
-    txt = f"{u.user.first_name}'s Uncollected Characters:\n\n"
+    txt = f"{u.first_name}'s Uncollected Characters:\n\n"
     for char in uncollected:
-        txt += f"• {char.name} (ID: {char.id})\n"
+        txt += f"• {char['name']} (ID: {char['id']})\n"
 
     # Single inline button to view uncollected characters
     buttons = [[ikb("View Uncollected", callback_data="view_uncollected")]]
@@ -84,7 +84,7 @@ async def view_uncollected_characters(_, callback_query):
     all_characters = await get_all_anime_characters()  # Assuming this fetches all characters
 
     # Filter out characters the user hasn't collected
-    uncollected = [char for char in all_characters if char.id not in coll_dict]
+    uncollected = [char for char in all_characters if char["id"] not in coll_dict]
 
     if not uncollected:
         return await callback_query.answer("You have collected all characters!", show_alert=True)
@@ -92,7 +92,7 @@ async def view_uncollected_characters(_, callback_query):
     # Prepare the message with uncollected character names and IDs
     txt = f"{u.first_name}'s Uncollected Characters:\n\n"
     for char in uncollected:
-        txt += f"• {char.name} (ID: {char.id})\n"
+        txt += f"• {char['name']} (ID: {char['id']})\n"
 
     # Edit the message to show uncollected characters
     await callback_query.message.edit_text(txt)
