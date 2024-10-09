@@ -53,4 +53,4 @@ async def swapx(_, m, u):
     user_data['info'] = pickle.dumps(dic)
     await db.update_one({'user_id': user_id}, {'$set': {'info': user_data['info']}})
     
-    await m.reply(f'Successfully swapped character `{from_id}` with `{to_id}`!")
+    await m.reply(f'Successfully swapped character {from_id} with {to_id}!')
