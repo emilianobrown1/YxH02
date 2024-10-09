@@ -1,9 +1,10 @@
 from pyrogram import Client, filters
-from ..Database.users import get_user, update_dic
+from ..Database.users import get_user, db
 from ..Class.user import User
 from ..Database.characters import get_anime_character_ids
 import time
 import random
+import pickle
 
 @Client.on_message(filters.command("swapx"))
 async def swapx(client, m):
@@ -44,8 +45,11 @@ async def swapx(client, m):
     await user.remove_character(from_id)
     await user.add_character(to_id)
     
-    # Update the swap counter and store the updated data
+    # Update the swap counter and save the updated data
     dic[str_user_id] = done + 1
-    await update_dic(dic)
     
-    await m.reply(f'Successfully swapped character `{from_id}` with `{to_id}`!')
+    # Save the updated dictionary to the database by pickling the updated info
+    user_data['info'] = pickle.dumps(dic)
+    await db.update_one({'user_id': user_id}, {'$set': {'info': user_data['info']}})
+    
+    await m.reply(f'Successfully swapped character `{from_id}` with `{to_id}`!")
