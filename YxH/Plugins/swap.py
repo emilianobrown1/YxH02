@@ -20,7 +20,7 @@ async def swapx(_, m):
 
     # Check if the user has performed 3 swaps today
     swap_count = user_data.get("swap", 0)
-    if swap_count >= 3:
+    if swapx_count >= 3:
         return await m.reply("Maximum swaps reached for today!")
 
     # Parse the old and new character IDs
