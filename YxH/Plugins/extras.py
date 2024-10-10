@@ -52,6 +52,7 @@ async def uncollected_characters(_, m, u):
     # Start with the first page
     await send_uncollected_page(m, uncollected, 1)
 
+
 # Function to send a specific page of uncollected characters
 async def send_uncollected_page(m, uncollected, page):
     start = (page - 1) * ITEMS_PER_PAGE
@@ -73,13 +74,14 @@ async def send_uncollected_page(m, uncollected, page):
     # Send the message with inline buttons
     await m.reply(txt, reply_markup=ikm([buttons]) if buttons else None)
 
+
 # Callback query handler for uncollected pagination
 @Client.on_callback_query(filters.regex(r"uncollected_(prev|next)_(\d+)"))
 @YxH()
-async def uncollected_pagination(_, cq):
+async def uncollected_pagination(_, cq: CallbackQuery):
     action, current_page = cq.data.split('_')[1:]
     current_page = int(current_page)
-    
+
     coll_dict: dict = cq.from_user.collection
     all_characters = await get_all_anime_characters()
 
@@ -92,6 +94,31 @@ async def uncollected_pagination(_, cq):
     elif action == "prev":
         prev_page = current_page - 1
         await send_uncollected_page(cq.message, uncollected, prev_page)
+
+    # Answer the callback query to remove the loading animation
+    await cq.answer()
+
+
+# Callback query handler for viewing all duplicates
+@Client.on_callback_query(filters.regex(r"view_all_duplicates"))
+@YxH()
+async def view_duplicates_callback(_, cq: CallbackQuery):
+    user = cq.from_user
+    coll_dict: dict = user.collection
+
+    # Find duplicates
+    duplicates = {k: v for k, v in coll_dict.items() if v > 1}
+    if not duplicates:
+        return await cq.message.edit_text('No extras 🆔 found in your collection.')
+
+    # Prepare the message with character names and IDs
+    txt = f"{user.first_name}'s Duplicate Characters:\n\n"
+    for dup_id in duplicates.keys():
+        char = await get_anime_character(dup_id)
+        txt += f"• {char.name} (ID: {char.id})\n"
+
+    # Edit the message with the duplicate character list
+    await cq.message.edit_text(txt)
 
     # Answer the callback query to remove the loading animation
     await cq.answer()
