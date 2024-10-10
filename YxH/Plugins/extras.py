@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
 from . import YxH, get_anime_character
-from YxH.Database.characters import get_all_anime_characters  # Adjust path as needed
+from YxH.Database.characters import get_all as get_all_anime_characters
 
 # Extras (Duplicates) Command
 @Client.on_message(filters.command('extras'))
