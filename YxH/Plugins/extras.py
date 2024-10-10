@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
+from pyrogram.types import CallbackQuery, InputMediaPhoto
 from . import YxH, get_anime_character
 from YxH.Database.characters import get_all as get_all_anime_characters
 
