@@ -4,7 +4,7 @@ from pyrogram.types import CallbackQuery, InputMediaPhoto
 from . import YxH, get_anime_character
 from YxH.Database.characters import get_all as get_all_anime_characters
 
-ITEMS_PER_PAGE = 10
+ITEMS_PER_PAGE = 25
 
 # Extras (Duplicates) Command
 @Client.on_message(filters.command('extras'))
