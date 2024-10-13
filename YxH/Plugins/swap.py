@@ -5,7 +5,7 @@ from . import YxH
 from datetime import datetime
 import random
 
-@@Client.on_message(filters.command("swapx"))
+@Client.on_message(filters.command("swapx"))
 @YxH()  
 async def swapx(client, message, user):
     # Check if it's Sunday
