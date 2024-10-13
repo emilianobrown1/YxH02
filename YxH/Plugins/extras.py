@@ -8,7 +8,7 @@ ITEMS_PER_PAGE = 25
 
 # Extras (Duplicates) Command
 @Client.on_message(filters.command('extras'))
-@YxH()
+@YxH(private=False)
 async def find_duplicates(_, m, u):
     user = m.from_user  # Fetch the user object from the message
     coll_dict: dict = u.collection
