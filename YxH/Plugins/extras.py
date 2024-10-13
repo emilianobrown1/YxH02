@@ -8,15 +8,15 @@ ITEMS_PER_PAGE = 25
 
 # Extras (Duplicates) Command
 @Client.on_message(filters.command('extras'))
-@YxH(private=False)
+@YxH()
 async def find_duplicates(_, m, u):
     user = m.from_user  # Fetch the user object from the message
     coll_dict: dict = u.collection
     if not coll_dict:
         return await m.reply('Your collection is empty.')
 
-    # Find duplicates
-    duplicates = {k: v for k, v in coll_dict.items() if v > 1}
+    # Find duplicates where count > 1
+    duplicates = {k: v for k, v in coll_dict.items() if isinstance(v, int) and v > 1}
     if not duplicates:
         return await m.reply('No extras 🆔 found in your collection.')
 
@@ -31,7 +31,6 @@ async def find_duplicates(_, m, u):
 
     # Reply with the character list and the inline button
     await m.reply(txt, reply_markup=ikm(buttons))
-
 
 # Uncollected Characters Command
 @Client.on_message(filters.command('uncollected'))
