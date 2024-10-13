@@ -5,10 +5,10 @@ from . import YxH
 from datetime import datetime
 import random
 
-@Client.on_message(filters.command("swapx"))
+@@Client.on_message(filters.command("swapx"))
 @YxH()  
 async def swapx(client, message, user):
-    # Check if it's Wednesday
+    # Check if it's Sunday
     current_day = datetime.now().strftime('%A')
     if current_day != 'Sunday':
         await message.reply("Character exchange is only allowed on Sunday.")
@@ -48,9 +48,25 @@ async def swapx(client, message, user):
         await message.reply(f"Character with ID {db_char_id} is not available.")
         return
 
-    # Perform the swap
-    del user.collection[user_char_id]  # Remove the character from the user's collection (use del for dict)
-    user.collection[db_char_id] = new_character  # Add the new character to the user's collection
+    # Perform the swap (removing only one instance of the character)
+    if isinstance(user.collection, list):
+        try:
+            user.collection.remove(user_char_id)  # Remove only one instance of the character
+        except ValueError:
+            await message.reply(f"An error occurred while removing the character with ID: {user_char_id}.")
+            return
+    elif isinstance(user.collection, dict):
+        # If using a dictionary with count system, decrease the count or remove the key if count is 1
+        if user.collection.get(user_char_id, 0) > 1:
+            user.collection[user_char_id] -= 1  # Decrease count if more than one instance exists
+        else:
+            del user.collection[user_char_id]  # Remove the key if only one instance exists
+
+    # Add the new character to the user's collection
+    if isinstance(user.collection, list):
+        user.collection.append(db_char_id)  # Add new character to the collection
+    elif isinstance(user.collection, dict):
+        user.collection[db_char_id] = user.collection.get(db_char_id, 0) + 1  # Increment count or add new
 
     # Increment the swap count for the user
     user.swap['count'] += 1
