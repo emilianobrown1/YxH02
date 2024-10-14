@@ -4,7 +4,7 @@ from ..Utils.templates import xprofile_template
 from ..Utils.markups import xprofile_markup
 
 @Client.on_message(filters.command("xprofile"))
-@YxH()
+@YxH(private=False)
 async def xprof(_, m, u):
   if u.favourite_character:
     return await m.reply_photo(
