@@ -6,7 +6,7 @@ from . import YxH, get_date, get_week
 from ..Class import User
 
 @Client.on_message(filters.command("claim"))
-@YxH()
+@YxH(private=False)
 async def claim(_, m, user: User):
     date, week = get_date(), get_week()
     week_status: list[bool] = user.wbonus.get(week, [False, False, False])
