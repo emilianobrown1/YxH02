@@ -5,6 +5,7 @@ from . import YxH
 from datetime import datetime
 import random
 
+
 @Client.on_message(filters.command("swapx"))
 @YxH()  
 async def swapx(client, message, user):
@@ -14,9 +15,17 @@ async def swapx(client, message, user):
         await message.reply("Character exchange is only allowed on Sunday.")
         return
 
-    # Ensure the 'swap' field exists and 'count' is being tracked
-    if not hasattr(user, 'swap') or 'count' not in user.swap:
-        user.swap = {"count": 0}  # Initialize swap tracking
+    # Initialize the 'swap' field if not present
+    if not hasattr(user, 'swap'):
+        user.swap = {"count": 0, "last_swap_date": None}
+
+    # Check if the last swap was on a different Sunday, if so reset the swap count
+    last_swap_date = user.swap.get('last_swap_date')
+    today_date = datetime.now().date()
+
+    if last_swap_date is None or last_swap_date != today_date:
+        user.swap['count'] = 0  # Reset count on a new Sunday
+        user.swap['last_swap_date'] = today_date  # Update last swap date
 
     # Check if user has reached the swap limit
     if user.swap['count'] >= 3:
