@@ -5,9 +5,9 @@ import heapq
 
 # Define the image map
 image_map = {
-    "**Top Miners**": "Images/mtop.jpg",
-    "**Top Collectors**": "Images/top.jpg",
-    "**Top Crystal Holders**": "Images/ctop.jpg",
+    "Top Miners": "Images/mtop.jpg",
+    "Top Collectors": "Images/top.jpg",
+    "Top Crystal Holders": "Images/ctop.jpg",
 }
 
 # Change this function to calculate the sum of gold held by each user
@@ -28,7 +28,7 @@ async def top(_, m, u):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"  # Ensure 'gold' is an existing attribute
 
     # Get the appropriate image for this category from the image map
-    image_path = image_map["**Top Miners**"]
+    image_path = image_map["Top Miners"]
 
     # Send photo with caption
     await m.reply_photo(
@@ -53,7 +53,7 @@ async def ctop(_, m):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Ensure 'collection' is iterable
 
     # Get the appropriate image for this category from the image map
-    image_path = image_map["**Top Collectors**"]
+    image_path = image_map["Top Collectors"]
 
     # Send photo with caption
     await m.reply_photo(
@@ -79,7 +79,7 @@ async def crtop(_, m, u):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.crystals}`\n"  # Ensure 'crystals' is an existing attribute
 
     # Get the appropriate image for this category from the image map
-    image_path = image_map["**Top Crystal Holders**"]
+    image_path = image_map["Top Crystal Holders"]
 
     # Send photo with caption
     await m.reply_photo(
