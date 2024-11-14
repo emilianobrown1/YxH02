@@ -21,7 +21,7 @@ async def top(_, m, u):
     txt += "\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"  # Display the gold amount
-    await m.reply_photo(TOP_MINERS_IMAGE_PATH = "Images/top.jpg", caption=txt)
+    await m.reply_photo(photo=TOP_MINERS_IMAGE_PATH = "Images/top.jpg", caption=txt)
 
 def c_func(user):
     return len(user.collection)
