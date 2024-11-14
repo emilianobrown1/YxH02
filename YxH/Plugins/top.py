@@ -26,23 +26,15 @@ def c_func(user):
 
 @Client.on_message(filters.command("ctop"))
 @YxH()
-async def ctop(_, m):
+async def ctop(_, m, u):
     users = await get_all_users()
-    # Get the top 10 users based on the size of their collections
+    # This will get the top 10 users based on the amount of gold they hold
     top10 = heapq.nlargest(10, users, key=c_func)
-    txt = "**Top Collectors**\n\n"
-
+    txt = "**Top Collectors**"
+    txt += "\n\n"
     for x, y in enumerate(top10):
-        txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"
-
-    # Path to the image
-    image_path = "Images/top.jpeg"  # Ensure this path is correct
-
-    # Send photo with caption
-    await m.reply_photo(
-        photo=image_path,
-        caption=txt
-    )
+        txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Display the gold amount
+    await m.reply(txt)
 
 def cr_func(user):
     return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount    
