@@ -26,7 +26,7 @@ def c_func(user):
 
 @Client.on_message(filters.command("ctop"))
 @YxH()
-async def ctop(_, m, user):
+async def ctop(_, m):
     users = await get_all_users()
     # Get the top 10 users based on the size of their collections
     top10 = heapq.nlargest(10, users, key=c_func)
