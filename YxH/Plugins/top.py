@@ -24,16 +24,18 @@ def c_func(user):
     return len(user.collection)
 
 @Client.on_message(filters.command("ctop"))
-@YxH()
 async def ctop(_, m, u):
     users = await get_all_users()
-    # This will get the top 10 users based on the amount of gold they hold
-    top10 = heapq.nlargest(10, users, key=c_func)
+    # Get the top 10 users based on the amount of crystals they hold
+    top10 = heapq.nlargest(10, users, key=cr_func)
     txt = "**Top Collectors**"
     txt += "\n\n"
+    
     for x, y in enumerate(top10):
-        txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Display the gold amount
-    image_path = "Images/top.jpeg"  # Replace with your image URL or file path
+        txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"
+    
+    # Specify the relative path to the image in the Images folder
+    image_path = "Images/top.jpeg"  # Ensure this path is correct
 
     await m.reply_photo(
         photo=image_path,
@@ -41,8 +43,7 @@ async def ctop(_, m, u):
     )
 
 def cr_func(user):
-    return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount
-    
+    return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount    
 @Client.on_message(filters.command("crtop"))
 @YxH()
 async def crtop(_, m, u):
