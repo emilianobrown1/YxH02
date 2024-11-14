@@ -69,7 +69,7 @@ async def crtop(_, m, u):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.crystals}`\n"
     
     # Path to the static image for top crystal holders
-    image_path = "Images/crop.jpg"  # Static image for top crystal holders
+    image_path = "Images/ctop.jpg"  # Static image for top crystal holders
 
     # Send photo with caption
     await m.reply_photo(
