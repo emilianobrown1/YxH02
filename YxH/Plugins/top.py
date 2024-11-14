@@ -5,7 +5,7 @@ import heapq
 from . import YxH
 from ..load_attr import load_attr
 
-TOP_MINERS_IMAGE_PATH = "Images/top.jpg"
+TOP_MINERS_IMAGE_PATH = "Images/mtop.jpg"
 
 # Change this function to calculate the sum of gold held by each user
 def key_func(user):
@@ -21,7 +21,7 @@ async def top(_, m, u):
     txt += "\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"  # Display the gold amount
-    with open(TOP_CRYSTAL_HOLDERS_IMAGE_PATH, "rb") as image_file:
+    with open(TOP_MINERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(photo=image_file, caption=txt)
 
 def c_func(user):
