@@ -33,10 +33,10 @@ async def ctop(_, m, u):
     txt += "\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Display the gold amount
-    image_path = "/path/to/image.jpg"  # Replace with your image URL or file path
+    image_path = "Images/top.jpeg"  # Replace with your image URL or file path
 
     await m.reply_photo(
-        photo=image_url,
+        photo=image_path,
         caption=txt
     )
 
