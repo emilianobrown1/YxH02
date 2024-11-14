@@ -33,7 +33,12 @@ async def ctop(_, m, u):
     txt += "\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Display the gold amount
-    await m.reply(txt)
+    image_path = "/path/to/image.jpg"  # Replace with your image URL or file path
+
+    await m.reply_photo(
+        photo=image_url,
+        caption=txt
+    )
 
 def cr_func(user):
     return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount
