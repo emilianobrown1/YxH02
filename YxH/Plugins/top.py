@@ -5,6 +5,8 @@ import heapq
 from . import YxH
 from ..load_attr import load_attr
 
+TOP_MINERS_IMAGE_PATH = "Images/top.jpg"
+
 # Change this function to calculate the sum of gold held by each user
 def key_func(user):
     return user.gold  # Assuming 'gold' is the attribute that holds the gold amount
@@ -19,7 +21,7 @@ async def top(_, m, u):
     txt += "\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"  # Display the gold amount
-    await m.reply(txt)
+    await m.reply_photo(TOP_MINERS_IMAGE_PATH = "Images/top.jpg", caption=txt)
 
 def c_func(user):
     return len(user.collection)
