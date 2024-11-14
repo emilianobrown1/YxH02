@@ -25,7 +25,7 @@ def c_func(user):
 
 @Client.on_message(filters.command("ctop"))
 @YxH()
-async def ctop(_, m):
+async def ctop(_, m, u):
     users = await get_all_users()
     # Get the top 10 users based on the size of their collections
     top10 = heapq.nlargest(10, users, key=c_func)
@@ -35,7 +35,7 @@ async def ctop(_, m):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"
     
     # Path to the image
-    image_path = "images/top.jpeg"  # Ensure this path is correct
+    image_path = "Images/top.jpeg"  # Ensure this path is correct
     
     # Send photo with caption
     await m.reply_photo(
