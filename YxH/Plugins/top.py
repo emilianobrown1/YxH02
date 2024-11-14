@@ -2,6 +2,7 @@ from pyrogram import Client, filters
 from ..Database.users import get_all_users
 from ..universal_decorator import YxH
 import heapq
+from . import YxH
 from ..load_attr import load_attr
 
 # Change this function to calculate the sum of gold held by each user
