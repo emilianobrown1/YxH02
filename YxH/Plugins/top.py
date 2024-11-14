@@ -1,8 +1,14 @@
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from ..Database.users import get_all_users
-from ..universal_decorator import YxH  # Ensure only one YxH import
+from ..universal_decorator import YxH
 import heapq
+
+# Define the image map
+image_map = {
+    "**Top Miners**": "Images/mtop.jpg",
+    "**Top Collectors**": "Images/top.jpg",
+    "**Top Crystal Holders**": "Images/ctop.jpg",
+}
 
 # Change this function to calculate the sum of gold held by each user
 def key_func(user):
@@ -21,8 +27,8 @@ async def top(_, m, u):
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"  # Ensure 'gold' is an existing attribute
 
-    # Path to the static image for top miners
-    image_path = "Images/mtop.jpg"  # Static image for top miners
+    # Get the appropriate image for this category from the image map
+    image_path = image_map["**Top Miners**"]
 
     # Send photo with caption
     await m.reply_photo(
@@ -46,8 +52,8 @@ async def ctop(_, m):
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Ensure 'collection' is iterable
 
-    # Path to the static image for top collectors
-    image_path = "Images/top.jpg"  # Static image for top collectors
+    # Get the appropriate image for this category from the image map
+    image_path = image_map["**Top Collectors**"]
 
     # Send photo with caption
     await m.reply_photo(
@@ -72,8 +78,8 @@ async def crtop(_, m, u):
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.crystals}`\n"  # Ensure 'crystals' is an existing attribute
 
-    # Path to the static image for top crystal holders
-    image_path = "Images/ctop.jpg"  # Static image for top crystal holders
+    # Get the appropriate image for this category from the image map
+    image_path = image_map["**Top Crystal Holders**"]
 
     # Send photo with caption
     await m.reply_photo(
