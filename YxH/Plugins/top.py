@@ -17,9 +17,18 @@ async def top(_, m, u):
     top10 = heapq.nlargest(10, users, key=key_func)
     txt = "**Top Miners**"
     txt += "\n\n"
+    
     for x, y in enumerate(top10):
-        txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"  # Display the gold amount
-    await m.reply(txt)
+        txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"
+    
+    # Path to the static image for top miners
+    image_path = "Images/mtop.jpg"  # Static image for top miners
+
+    # Send photo with caption
+    await m.reply_photo(
+        photo=image_path,
+        caption=txt
+    )
 
 def c_func(user):
     return len(user.collection)
@@ -31,13 +40,13 @@ async def ctop(_, m):
     # Get the top 10 users based on the size of their collections
     top10 = heapq.nlargest(10, users, key=c_func)
     txt = "**Top Collectors**\n\n"
-    
+
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"
     
-    # Path to the image
-    image_path = "Images/top.jpeg"  # Ensure this path is correct
-    
+    # Path to the static image for top collectors
+    image_path = "Images/top.jpg"  # Static image for top collectors
+
     # Send photo with caption
     await m.reply_photo(
         photo=image_path,
@@ -46,6 +55,7 @@ async def ctop(_, m):
 
 def cr_func(user):
     return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount    
+
 @Client.on_message(filters.command("crtop"))
 @YxH()
 async def crtop(_, m, u):
@@ -54,6 +64,15 @@ async def crtop(_, m, u):
     top10 = heapq.nlargest(10, users, key=cr_func)
     txt = "**Top Crystal Holders**"
     txt += "\n\n"
+    
     for x, y in enumerate(top10):
-        txt += f"`{x+1}.` **{y.user.first_name}** - `{y.crystals}`\n"  # Display the crystals amount
-    await m.reply(txt)
+        txt += f"`{x+1}.` **{y.user.first_name}** - `{y.crystals}`\n"
+    
+    # Path to the static image for top crystal holders
+    image_path = "Images/crop.jpg"  # Static image for top crystal holders
+
+    # Send photo with caption
+    await m.reply_photo(
+        photo=image_path,
+        caption=txt
+    )
