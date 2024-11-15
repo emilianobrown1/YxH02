@@ -19,8 +19,7 @@ async def top(_, m, u):
     users = await get_all_users()
     # This will get the top 10 users based on the amount of gold they hold
     top10 = heapq.nlargest(10, users, key=key_func)
-    txt = "**Top Miners**"
-    txt += "\n\n"
+    txt = "**Top Miners**\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.gold}`\n"  # Display the gold amount
     with open(TOP_MINERS_IMAGE_PATH, "rb") as image_file:
@@ -33,27 +32,25 @@ def c_func(user):
 @YxH()
 async def ctop(_, m, u):
     users = await get_all_users()
-    # This will get the top 10 users based on the amount of gold they hold
+    # This will get the top 10 users based on the collection size
     top10 = heapq.nlargest(10, users, key=c_func)
-    txt = "**Top Collectors**"
-    txt += "\n\n"
+    txt = "**Top Collectors**\n\n"
     for x, y in enumerate(top10):
-        txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Display the gold amount
-   with open(TOP_COLLECTORS_IMAGE_PATH, "rb") as image_file:
+        txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Display the collection size
+    with open(TOP_COLLECTORS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
 
 def cr_func(user):
-    return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount    
+    return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount
+
 @Client.on_message(filters.command("crtop"))
 @YxH()
 async def crtop(_, m, u):
     users = await get_all_users()
     # This will get the top 10 users based on the amount of crystals they hold
     top10 = heapq.nlargest(10, users, key=cr_func)
-    txt = "**Top Crystal Holders**"
-    txt += "\n\n"
+    txt = "**Top Crystal Holders**\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.crystals}`\n"  # Display the crystals amount
-    with open(TOP_CRYSTALS_HOLDERS_IMAGE_PATH, "rb") as image_file:
+    with open(TOP_CRYSTAL_HOLDERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
-
