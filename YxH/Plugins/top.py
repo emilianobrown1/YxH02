@@ -6,6 +6,8 @@ from . import YxH
 from ..load_attr import load_attr
 
 TOP_MINERS_IMAGE_PATH = "Images/mtop.jpg"
+TOP_COLLECTORS_IMAGE_PATH = "Images/top.jpg"
+TOP_CRYSTAL_HOLDERS_IMAGE_PATH = "Images/ctop.jpg"
 
 # Change this function to calculate the sum of gold held by each user
 def key_func(user):
@@ -37,7 +39,8 @@ async def ctop(_, m, u):
     txt += "\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{len(y.collection)}`\n"  # Display the gold amount
-    await m.reply(txt)
+   with open(TOP_COLLECTORS_IMAGE_PATH, "rb") as image_file:
+        await m.reply_photo(image_file, caption=txt)
 
 def cr_func(user):
     return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount    
@@ -51,5 +54,6 @@ async def crtop(_, m, u):
     txt += "\n\n"
     for x, y in enumerate(top10):
         txt += f"`{x+1}.` **{y.user.first_name}** - `{y.crystals}`\n"  # Display the crystals amount
-    await m.reply(txt)
+    with open(TOP_CRYSTALS_HOLDERS_IMAGE_PATH, "rb") as image_file:
+        await m.reply_photo(image_file, caption=txt)
 
