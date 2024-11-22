@@ -44,6 +44,12 @@ class User:
             "Magic Potion 🧪": 0,
             "Magic Stone 🪨": 0
         }
+        self.armoury = {
+            "Trops": {"Shinobi": 0, "Wizard": 0, "Sensei": 0},
+            "Powers": {"Fire": 0, "Ice": 0, "Lightning": 0},
+            "Beasts": {"Dragon": 0, "Phoenix": 0, "Tiger": 0}
+        }
+    
         self.magic_uses = 0  # Track magic command usage
         self.last_magic_use_time = 0
         # Dev Requirements.
