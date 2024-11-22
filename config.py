@@ -3,7 +3,7 @@ from os import getenv
 API_ID = int(getenv("API_ID", "28872999"))
 API_HASH = getenv("API_HASH", "7bab29feade5c8d36a5b47645eb769cb")
 
-BOT_TOKEN = getenv("BOT_TOKEN", "6410981698:AAGLfD-VHkZUHWq8VwIGKQzJcPRkX_wtgJg")
+BOT_TOKEN = getenv("BOT_TOKEN", "7006726437:AAEUqcQLuKiUbiF_gM26TrEl47abHPoyGjQ")
   
 MONGO_DB_URI = getenv("MONGO_DB_URI", "mongodb+srv://tashumansinghka175:hJ2qcS5Rj69M9FId@cluster0.vvs2pmw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
