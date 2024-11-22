@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from . import YxH
 from ..Database.users import get_user
-from class.user import User  # Import your User class
+from ..Class.user import User  # Import your User class
 
 
 @Client.on_message(filters.command("armoury"))
