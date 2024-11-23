@@ -201,6 +201,6 @@ async def cbq(_, q: CallbackQuery):
   elif data.startswith("gifts"):
     await gifts_cbq(_, q, u)
   elif data.startswith("barracks"):
-    await barracks_cbq(_, q, u)    
+    await barrack_cbq(_, q, u)    
   else:
     return await q.answer("Under maintenance.", show_alert=True)
