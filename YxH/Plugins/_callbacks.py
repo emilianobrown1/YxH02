@@ -23,7 +23,7 @@ from ..Utils.datetime import get_date
 from ..Class import User, AnimeCharacter
 from .spinxwin import spin_cbq
 from .gift import gifts_cbq
-
+from.barracks import barracks_cbq
 # MODULE FUNCTIONS IMPORTS
 
 from .bonus import claim_cbq
