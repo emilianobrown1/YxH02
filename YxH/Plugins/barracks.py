@@ -1,6 +1,7 @@
 from pyrogram.types import InputMediaPhoto
 from pyrogram import Client, filters
-from . import YxH, get_date, get_user, ikm, ikb
+from ..Class.user import User
+from . import YxH, get_date, ikm, ikb
 
 @Client.on_message(filters.command("xbarracks"))
 @YxH()
