@@ -21,7 +21,7 @@ async def xbarracks(_, m, u):
         txt += "You can only purchase up to 4 barracks.\n\n"
 
     txt += f"Barracks: {count}\nCost: {cost} Crystals\n\nYou have: {u.barracks} barracks."
-    await m.reply_photo(
+    await m.reply_image(
         image_file="Images/barrack.jpg",  # Replace with the actual image path or URL
         caption=txt,
         reply_markup=barrack_markup(u.user.id, count)
