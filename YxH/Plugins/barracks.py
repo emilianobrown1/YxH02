@@ -1,16 +1,15 @@
 from pyrogram import Client, filters
-from pyrogram.types import InputMediaPhoto
-from ..Database.user import get_user  # Import get_user function
+from class.user import User  # Import the User class
 
 @Client.on_message(filters.command("barracks"))
 async def barracks(_, m):
-    # Fetch the user instance from the database
+    # Initialize user instance from User class
     user_id = m.from_user.id
-    u = await get_user(user_id)
+    u = User(user_id)
 
-    # Handle case where user does not exist
+    # Ensure the user is loaded correctly
     if u is None:
-        return await m.reply("❌ **You need to register before using this command!**")
+        return await m.reply("❌ **User not found in the database!** Please start the bot with /start.")
 
     # Validate the count argument (should always be 1)
     try:
@@ -45,7 +44,7 @@ async def barracks(_, m):
     # Deduct crystals and update barracks
     u.crystals -= cost
     u.barracks += 1
-    await u.update()  # Update the database with the new user data
+    u.update()  # Save changes to the user instance
 
     # Send confirmation with an image
     caption = (
