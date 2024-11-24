@@ -5,7 +5,7 @@ from . import YxH
 from ..Database.users import get_user
 
 @Client.on_message(filters.command("barracks"))
-async def barracks(_, m, u):
+async def barracks(_, m):
     # No need to fetch `u` here, since `u` is already passed by the decorator
     
     # Validate the count argument (should always be 1)
