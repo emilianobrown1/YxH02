@@ -34,7 +34,7 @@ async def barracks(_, m):
     cost = 100
 
     # Check if the user has enough crystals
-    if u.crystals < cost:
+    if int(u.crystals) < cost:
         return await m.reply(
             f"❌ **Not enough Crystals!**\n\n"
             f"You need `{cost - u.crystals}` more crystals to buy 1 barrack.\n"
