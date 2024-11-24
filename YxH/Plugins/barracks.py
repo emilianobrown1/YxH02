@@ -22,7 +22,7 @@ async def xbarracks(_, m, u):
 
     txt += f"Barracks: {count}\nCost: {cost} Crystals\n\nYou have: {u.barracks} barracks."
     await m.reply_photo(
-        photo="Images/barrack.jpg",  # Replace with the actual image path or URL
+        "Images/barrack.jpg",  # Replace with the actual image path or URL
         caption=txt,
         reply_markup=barrack_markup(u.user.id, count)
     )
