@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
-from class.user import User  # Import the User class
+from . import YxH
+from ..Class import User
 
 @Client.on_message(filters.command("barracks"))
 async def barracks(_, m):
