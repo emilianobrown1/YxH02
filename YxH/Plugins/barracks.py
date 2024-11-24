@@ -1,12 +1,11 @@
 from pyrogram import Client, filters
 from pyrogram.types import InputMediaPhoto
-from ..Database.users import get_user
+from ..Database.user import get_user  # Import the get_user function from the database module
 
 @Client.on_message(filters.command("barracks"))
-async def barracks(_, m):
-    # Fetch the user instance
-    u = await User.get_user(m.from_user.id)
-
+async def barracks(_, m, u):
+    # No need to fetch `u` here, since `u` is already passed by the decorator
+    
     # Validate the count argument (should always be 1)
     try:
         count = int(m.text.split()[1])
@@ -40,7 +39,7 @@ async def barracks(_, m):
     # Deduct crystals and update barracks
     u.crystals -= cost
     u.barracks += 1
-    await u.update()
+    await u.update()  # Make sure this method updates the database with the new values
 
     # Send confirmation with an image
     caption = (
