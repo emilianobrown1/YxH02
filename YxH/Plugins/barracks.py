@@ -1,72 +1,56 @@
 from pyrogram.types import InputMediaPhoto
 from pyrogram import Client, filters
 from ..Class.user import User
-from . import YxH, get_date, ikm, ikb
 
-@Client.on_message(filters.command("xbarracks"))
-@YxH()
-async def xbarracks(_, m, u):
+@Client.on_message(filters.command("barracks"))
+async def xbarracks(_, m):
+    # Fetch the user instance
+    u = await User.get_user(m.from_user.id)
+
+    # Validate the count argument (should always be 1)
     try:
         count = int(m.text.split()[1])
-    except:
+    except (IndexError, ValueError):
         return await m.reply(
-            f"Usage: /xbarracks [count]\n\nYou have: {u.barracks} barracks."
+            f"💡 **Usage:** `/barracks 1`\n\n"
+            f"🏰 **Your Current Barracks:** `{u.barracks}`\n"
+            f"💎 **Each Barrack Costs:** `100 Crystals`\n"
+            f"🔢 **Purchase Limit:** `1 Barrack at a time`"
         )
-    
-    cost = count * 50
-    txt = ''
 
-    if count > 4:
-        count = 4
-        cost = count * 50
-        txt += "You can only purchase up to 4 barracks.\n\n"
+    # Allow only 1 barrack per purchase
+    if count != 1:
+        return await m.reply(
+            f"❌ **You can only buy 1 barrack at a time!**\n\n"
+            f"💡 **Usage:** `/barracks 1`"
+        )
 
-    txt += f"Barracks: {count}\nCost: {cost} Crystals\n\nYou have: {u.barracks} barracks."
-    await m.reply_photo(
-        "Images/barrack.jpg",  # Replace with the actual image path or URL
-        caption=txt,
-        reply_markup=barrack_markup(u.user.id, count)
-    )
-
-
-def barrack_markup(user_id, count):
-    return ikm([[ikb(f"Buy {count} Barracks", callback_data=f"barrack_{user_id}|{count}")]])
-
-
-def close(user_id):
-    return ikm([[ikb("Close", callback_data=f"close_{user_id}")]])
-
-
-async def barrack_cbq(_, q, u):
-    # Parse callback data
-    try:
-        action, data = q.data.split("_", 1)
-        user_id, count = map(int, data.split("|"))
-    except ValueError:
-        return await q.answer("Invalid data format.", show_alert=True)
-
-    # Validate user ownership of the callback
-    if user_id != u.user.id:
-        return await q.answer("This action is not for you.", show_alert=True)
-
-    # Calculate cost and validate count
-    max_count = 4
-    count = min(count, max_count)  # Cap the count at the max limit
-    cost = count * 50
+    # Cost for 1 barrack
+    cost = 100
 
     # Check if the user has enough crystals
     if u.crystals < cost:
-        return await q.answer(
-            f"You need {cost - u.crystals} more crystals to buy.",
-            show_alert=True,
+        return await m.reply(
+            f"❌ **Not enough Crystals!**\n\n"
+            f"You need `{cost - u.crystals}` more crystals to buy 1 barrack.\n"
+            f"💎 **Your Crystals:** `{u.crystals}`\n"
+            f"🏰 **Your Current Barracks:** `{u.barracks}`"
         )
 
     # Deduct crystals and update barracks
     u.crystals -= cost
-    u.barracks += count
+    u.barracks += 1
     await u.update()
 
-    # Notify user of the purchase
-    txt = f"Successfully bought {count} barracks for {cost} crystals.\n\nYou now have: {u.barracks} barracks."
-    await q.answer()
-    await q.edit_message_text(txt, reply_markup=close_markup(u.user.id))
+    # Send confirmation with an image
+    caption = (
+        f"🎉 **Congratulations, Commander!**\n\n"
+        f"🏰 You successfully built `1` barrack 🛡️ to train your troops!\n\n"
+        f"💎 **Crystals Spent:** `100`\n"
+        f"🏰 **Total Barracks Now:** `{u.barracks}`\n"
+        f"💪 **Prepare Your Army and Lead to Glory!**"
+    )
+    await m.reply_photo(
+        "Images/barrack.jpg",  # Replace with the actual image path or URL
+        caption=caption
+    )
