@@ -36,8 +36,6 @@ def close(user_id):
     return ikm([[ikb("Close", callback_data=f"close_{user_id}")]])
 
 
-@Client.on_callback_query(filters.regex(r"^barrack_\d+\|\d+$"))
-@YxH()
 async def barrack_cbq(_, q, u):
     # Parse callback data
     try:
