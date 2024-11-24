@@ -1,6 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InputMediaPhoto
 from ..Class.user import User
+from ..Database.users import get_user
 
 @Client.on_message(filters.command("barracks"))
 async def barracks(_, m):
