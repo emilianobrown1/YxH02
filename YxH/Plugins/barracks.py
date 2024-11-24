@@ -1,9 +1,9 @@
-from pyrogram.types import InputMediaPhoto
 from pyrogram import Client, filters
+from pyrogram.types import InputMediaPhoto
 from ..Class.user import User
 
 @Client.on_message(filters.command("barracks"))
-async def xbarracks(_, m):
+async def barracks(_, m):
     # Fetch the user instance
     u = await User.get_user(m.from_user.id)
 
