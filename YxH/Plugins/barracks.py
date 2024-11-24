@@ -3,6 +3,7 @@ from pyrogram import Client, filters
 from . import YxH, get_date, get_user, ikm, ikb
 
 @Client.on_message(filters.command("xbarracks"))
+@YxH()
 async def xbarracks(_, m, u):
     try:
         count = int(m.text.split()[1])
