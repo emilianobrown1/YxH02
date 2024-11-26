@@ -1,14 +1,16 @@
 from pyrogram import Client, filters
-from ..Database.users import get_user
+from . import YxH
+
 
 @Client.on_message(filters.command("barracks"))
-async def barracks(_, m):
+@YxH()
+async def barracks(_, m, u):
     # Parse the count from the command
     spl = m.text.split()
     if len(spl) < 2:
         return await m.reply(
             f"💡 **Usage:** `/barracks 1`\n\n"
-            f"🏰 **Your Current Barracks:** `0`\n"  # Default message; replace with actual fetch if needed
+            f"🏰 **Your Current Barracks:** `{u.barracks if hasattr(u, 'barracks') else 0}`\n"
             f"💎 **Each Barrack Costs:** `100 Crystals`\n"
             f"🔢 **Purchase Limit:** `1 Barrack at a time`"
         )
@@ -28,10 +30,9 @@ async def barracks(_, m):
     # Cost for 1 barrack
     cost = 100
 
-    # Fetch the user
-    u = await get_user(m.from_user.id)
-    if not u:
-        return await m.reply("❌ **User not found in the database!** Please start the bot with /start.")
+    # Ensure the `barracks` attribute exists
+    if not hasattr(u, "barracks"):
+        u.barracks = 0  # Initialize if not present
 
     # Check if the user has enough crystals
     if u.crystals < cost:
@@ -44,7 +45,7 @@ async def barracks(_, m):
 
     # Deduct crystals and increment barracks count
     u.crystals -= cost
-    u.barracks = u.barracks + 1 if hasattr(u, "barracks") else 1  # Add barrack count if not already present
+    u.barracks += 1  # Safely increment the barrack count
 
     # Update the user in the database
     await u.update()
