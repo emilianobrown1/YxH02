@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from . import YxH
 import random
 from .equipments import equipment_data as equipments_data, check_expiry
-from datetime import datetime
+from datetime import datetime, timedelta
 from ..Database.chats import get_all_chats  # Import chats database functions
 
 percentage_range: list[int] = list(range(20, 80))
