@@ -1,8 +1,8 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from ..Database.couple import add_couple, rmv_couple, get_couple
-from ..class.user import User
-from .class.couple import Couple
+from ..Class.user import User
+from .Class.couple import Couple
 
 @Client.on_message(filters.command("propose"))
 async def propose_command(client, message):
