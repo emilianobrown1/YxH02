@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from ..Database.couple import add_couple, rmv_couple, get_couple
 from ..class.user import User
 from ..class.couple import Couple
 
