@@ -86,3 +86,19 @@ class User:
     
     def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
+
+    # Couple-related methods
+    async def add_couple(self, partner_id: int):
+        """Add a couple relationship using the Couple class."""
+        couple = Couple(self.user_id)
+        await couple.add(partner_id)
+
+    async def remove_couple(self, partner_id: int):
+        """Remove a couple relationship using the Couple class."""
+        couple = Couple(self.user_id)
+        await couple.remove(partner_id)
+
+    async def get_partner(self):
+        """Get the user's partner using the Couple class."""
+        couple = Couple(self.user_id)
+        return await couple.get_partner()
