@@ -1,6 +1,5 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from ..Database.couple import add_couple, rmv_couple, get_couple
 from ..Class.user import User
 from ..Class.couple import Couple
 
@@ -16,12 +15,16 @@ async def propose_command(client, message):
     proposer = User(proposer_id)
     partner = User(partner_id)
 
+    # Create Couple instances
+    proposer_couple = Couple(proposer_id)
+    partner_couple = Couple(partner_id)
+
     # Check if either user is already in a couple
-    if await Couple.get_couple(proposer_id):
+    if await proposer_couple.get_partner():
         await message.reply("You are already in a relationship!")
         return
     
-    if await Couple.get_couple(partner_id):
+    if await partner_couple.get_partner():
         await message.reply("The person you're proposing to is already in a relationship!")
         return
 
@@ -38,7 +41,7 @@ async def propose_command(client, message):
         f"{message.reply_to_message.from_user.mention}, {message.from_user.mention} is proposing to you! Will you accept?",
         reply_markup=keyboard
     )
-
+    
 @Client.on_callback_query(filters.regex("^accept_"))
 async def accept_proposal(client, callback_query):
     proposer_id = int(callback_query.data.split("_")[1])
