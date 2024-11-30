@@ -16,11 +16,11 @@ async def propose_command(client, message):
     partner = User(partner_id)
 
     # Check if either user is already in a couple
-    if await proposer.get_partner():
+    if await Couple.get_couple(proposer_id):
         await message.reply("You are already in a relationship!")
         return
     
-    if await partner.get_partner():
+    if await Couple.get_couple(partner_id):
         await message.reply("The person you're proposing to is already in a relationship!")
         return
 
@@ -37,6 +37,25 @@ async def propose_command(client, message):
         f"{message.reply_to_message.from_user.mention}, {message.from_user.mention} is proposing to you! Will you accept?",
         reply_markup=keyboard
     )
+
+@Client.on_callback_query(filters.regex("^accept_"))
+async def accept_proposal(client, callback_query):
+    proposer_id = int(callback_query.data.split("_")[1])
+    partner_id = callback_query.from_user.id
+
+    # Add couple relationship
+    await Couple.add_couple(proposer_id, partner_id)
+
+    await callback_query.answer("Proposal accepted!")
+    await callback_query.message.edit("Congratulations! You are now a couple! 👩‍❤️‍👨")
+
+@Client.on_callback_query(filters.regex("^deny_"))
+async def deny_proposal(client, callback_query):
+    proposer_id = int(callback_query.data.split("_")[1])
+
+    await client.kick_chat_member(callback_query.message.chat.id, proposer_id)
+    await callback_query.answer("Proposal denied. User has been kicked.")
+    await callback_query.message.edit("The proposal was denied, and the proposer was kicked. 🦵")
 
 @Client.on_callback_query(filters.regex("^accept_"))
 async def accept_proposal(client, callback_query):
