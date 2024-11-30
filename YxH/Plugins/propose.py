@@ -43,12 +43,16 @@ async def propose_command(client: Client, message: Message):
     )
     
 @Client.on_callback_query(filters.regex("^accept_"))
-async def accept_proposal(client: Client, callback_query: CallbackQuery):
+async def accept_proposal(client, callback_query):
     proposer_id = int(callback_query.data.split("_")[1])
     partner_id = callback_query.from_user.id
 
-    # Establish a couple relationship
-    await Couple.add_couple(proposer_id, partner_id)
+    # Try to add the couple relationship
+    success = await Couple(proposer_id).add(partner_id)
+
+    if not success:
+        await callback_query.answer("One of you is already in a relationship!")
+        return
 
     await callback_query.answer("Proposal accepted!")
     await callback_query.message.edit("Congratulations! You are now a couple! 👩‍❤️‍👨")
