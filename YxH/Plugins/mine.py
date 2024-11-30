@@ -8,6 +8,14 @@ from ..Database.chats import get_all_chats  # Import chats database functions
 percentage_range: list[int] = list(range(20, 80))
 fest_hour_active = False
 fest_hour_start = None
+daily_fest_hour = None  # Store the daily Fest Hour start time (hour)
+
+def set_daily_fest_hour():
+    """
+    Randomly selects a Fest Hour start time within an 18-hour period (6 AM to midnight).
+    """
+    global daily_fest_hour
+    daily_fest_hour = random.randint(19, 20)  # Random hour between 6 AM and 11 PM
 
 def is_fest_hour():
     """
@@ -27,10 +35,10 @@ def is_fest_hour():
 
 async def start_fest_hour(client):
     """
-    Starts the Fest Hour randomly once per day.
+    Starts the Fest Hour at the pre-selected daily time.
     Notifies all chats about the event.
     """
-    global fest_hour_active, fest_hour_start
+    global fest_hour_active, fest_hour_start, daily_fest_hour
     if not fest_hour_active:
         fest_hour_active = True
         fest_hour_start = datetime.now()
@@ -48,6 +56,19 @@ async def start_fest_hour(client):
                 )
             except Exception as e:
                 print(f"Failed to notify chat {chat.chat_id}: {e}")
+
+async def check_and_start_fest_hour(client):
+    """
+    Checks if the current time matches the daily Fest Hour and starts it.
+    """
+    global daily_fest_hour, fest_hour_active
+    now = datetime.now()
+    if daily_fest_hour is None:
+        set_daily_fest_hour()  # Set Fest Hour if not already set
+
+    # Start Fest Hour if it's the pre-selected daily hour
+    if now.hour == daily_fest_hour and not fest_hour_active:
+        await start_fest_hour(client)
 
 @Client.on_message(filters.command("mine"))
 @YxH(private=False)
