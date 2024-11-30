@@ -1,10 +1,10 @@
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from ..Class.user import User
-from ..Class.couple import Couple
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from ..Class.user import User  # User class to manage user-related operations
+from ..Class.couple import Couple  # Couple class to manage couple-related operations
 
 @Client.on_message(filters.command("propose"))
-async def propose_command(client, message):
+async def propose_command(client: Client, message: Message):
     if not message.reply_to_message:
         await message.reply("You need to reply to someone's message to propose!")
         return
@@ -12,10 +12,10 @@ async def propose_command(client, message):
     proposer_id = message.from_user.id
     partner_id = message.reply_to_message.from_user.id
 
+    # Initialize User and Couple instances
     proposer = User(proposer_id)
     partner = User(partner_id)
 
-    # Create Couple instances
     proposer_couple = Couple(proposer_id)
     partner_couple = Couple(partner_id)
 
@@ -28,7 +28,7 @@ async def propose_command(client, message):
         await message.reply("The person you're proposing to is already in a relationship!")
         return
 
-    # Send proposal with buttons
+    # Send proposal message with inline buttons
     keyboard = InlineKeyboardMarkup(
         [
             [
@@ -43,27 +43,26 @@ async def propose_command(client, message):
     )
     
 @Client.on_callback_query(filters.regex("^accept_"))
-async def accept_proposal(client, callback_query):
+async def accept_proposal(client: Client, callback_query: CallbackQuery):
     proposer_id = int(callback_query.data.split("_")[1])
     partner_id = callback_query.from_user.id
 
-    # Add couple relationship
+    # Establish a couple relationship
     await Couple.add_couple(proposer_id, partner_id)
 
     await callback_query.answer("Proposal accepted!")
     await callback_query.message.edit("Congratulations! You are now a couple! 👩‍❤️‍👨")
 
 @Client.on_callback_query(filters.regex("^deny_"))
-async def deny_proposal(client, callback_query):
+async def deny_proposal(client: Client, callback_query: CallbackQuery):
     proposer_id = int(callback_query.data.split("_")[1])
 
-    await client.kick_chat_member(callback_query.message.chat.id, proposer_id)
-    await callback_query.answer("Proposal denied. User has been kicked.")
-    await callback_query.message.edit("The proposal was denied, and the proposer was kicked. 🦵")
+    # Notify about the proposal rejection
+    await callback_query.answer("Proposal denied.", show_alert=True)
+    await callback_query.message.edit("The proposal was denied. 🦵")
 
-@
 @Client.on_message(filters.command("breakup"))
-async def breakup_command(client, message):
+async def breakup_command(client: Client, message: Message):
     user_id = message.from_user.id
     user = User(user_id)
 
@@ -77,7 +76,7 @@ async def breakup_command(client, message):
     # Remove couple relationship
     await user.remove_couple(partner_id)
 
-    # Notify both users
+    # Notify both users about the breakup
     await message.reply(f"You have broken up with {partner_id}. 😢")
     try:
         await client.send_message(partner_id, f"{message.from_user.mention} has broken up with you. 😢")
