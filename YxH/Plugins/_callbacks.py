@@ -69,7 +69,7 @@ async def cbq(_, q: CallbackQuery):
         else:
             await q.answer("You can't propose this user!", show_alert=True)
 
-    elif q.data.startswith("accept"):
+   elif q.data.startswith("accept"):
         # Handling accept data: "accept_user1_id_user2_id"
         _, user1_id, user2_id = q.data.split("_")
         user1_id, user2_id = int(user1_id), int(user2_id)
@@ -80,7 +80,7 @@ async def cbq(_, q: CallbackQuery):
         else:
             await q.answer("You can't accept this proposal!", show_alert=True)
 
-    elif q.data.startswith("deny"):
+   elif q.data.startswith("deny"):
         # Handling deny data: "deny_user1_id_user2_id"
         _, user1_id, user2_id = q.data.split("_")
         user1_id = int(user1_id)
