@@ -61,28 +61,7 @@ async def deny_proposal(client, callback_query):
     await callback_query.answer("Proposal denied. User has been kicked.")
     await callback_query.message.edit("The proposal was denied, and the proposer was kicked. 🦵")
 
-@Client.on_callback_query(filters.regex("^accept_"))
-async def accept_proposal(client, callback_query):
-    proposer_id = int(callback_query.data.split("_")[1])
-    partner_id = callback_query.from_user.id
-
-    proposer = User(proposer_id)
-    partner = User(partner_id)
-
-    # Add couple relationship
-    await proposer.add_couple(partner_id)
-
-    await callback_query.answer("Proposal accepted!")
-    await callback_query.message.edit("Congratulations! You are now a couple! 👩‍❤️‍👨")
-
-@Client.on_callback_query(filters.regex("^deny_"))
-async def deny_proposal(client, callback_query):
-    proposer_id = int(callback_query.data.split("_")[1])
-
-    await client.kick_chat_member(callback_query.message.chat.id, proposer_id)
-    await callback_query.answer("Proposal denied. User has been kicked.")
-    await callback_query.message.edit("The proposal was denied, and the proposer was kicked. 🦵")
-
+@
 @Client.on_message(filters.command("breakup"))
 async def breakup_command(client, message):
     user_id = message.from_user.id
