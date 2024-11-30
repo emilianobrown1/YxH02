@@ -1,22 +1,30 @@
-from . import db
+from. import db
 import pickle
 
-
-db = db.couple  
-
-async def add_couple(i, f):
+async def add_couple(user1_id, user2_id):
     """Add a couple relationship between two users."""
-    await db.update_one({"i": i}, {"$set": {"f": f}}, upsert=True)
-    await db.update_one({"i": f}, {"$set": {"f": i}}, upsert=True)
+    # Create or update couple relationship between user1 and user2
+    await db.update_one(
+        {"user1": user1_id}, {"$set": {"user2": user2_id}}, upsert=True
+    )
+    await db.update_one(
+        {"user1": user2_id}, {"$set": {"user2": user1_id}}, upsert=True
+    )
 
-async def rmv_couple(i, f):
+async def rmv_couple(user1_id, user2_id):
     """Remove a couple relationship between two users."""
-    await db.delete_one({"i": i})
-    await db.delete_one({"i": f})
+    # Remove the couple relationship between user1 and user2
+    await db.delete_one({"user1": user1_id, "user2": user2_id})
+    await db.delete_one({"user1": user2_id, "user2": user1_id})
 
-async def get_couple(i):
+async def get_couple(user_id):
     """Retrieve the couple of a user."""
-    x = await db.find_one({"i": i})
-    if not x:
-        return None
-    return x["f"]
+    # Find the couple of the given user
+    couple = await db.find_one({"user1": user_id})
+    if couple:
+        return couple["user2"]
+    # If not found with "user1", check "user2" as the other half
+    couple = await db.find_one({"user2": user_id})
+    if couple:
+        return couple["user1"]
+    return None
