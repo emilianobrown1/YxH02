@@ -15,7 +15,7 @@ def set_daily_fest_hour():
     Randomly selects a Fest Hour start time within an 18-hour period (6 AM to midnight).
     """
     global daily_fest_hour
-    daily_fest_hour = random.randint(19, 20)  # Random hour between 6 AM and 11 PM
+    daily_fest_hour = random.randint(3, 22)  # Random hour between 6 AM and 11 PM
 
 def is_fest_hour():
     """
