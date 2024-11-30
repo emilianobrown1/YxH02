@@ -22,6 +22,7 @@ from pyrogram.types import InputMediaPhoto as imp
 from ..Utils.datetime import get_date
 from ..Class import User, AnimeCharacter
 from .spinxwin import spin_cbq
+from . propose import 
 from .gift import gifts_cbq
 # MODULE FUNCTIONS IMPORTS
 
@@ -54,7 +55,34 @@ async def cbq(_, q: CallbackQuery):
     u = await get_user(q.from_user.id)
     count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
-  
+      
+   elif data.startswith("propose"):
+        # Handling propose data: "propose_user1_id_user2_id"
+        _, user1_id, user2_id = data.split("_")
+        user1_id, user2_id = int(user1_id), int(user2_id)
+        
+        # Logic for proposing a couple relationship
+        if user1_id == q.from_user.id:
+            # If the user is proposing themselves, make sure user2 accepts
+            await add_couple(user1_id, user2_id)
+            await q.answer("Proposal sent successfully.", show_alert=True)
+        else:
+            # If someone else is proposing the user, notify them
+            await q.answer("You can't propose this user!", show_alert=True)
+
+    elif data.startswith("accept"):
+        # Handling accept data: "accept_user1_id_user2_id"
+        _, user1_id, user2_id = data.split("_")
+        user1_id, user2_id = int(user1_id), int(user2_id)
+        
+        # Logic for accepting a couple relationship
+        if user2_id == q.from_user.id:
+            await add_couple(user1_id, user2_id)
+            await q.answer("You are now a couple!", show_alert=True)
+        else:
+            # If the user doesn't match the acceptance criteria
+            await q.answer("You can't accept this proposal!", show_alert=True)
+            
 
   data, actual = q.data.split("_")
   actual = int(actual)
