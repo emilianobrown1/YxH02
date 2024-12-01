@@ -91,15 +91,16 @@ async def breakup_command(client: Client, message: Message):
     user_id = message.from_user.id
     user_couple = Couple(user_id)
 
+    # Get the partner's ID
     partner_id = await user_couple.get_partner()
     if not partner_id:
         return await message.reply("❌ **You are not in a relationship!**")
 
     partner_couple = Couple(partner_id)
 
-    # Remove the couple relationship
-    await user_couple.remove()
-    await partner_couple.remove()
+    # Remove the couple relationship for both users
+    await user_couple.remove(partner_id)
+    await partner_couple.remove(user_id)
 
     # Notify both users about the breakup
     await message.reply(f"💔 **You have broken up with {partner_id}. 😢**")
