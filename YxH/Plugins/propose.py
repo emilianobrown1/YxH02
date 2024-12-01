@@ -41,7 +41,7 @@ async def propose_command(client: Client, message: Message, _, m, u):
     )
 
 @Client.on_callback_query(filters.regex("^accept_"))
-@YxH(is_callback=True)  # Decorator for callback queries
+@YxH()  # Decorator for callback queries
 async def accept_proposal(client: Client, callback_query: CallbackQuery, _, m, u):
     _, proposer_id, partner_id = callback_query.data.split("_")
     proposer_id = int(proposer_id)
@@ -69,7 +69,7 @@ async def accept_proposal(client: Client, callback_query: CallbackQuery, _, m, u
         pass
 
 @Client.on_callback_query(filters.regex("^deny_"))
-@YxH(is_callback=True)  # Decorator for callback queries
+@YxH()  # Decorator for callback queries
 async def deny_proposal(client: Client, callback_query: CallbackQuery, _, m, u):
     _, proposer_id, partner_id = callback_query.data.split("_")
     proposer_id = int(proposer_id)
