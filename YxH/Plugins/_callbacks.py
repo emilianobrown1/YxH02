@@ -57,36 +57,51 @@ async def cbq(_, q: CallbackQuery):
     count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
 
-  elif q.data.startswith("propose"):
-        # Handling propose data: "propose_user1_id_user2_id"
-        _, user1_id, user2_id = q.data.split("_")
-        user1_id, user2_id = int(user1_id), int(user2_id)
+ elif q.data.startswith("propose"):
+        # Extract proposer and partner IDs
+        _, proposer_id, partner_id = q.data.split("_")
+        proposer_id, partner_id = int(proposer_id), int(partner_id)
 
-        if user1_id == q.from_user.id:
-            # If the proposer is sending the proposal
-            await Couple.add_couple(user1_id, user2_id)
-            await q.answer("Proposal sent successfully.", show_alert=True)
-        else:
-            await q.answer("You can't propose this user!", show_alert=True)
+        if proposer_id != q.from_user.id:
+            return await q.answer("❌ You cannot send this proposal.", show_alert=True)
+
+        # Validate and add couple
+        proposer = Couple(proposer_id)
+        partner = Couple(partner_id)
+        if await proposer.get_partner() or await partner.get_partner():
+            return await q.answer("❌ One of you is already in a relationship.", show_alert=True)
+
+        await proposer.add(partner_id)
+        await q.answer("✅ Proposal sent successfully.", show_alert=True)
 
   elif q.data.startswith("accept"):
-        # Handling accept data: "accept_user1_id_user2_id"
-        _, user1_id, user2_id = q.data.split("_")
-        user1_id, user2_id = int(user1_id), int(user2_id)
+        # Extract proposer and partner IDs
+        _, proposer_id, partner_id = q.data.split("_")
+        proposer_id, partner_id = int(proposer_id), int(partner_id)
 
-        if user2_id == q.from_user.id:
-            await Couple.add_couple(user1_id, user2_id)
-            await q.answer("You are now a couple!", show_alert=True)
-        else:
-            await q.answer("You can't accept this proposal!", show_alert=True)
+        if partner_id != q.from_user.id:
+            return await q.answer("❌ You cannot accept this proposal.", show_alert=True)
+
+        # Validate and add couple
+        proposer = Couple(proposer_id)
+        partner = Couple(partner_id)
+        if await proposer.get_partner() or await partner.get_partner():
+            return await q.answer("❌ One of you is already in a relationship.", show_alert=True)
+
+        await proposer.add(partner_id)
+        await q.answer("💖 You are now a couple!", show_alert=True)
+        await q.message.edit("🎉 Congratulations! You are now a couple. 👩‍❤️‍👨")
 
   elif q.data.startswith("deny"):
-        # Handling deny data: "deny_user1_id_user2_id"
-        _, user1_id, user2_id = q.data.split("_")
-        user1_id = int(user1_id)
+        # Extract proposer ID
+        _, proposer_id, partner_id = q.data.split("_")
+        proposer_id, partner_id = int(proposer_id), int(partner_id)
 
-        await q.answer("Proposal denied.", show_alert=True)
-        await q.message.edit("The proposal was denied. 🦵")  
+        if partner_id != q.from_user.id:
+            return await q.answer("❌ You cannot deny this proposal.", show_alert=True)
+
+        await q.answer("❌ Proposal denied.", show_alert=True)
+        await q.message.edit("💔 The proposal was denied. 🦵")
 
   data, actual = q.data.split("_")
   actual = int(actual)
