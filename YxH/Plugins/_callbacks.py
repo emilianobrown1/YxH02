@@ -57,7 +57,7 @@ async def cbq(_, q: CallbackQuery):
     count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
 
- elif q.data.startswith("propose"):
+  elif q.data.startswith("propose"):
         # Extract proposer and partner IDs
         _, proposer_id, partner_id = q.data.split("_")
         proposer_id, partner_id = int(proposer_id), int(partner_id)
