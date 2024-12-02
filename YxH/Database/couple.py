@@ -3,15 +3,18 @@ import pickle
 
 async def add_couple(user1_id, user2_id):
     """Add a couple relationship between two users."""
-    # Access the 'couples' collection and create or update couple relationship between user1 and user2
     couple_collection = db.get_collection("couples")
-    
-    # Update the couple relationship
+
+    # Create the couple if it doesn't exist
     await couple_collection.update_one(
-        {"user1": user1_id}, {"$set": {"user2": user2_id}}, upsert=True
+        {"user1": user1_id},
+        {"$set": {"user2": user2_id, "message_gems": 0}},
+        upsert=True
     )
     await couple_collection.update_one(
-        {"user1": user2_id}, {"$set": {"user2": user1_id}}, upsert=True
+        {"user1": user2_id},
+        {"$set": {"user2": user1_id, "message_gems": 0}},
+        upsert=True
     )
 
 async def rmv_couple(user1_id, user2_id):
