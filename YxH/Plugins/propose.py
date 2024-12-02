@@ -130,8 +130,8 @@ async def top_couples_handler(client: Client, message: Message):
         user2_data = await get_user(user2_id)
         
         # Ensure user1 and user2 have the 'first_name' key or fallback to their user_id
-        user1_name = user1_data.get('first_name', str(user1_id)) if user1_data else str(user1_id)
-        user2_name = user2_data.get('first_name', str(user2_id)) if user2_data else str(user2_id)
+        user1_name = user.get('first_name', str(user1_id)) if user1_data else str(user1_id)
+        user2_name = user.get('first_name', str(user2_id)) if user2_data else str(user2_id)
         
         # Safely get 'message_gems', default to 0 if not found
         gems = couple.get("message_gems", 0)
