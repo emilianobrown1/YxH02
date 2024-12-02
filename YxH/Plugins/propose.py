@@ -116,17 +116,28 @@ async def breakup_command(client: Client, message: Message):
 
 @Client.on_message(filters.command("top_couples"))
 async def top_couples_handler(client: Client, message: Message):
-    # Fetch top couples
+    # Fetch top couples from the database
     top_couples = await get_top_couples()
 
     # Build leaderboard message
     leaderboard = "🏆 **Top Couples**\n\n"
     for idx, couple in enumerate(top_couples, 1):
-        user1 = couple["user1"]
-        user2 = couple["user2"]
+        user1_id = couple["user1"]
+        user2_id = couple["user2"]
+        
+        # Fetch User objects for user1 and user2
+        user1 = User(user1_id)
+        user2 = User(user2_id)
+        
+        # Fetch the first name of both users (assuming User class has a 'user' attribute with first_name)
+        user1_name = user1.user.first_name if user1.user else f"User{user1_id}"
+        user2_name = user2.user.first_name if user2.user else f"User{user2_id}"
+        
         # Safely get 'message_gems', default to 0 if not found
         gems = couple.get("message_gems", 0)
-        leaderboard += f"{idx}. {user1} ❤️ {user2} - {gems} Gems\n"
+
+        # Add couple information to leaderboard
+        leaderboard += f"{idx}. {user1_name} ❤️ {user2_name} - {gems} Gems\n"
 
     # Send the leaderboard
     await message.reply_text(leaderboard)
