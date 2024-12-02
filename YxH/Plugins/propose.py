@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from ..Database.couple import get_top_couples
 from ..Class.user import User
 from ..Class.couple import Couple
 
@@ -111,3 +112,21 @@ async def breakup_command(client: Client, message: Message):
             pass
     else:
         await message.reply("❌ **Failed to break up. Please try again later!**")
+
+
+@Client.on_message(filters.command("top_couples"))
+async def top_couples_handler(client, message):
+    # Fetch the top couples
+    top_couples = await get_top_couples(limit=10)
+
+    # Build the leaderboard text
+    leaderboard = "🏆 **Top Couples Leaderboard** 🏆\n\n"
+    for idx, couple in enumerate(top_couples, start=1):
+        user1 = couple["user1"]
+        user2 = couple["user2"]
+        gems = couple["message_gems"]
+        leaderboard += f"{idx}. {user1} ❤️ {user2} - {gems} Gems\n"
+
+    # Send the leaderboard
+    await message.reply_text(leaderboard)
+    
