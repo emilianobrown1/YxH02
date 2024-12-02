@@ -1,7 +1,6 @@
 from ..Database import db
 import pickle
 import time
-from ..Class.couple import Couple
 
 class User:
     def __init__(self, user_id):
