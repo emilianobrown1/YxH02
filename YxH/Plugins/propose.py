@@ -114,7 +114,6 @@ async def breakup_command(client: Client, message: Message):
     else:
         await message.reply("❌ **Failed to break up. Please try again later!**")
 
-
 @Client.on_message(filters.command("top_couples"))
 async def top_couples_handler(client: Client, message: Message):
     # Fetch top couples from the database
@@ -126,13 +125,13 @@ async def top_couples_handler(client: Client, message: Message):
         user1_id = couple["user1"]
         user2_id = couple["user2"]
         
-        # Fetch User objects for user1 and user2 from the database
-        user1 = await get_user(user1_id)
-        user2 = await get_user(user2_id)
+        # Fetch User data for user1 and user2 from the database
+        user1_data = await get_user(user1_id)
+        user2_data = await get_user(user2_id)
         
-        # Ensure user1 and user2 have the 'first_name' or fallback to a default
-        user1_name = user1.get('first_name', f"User{user1_id}") if user1 else f"User{user1_id}"
-        user2_name = user2.get('first_name', f"User{user2_id}") if user2 else f"User{user2_id}"
+        # Ensure user1 and user2 have the 'first_name' key or fallback to their user_id
+        user1_name = user1_data.get('first_name', str(user1_id)) if user1_data else str(user1_id)
+        user2_name = user2_data.get('first_name', str(user2_id)) if user2_data else str(user2_id)
         
         # Safely get 'message_gems', default to 0 if not found
         gems = couple.get("message_gems", 0)
@@ -142,7 +141,7 @@ async def top_couples_handler(client: Client, message: Message):
 
     # Send the leaderboard
     await message.reply_text(leaderboard)
-    
+
 @Client.on_message(filters.command("check_couple"))
 async def check_couple_handler(client: Client, message: Message):
     user_id = message.from_user.id
