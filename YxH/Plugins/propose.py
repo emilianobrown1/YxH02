@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from ..Database.couple import get_top_couples
+from ..Database.couple import, get_couple, get_top_couples
 from ..Class.user import User
 from ..Class.couple import Couple
 
@@ -130,3 +130,13 @@ async def top_couples_handler(client, message):
     # Send the leaderboard
     await message.reply_text(leaderboard)
     
+@Client.on_message(filters.command("check_couple"))
+async def check_couple_handler(client: Client, message: Message):
+    user_id = message.from_user.id
+    couple = Couple(user_id)
+    partner_id = await couple.get_partner()
+
+    if partner_id:
+        await message.reply(f"💞 **You are in a relationship with {partner_id}.**")
+    else:
+        await message.reply("❌ **You are not in a relationship.**")
