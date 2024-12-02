@@ -49,7 +49,7 @@ async def add_message_gems(user1_id, user2_id, gems):
     """Add gems earned through messaging to the couple."""
     couple_collection = db.get_collection("couples")
 
-    # Increment the gems earned for this couple atomically
+    # Increment the gems earned for this couple in both directions
     await couple_collection.update_one(
         {"user1": user1_id, "user2": user2_id},
         {"$inc": {"message_gems": gems}},
