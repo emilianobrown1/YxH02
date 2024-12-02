@@ -141,7 +141,7 @@ async def check_couple_handler(client: Client, message: Message):
     else:
         await message.reply("❌ **You are not in a relationship.**")
 
-@Client.on_message(filters.text & ~filters.command)
+@Client.on_message(filters.text & filters.command)
 async def on_message(client: Client, message: Message):
     user_id = message.from_user.id
 
