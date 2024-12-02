@@ -63,7 +63,7 @@ async def add_message_gems(user1_id, user2_id, gems):
 
 async def get_top_couples(limit=10):
     """
-    Retrieve the top couples by total gems earned through messaging.
+    Retrieve the top couples by total gems earned through messaging, with user names.
     """
     couple_collection = db.get_collection("couples")
 
@@ -75,4 +75,14 @@ async def get_top_couples(limit=10):
     ]
 
     top_couples = await couple_collection.aggregate(pipeline).to_list(length=limit)
+
+    # Fetch user names for each couple
+    for couple in top_couples:
+        user1_data = await get_user(couple["user1"])
+        user2_data = await get_user(couple["user2"])
+
+        # Safely handle cases where user data might not exist
+        couple["user1_name"] = user1_data.first_name if user1_data else f"User{couple['user1']}"
+        couple["user2_name"] = user2_data.first_name if user2_data else f"User{couple['user2']}"
+
     return top_couples
