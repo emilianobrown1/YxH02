@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from ..Database.couple import, get_couple, get_top_couples, add_message_gems
+from ..Database.couple import get_couple, get_top_couples, add_message_gems
 from ..Class.user import User
 from ..Class.couple import Couple
 
