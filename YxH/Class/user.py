@@ -89,24 +89,41 @@ class User:
         return int((time.time() - self.init_time) / 86400)
 
     # Couple-related methods
-    async def add(self, partner_id):
-        # Check if a couple already exists
-        couple = await self.collection.find_one({'user_id': self.user_id})
-        if couple:
-            # Couple already exists
-            return
-        # Create a new couple
-        await self.collection.insert_one({
-            'user_id': self.user_id,
-            'partner_id': partner_id
-        })
+    async def add_couple(self, partner_id):
+        """Add a couple relationship between users."""
+        couple_collection = db.get_collection("couples")
+        
+        # Add user1 to user2 relationship
+        await couple_collection.update_one(
+            {'user1': self.user_id}, 
+            {'$set': {'user2': partner_id}}, 
+            upsert=True
+        )
+        
+        # Add user2 to user1 relationship
+        await couple_collection.update_one(
+            {'user1': partner_id}, 
+            {'$set': {'user2': self.user_id}}, 
+            upsert=True
+        )
 
-    async def remove(self, partner_id):
-        await self.collection.delete_one({
-            'user_id': self.user_id,
-            'partner_id': partner_id
-        })
+    async def remove_couple(self, partner_id):
+        """Remove a couple relationship."""
+        couple_collection = db.get_collection("couples")
+        
+        # Remove user1-user2 relationship and user2-user1 relationship
+        await couple_collection.delete_one({'user1': self.user_id, 'user2': partner_id})
+        await couple_collection.delete_one({'user1': partner_id, 'user2': self.user_id})
 
     async def get_partner(self):
-        couple = await self.collection.find_one({'user_id': self.user_id})
-        return couple['partner_id'] if couple else None
+        """Get the partner of the user."""
+        couple_collection = db.get_collection("couples")
+        couple = await couple_collection.find_one({'user1': self.user_id})
+        
+        if couple:
+            return couple['user2']
+        couple = await couple_collection.find_one({'user2': self.user_id})
+        if couple:
+            return couple['user1']
+        return None
+        
