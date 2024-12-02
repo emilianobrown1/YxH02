@@ -40,11 +40,13 @@ async def get_couple(user_id):
     
     return None
 
+from . import db
+
 async def add_message_gems(user1_id, user2_id, gems):
     """Add gems earned through messaging to the couple."""
     couple_collection = db.get_collection("couples")
 
-    # Increment the gems earned for this couple
+    # Increment the gems earned for this couple atomically
     await couple_collection.update_one(
         {"user1": user1_id, "user2": user2_id},
         {"$inc": {"message_gems": gems}},
@@ -60,7 +62,6 @@ async def get_top_couples(limit=10):
     """
     Retrieve the top couples by total gems earned through messaging.
     """
-    # Get the "couples" collection
     couple_collection = db.get_collection("couples")
 
     # Aggregation pipeline to sort and limit the top couples
@@ -70,6 +71,5 @@ async def get_top_couples(limit=10):
         {"$project": {"user1": 1, "user2": 1, "message_gems": 1}},  # Project relevant fields
     ]
 
-    # Execute the aggregation pipeline
     top_couples = await couple_collection.aggregate(pipeline).to_list(length=limit)
     return top_couples
