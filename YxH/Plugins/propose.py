@@ -130,7 +130,7 @@ async def top_couples_handler(client: Client, message: Message):
         user1 = await get_user(user1_id)
         user2 = await get_user(user2_id)
         
-        # Fetch the first name of both users (or use fallback if user data is unavailable)
+        # Safely get 'first_name' from the User object
         user1_name = user1.first_name if user1 else f"User{user1_id}"
         user2_name = user2.first_name if user2 else f"User{user2_id}"
         
