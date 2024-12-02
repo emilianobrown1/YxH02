@@ -57,13 +57,19 @@ async def add_message_gems(user1_id, user2_id, gems):
     )
 
 async def get_top_couples(limit=10):
-    """Retrieve the top couples by total gems earned through messaging."""
+    """
+    Retrieve the top couples by total gems earned through messaging.
+    """
+    # Get the "couples" collection
     couple_collection = db.get_collection("couples")
 
-    # Aggregate and sort couples by message_gems
+    # Aggregation pipeline to sort and limit the top couples
     pipeline = [
-        {"$sort": {"message_gems": -1}},  # Sort by gems in descending order
-        {"$limit": limit},  # Limit to top results
+        {"$sort": {"message_gems": -1}},  # Sort by 'message_gems' in descending order
+        {"$limit": limit},  # Limit the results to the top 'limit'
+        {"$project": {"user1": 1, "user2": 1, "message_gems": 1}},  # Project relevant fields
     ]
+
+    # Execute the aggregation pipeline
     top_couples = await couple_collection.aggregate(pipeline).to_list(length=limit)
     return top_couples
