@@ -56,6 +56,7 @@ class User:
         self.last_magic_use_time = 0
         # Dev Requirements.
         self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
+        self.collection = db.get_collection("couples")
         self.max_gems = 5_000_000
         self.max_gold = 1_000_000_000_0
 
@@ -89,17 +90,24 @@ class User:
         return int((time.time() - self.init_time) / 86400)
 
     # Couple-related methods
-    async def add_couple(self, partner_id: int):
-        """Add a couple relationship using the Couple class."""
-        couple = Couple(self.user_id)
-        await couple.add(partner_id)
+    async def add(self, partner_id):
+        # Check if a couple already exists
+        couple = await self.collection.find_one({'user_id': self.user_id})
+        if couple:
+            # Couple already exists
+            return
+        # Create a new couple
+        await self.collection.insert_one({
+            'user_id': self.user_id,
+            'partner_id': partner_id
+        })
 
-    async def remove_couple(self, partner_id: int):
-        """Remove a couple relationship using the Couple class."""
-        couple = Couple(self.user_id)
-        await couple.remove(partner_id)
+    async def remove(self, partner_id):
+        await self.collection.delete_one({
+            'user_id': self.user_id,
+            'partner_id': partner_id
+        })
 
     async def get_partner(self):
-        """Get the user's partner using the Couple class."""
-        couple = Couple(self.user_id)
-        return await couple.get_partner()
+        couple = await self.collection.find_one({'user_id': self.user_id})
+        return couple['partner_id'] if couple else None
