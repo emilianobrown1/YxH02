@@ -75,11 +75,15 @@ async def get_top_couples(limit=10):
 
     # Fetch user names for each couple
     for couple in top_couples:
-        user1_data = await get_user(couple["user1"])  # Ensure get_user is correctly defined and imported
-        user2_data = await get_user(couple["user2"])
+        user1_data = await get_user(couple["user1"])  # Fetch user1 details
+        user2_data = await get_user(couple["user2"])  # Fetch user2 details
 
-        # Safely handle cases where user data might not exist
-        couple["user1_name"] = user1_data.first_name if user1_data else f"User{couple['user1']}"
-        couple["user2_name"] = user2_data.first_name if user2_data else f"User{couple['user2']}"
+        # Adjust attribute name to match your User class
+        user1_name = getattr(user1_data, 'name', None) or f"User{couple['user1']}"
+        user2_name = getattr(user2_data, 'name', None) or f"User{couple['user2']}"
+
+        # Update couple dictionary with names
+        couple["user1_name"] = user1_name
+        couple["user2_name"] = user2_name
 
     return top_couples
