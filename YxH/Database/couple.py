@@ -1,4 +1,5 @@
 from . import db  # Assuming db is your MotorClient instance
+from ..Database.users import get_user
 import pickle
 
 async def add_couple(user1_id, user2_id):
