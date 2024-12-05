@@ -1,5 +1,5 @@
 from . import db  # Assuming db is your MotorClient instance
-from ..Database.users import get_user
+from ..Database.users import get_user  # Ensure correct relative import
 import pickle
 
 async def add_couple(user1_id, user2_id):
@@ -20,7 +20,6 @@ async def add_couple(user1_id, user2_id):
 
 async def rmv_couple(user1_id, user2_id):
     """Remove a couple relationship between two users."""
-    # Access the 'couples' collection and remove the couple relationship
     couple_collection = db.get_collection("couples")
     
     # Delete both directions of the couple relationship
@@ -29,7 +28,6 @@ async def rmv_couple(user1_id, user2_id):
 
 async def get_couple(user_id):
     """Retrieve the couple of a user."""
-    # Access the 'couples' collection
     couple_collection = db.get_collection("couples")
     
     # Find the couple associated with user1
@@ -43,8 +41,6 @@ async def get_couple(user_id):
         return couple["user1"]
     
     return None
-
-from . import db
 
 async def add_message_gems(user1_id, user2_id, gems):
     """Add gems earned through messaging to the couple."""
@@ -79,7 +75,7 @@ async def get_top_couples(limit=10):
 
     # Fetch user names for each couple
     for couple in top_couples:
-        user1_data = await get_user(couple["user1"])
+        user1_data = await get_user(couple["user1"])  # Ensure get_user is correctly defined and imported
         user2_data = await get_user(couple["user2"])
 
         # Safely handle cases where user data might not exist
