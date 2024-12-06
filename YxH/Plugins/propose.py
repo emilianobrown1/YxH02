@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from . import get_user, YxH
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from ..Database.users import get_user
+from ..Database.users import get_all_users
 
 @Client.on_message(filters.command("propose"))
 async def propose_handler(client: Client, message: Message):
@@ -112,3 +112,32 @@ async def breakup_handler(client: Client, message: Message):
         await client.send_message(partner_id, f"💔 **{message.from_user.mention} has broken up with you. 😢**")
     except Exception:
         pass
+
+@Client.on_message(filters.command("couples"))
+async def couples_handler(client: Client, message: Message):
+    from ..Database.users import get_all_users  # Ensure you have a function to fetch all users
+
+    # Fetch all users
+    all_users = await get_all_users()
+    couples = []
+
+    # Iterate through users and find couples
+    for user_data in all_users:
+        user = User(**user_data)  # Create a User instance from the data
+        partner_id = await user.get_partner()
+        
+        if partner_id:
+            # Prevent duplicates (A->B and B->A)
+            if not any(partner_id == c[0] and user.id == c[1] for c in couples):
+                couples.append((user.id, partner_id))
+
+    # Prepare the response
+    if not couples:
+        return await message.reply("❌ **No couples found!**")
+
+    response = "💖 **Couples List:**\n"
+    for idx, (user1, user2) in enumerate(couples, 1):
+        response += f"{idx}. User {user1} ❤️ User {user2}\n"
+
+    # Send the couples list
+    await message.reply(response)
