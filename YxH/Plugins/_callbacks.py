@@ -58,42 +58,48 @@ async def cbq(_, q: CallbackQuery):
     return await q.answer(f"You have {count}.", show_alert=True)
 
   elif q.data.startswith("propose"):
-        # Extract proposer and partner IDs
         _, proposer_id, partner_id = q.data.split("_")
         proposer_id, partner_id = int(proposer_id), int(partner_id)
 
         if proposer_id != q.from_user.id:
             return await q.answer("❌ You cannot send this proposal.", show_alert=True)
 
-        # Validate and add couple
-        proposer = Couple(proposer_id)
-        partner = Couple(partner_id)
+        proposer = await get_user(proposer_id)
+        partner = await get_user(partner_id)
+        if not proposer or not partner:
+            return await q.answer("❌ One of the users does not exist in the database.", show_alert=True)
+
         if await proposer.get_partner() or await partner.get_partner():
             return await q.answer("❌ One of you is already in a relationship.", show_alert=True)
 
-        await proposer.add(partner_id)
+        # Logic to add relationship
+        await proposer.set_partner(partner_id)
+        await partner.set_partner(proposer_id)
         await q.answer("✅ Proposal sent successfully.", show_alert=True)
 
-  elif q.data.startswith("accept"):
-        # Extract proposer and partner IDs
+    elif q.data.startswith("accept"):
         _, proposer_id, partner_id = q.data.split("_")
         proposer_id, partner_id = int(proposer_id), int(partner_id)
 
         if partner_id != q.from_user.id:
             return await q.answer("❌ You cannot accept this proposal.", show_alert=True)
 
-        # Validate and add couple
-        proposer = Couple(proposer_id)
-        partner = Couple(partner_id)
+        proposer = await get_user(proposer_id)
+        partner = await get_user(partner_id)
+
+        if not proposer or not partner:
+            return await q.answer("❌ One of the users does not exist in the database.", show_alert=True)
+
         if await proposer.get_partner() or await partner.get_partner():
             return await q.answer("❌ One of you is already in a relationship.", show_alert=True)
 
-        await proposer.add(partner_id)
+        # Set the relationship
+        await proposer.set_partner(partner_id)
+        await partner.set_partner(proposer_id)
         await q.answer("💖 You are now a couple!", show_alert=True)
         await q.message.edit("🎉 Congratulations! You are now a couple. 👩‍❤️‍👨")
 
-  elif q.data.startswith("deny"):
-        # Extract proposer ID
+    elif q.data.startswith("deny"):
         _, proposer_id, partner_id = q.data.split("_")
         proposer_id, partner_id = int(proposer_id), int(partner_id)
 
