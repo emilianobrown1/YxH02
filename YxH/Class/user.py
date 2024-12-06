@@ -76,29 +76,19 @@ class User:
         # Perform additional actions if needed
         # Example: Log the unblocking action
         # Example: Notify the user about the unblocking
-    from . import db
-import pickle
+    async def get_partner(self):
+        """Retrieve the partner's user ID."""
+        return self.couple
 
+    async def set_partner(self, partner_id):
+        """Set the user's partner."""
+        self.couple = partner_id
+        await self.update()
 
-db = db.couple  
-
-async def add_couple(i, f):
-    """Add a couple relationship between two users."""
-    await db.update_one({"i": i}, {"$set": {"f": f}}, upsert=True)
-    await db.update_one({"i": f}, {"$set": {"f": i}}, upsert=True)
-
-async def rmv_couple(i, f):
-    """Remove a couple relationship between two users."""
-    await db.delete_one({"i": i})
-    await db.delete_one({"i": f})
-
-async def get_couple(i):
-    """Retrieve the couple of a user."""
-    x = await db.find_one({"i": i})
-    if not x:
-        return None
-    return x["f"]
-    
+    async def remove_partner(self):
+        """Remove the user's partner."""
+        self.couple = None
+        await self.update()
     
     def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
