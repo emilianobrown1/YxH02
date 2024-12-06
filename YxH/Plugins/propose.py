@@ -2,6 +2,7 @@ from pyrogram import Client, filters
 from . import get_user, YxH
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from ..Database.users import get_all_users
+from ..Class.user import User  # Adjust the import path to match your project structure
 
 @Client.on_message(filters.command("propose"))
 async def propose_handler(client: Client, message: Message):
