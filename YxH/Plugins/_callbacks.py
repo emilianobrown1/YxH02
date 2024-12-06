@@ -22,7 +22,7 @@ from pyrogram.types import InputMediaPhoto as imp
 from ..Utils.datetime import get_date
 from ..Class import User, AnimeCharacter
 from .spinxwin import spin_cbq
-from .propose import propose_handler, accept_proposal, deny_proposal, breakup_command
+from .propose import propose_handler, accept_proposal, deny_proposal, breakup_handler
 from .gift import gifts_cbq
 
 # MODULE FUNCTIONS IMPORTS
