@@ -83,7 +83,6 @@ async def deny_proposal(client: Client, callback_query: CallbackQuery):
         pass
 
 
-# Breakup Command
 @Client.on_message(filters.command("breakup"))
 async def breakup_handler(client: Client, message: Message):
     user_id = message.from_user.id
@@ -92,4 +91,24 @@ async def breakup_handler(client: Client, message: Message):
     if not user:
         return await message.reply("❌ **User not found in the database!**")
 
-    partner_id = await user.get
+    # Retrieve the partner ID of the user
+    partner_id = await user.get_partner()
+    if not partner_id:
+        return await message.reply("❌ **You are not in a relationship!**")
+
+    # Fetch the partner's user object
+    partner = await get_user(partner_id)
+
+    # Remove the relationship for both users
+    await user.remove_partner()
+    if partner:
+        await partner.remove_partner()
+
+    # Notify the user about the breakup
+    await message.reply(f"💔 **You have broken up with User {partner_id}. 😢**")
+
+    # Notify the partner about the breakup
+    try:
+        await client.send_message(partner_id, f"💔 **{message.from_user.mention} has broken up with you. 😢**")
+    except Exception:
+        pass
