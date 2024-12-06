@@ -77,7 +77,7 @@ async def cbq(_, q: CallbackQuery):
         await partner.set_partner(proposer_id)
         await q.answer("✅ Proposal sent successfully.", show_alert=True)
 
-    elif q.data.startswith("accept"):
+  elif q.data.startswith("accept"):
         _, proposer_id, partner_id = q.data.split("_")
         proposer_id, partner_id = int(proposer_id), int(partner_id)
 
@@ -99,7 +99,7 @@ async def cbq(_, q: CallbackQuery):
         await q.answer("💖 You are now a couple!", show_alert=True)
         await q.message.edit("🎉 Congratulations! You are now a couple. 👩‍❤️‍👨")
 
-    elif q.data.startswith("deny"):
+  elif q.data.startswith("deny"):
         _, proposer_id, partner_id = q.data.split("_")
         proposer_id, partner_id = int(proposer_id), int(partner_id)
 
