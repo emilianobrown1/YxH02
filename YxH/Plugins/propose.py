@@ -31,19 +31,19 @@ async def propose_handler(client: Client, message: Message):
     if await proposed.get_partner():
         return await message.reply("❌ **This person is already in a relationship!**")
 
-    # Ask the proposed user to accept or reject the proposal
-    buttons = [
+    # Ask the proposed user to accept the proposal
+    markup = InlineKeyboardMarkup([
         [
-            ("💖 Accept", f"accept_proposal:{proposer_id}"),
-            ("💔 Reject", f"reject_proposal:{proposer_id}")
+            InlineKeyboardButton("💍 Accept", callback_data=f"accept_{proposer_id}"),
+            InlineKeyboardButton("❌ Decline", callback_data=f"decline_{proposer_id}")
         ]
-    ]
-    markup = InlineKeyboardMarkup(buttons)
-
+    ])
     await message.reply_to_message.reply(
-        f"💌 **{message.from_user.mention} has proposed to you! Will you accept?**",
+        f"💌 **{message.from_user.mention} has proposed to you!**\n"
+        f"💍 **Do you accept their proposal?**",
         reply_markup=markup
     )
+
 
 @Client.on_callback_query(filters.regex(r"accept_proposal:(\d+)"))
 async def accept_proposal(client, callback_query):
