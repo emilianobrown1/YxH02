@@ -122,11 +122,17 @@ async def couples_handler(client: Client, message: Message):
 
     # Iterate through users and find couples
     for user_data in all_users:
-        user = User(**user_data)  # Create a User instance from the data
+        # Check if user_data is already a User instance
+        if isinstance(user_data, User):
+            user = user_data  # Use the existing User instance
+        elif isinstance(user_data, dict):
+            user = User(**user_data)  # Create a User instance from the data
+        else:
+            continue  # Skip invalid entries
+
         partner_id = await user.get_partner()
-        
         if partner_id:
-            # Prevent duplicates (A->B and B->A)
+            # Avoid duplicate pairs (e.g., User1-User2 and User2-User1)
             if not any(partner_id == c[0] and user.id == c[1] for c in couples):
                 couples.append((user.id, partner_id))
 
