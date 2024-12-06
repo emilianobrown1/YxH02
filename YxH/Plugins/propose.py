@@ -116,8 +116,6 @@ async def breakup_handler(client: Client, message: Message):
 
 @Client.on_message(filters.command("couples"))
 async def couples_handler(client: Client, message: Message):
-    from ..Database.users import get_all_users  # Ensure you have a function to fetch all users
-
     # Fetch all users
     all_users = await get_all_users()
     couples = []
