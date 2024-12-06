@@ -22,6 +22,7 @@ from pyrogram.types import InputMediaPhoto as imp
 from ..Utils.datetime import get_date
 from ..Class import User, AnimeCharacter
 from .spinxwin import spin_cbq
+from .propose import propose_handler, accept_proposal, deny_proposal, breakup_command
 from .gift import gifts_cbq
 
 # MODULE FUNCTIONS IMPORTS
@@ -55,6 +56,52 @@ async def cbq(_, q: CallbackQuery):
     u = await get_user(q.from_user.id)
     count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
+
+  elif q.data.startswith("propose"):
+        # Extract proposer and partner IDs
+        _, proposer_id, partner_id = q.data.split("_")
+        proposer_id, partner_id = int(proposer_id), int(partner_id)
+
+        if proposer_id != q.from_user.id:
+            return await q.answer("❌ You cannot send this proposal.", show_alert=True)
+
+        # Validate and add couple
+        proposer = Couple(proposer_id)
+        partner = Couple(partner_id)
+        if await proposer.get_partner() or await partner.get_partner():
+            return await q.answer("❌ One of you is already in a relationship.", show_alert=True)
+
+        await proposer.add(partner_id)
+        await q.answer("✅ Proposal sent successfully.", show_alert=True)
+
+  elif q.data.startswith("accept"):
+        # Extract proposer and partner IDs
+        _, proposer_id, partner_id = q.data.split("_")
+        proposer_id, partner_id = int(proposer_id), int(partner_id)
+
+        if partner_id != q.from_user.id:
+            return await q.answer("❌ You cannot accept this proposal.", show_alert=True)
+
+        # Validate and add couple
+        proposer = Couple(proposer_id)
+        partner = Couple(partner_id)
+        if await proposer.get_partner() or await partner.get_partner():
+            return await q.answer("❌ One of you is already in a relationship.", show_alert=True)
+
+        await proposer.add(partner_id)
+        await q.answer("💖 You are now a couple!", show_alert=True)
+        await q.message.edit("🎉 Congratulations! You are now a couple. 👩‍❤️‍👨")
+
+  elif q.data.startswith("deny"):
+        # Extract proposer ID
+        _, proposer_id, partner_id = q.data.split("_")
+        proposer_id, partner_id = int(proposer_id), int(partner_id)
+
+        if partner_id != q.from_user.id:
+            return await q.answer("❌ You cannot deny this proposal.", show_alert=True)
+
+        await q.answer("❌ Proposal denied.", show_alert=True)
+        await q.message.edit("💔 The proposal was denied. 🦵")
   
 
   data, actual = q.data.split("_")
