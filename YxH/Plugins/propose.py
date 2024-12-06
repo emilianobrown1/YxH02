@@ -71,28 +71,17 @@ async def accept_proposal(client, callback_query):
     )
     await callback_query.message.edit("💖 **You are now in a relationship!**")
 
-@Client.on_callback_query(filters.regex(r"accept_proposal:(\d+)"))
-async def accept_proposal(client, callback_query):
-    proposer_id = int(callback_query.matches[0].group(1))
-    proposed_id = callback_query.from_user.id
+@Client.on_callback_query(filters.regex("^deny_"))
+async def deny_proposal(client: Client, callback_query: CallbackQuery):
+    _, proposer_id, partner_id = callback_query.data.split("_")
+    proposer_id, partner_id = int(proposer_id), int(partner_id)
 
-    proposer = await get_user(proposer_id)
-    proposed = await get_user(proposed_id)
+    if callback_query.from_user.id != partner_id:
+        return await callback_query.answer("❌ **This button is not for you!**", show_alert=True)
 
-    if not proposer or not proposed:
-        return await callback_query.answer("❌ **One of the users is not in the database!**", show_alert=True)
-
-    # Check if either user has entered a relationship after the proposal
-    if await proposer.get_partner() or await proposed.get_partner():
-        return await callback_query.answer("❌ **One of you is already in a relationship!**", show_alert=True)
-
-    # Set the relationship for both users
-    await proposer.set_partner(proposed_id)
-    await proposed.set_partner(proposer_id)
-
-    # Notify both users
-    await client.send_message(
-        proposer_id,
-        f"💖 **Congratulations! {callback_query.from_user.mention} has accepted your proposal.**"
-    )
-    await callback_query.message.edit("💖 **You are now in a relationship!**")
+    await callback_query.answer("❌ **Proposal denied.**", show_alert=True)
+    await callback_query.message.edit("💔 **The proposal was denied.**")
+    try:
+        await client.send_message(proposer_id, f"❌ **Your proposal was denied by {callback_query.from_user.mention}.**")
+    except Exception:
+        pass
