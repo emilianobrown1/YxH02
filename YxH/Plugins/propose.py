@@ -2,7 +2,6 @@ from pyrogram import Client, filters
 from . import get_user, YxH
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from ..Database.users import get_user
-from pyrogram.types import Message
 
 
 @Client.on_message(filters.command("propose"))
