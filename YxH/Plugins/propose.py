@@ -116,24 +116,23 @@ async def breakup_handler(client: Client, message: Message):
 
 @Client.on_message(filters.command("couples"))
 async def couples_handler(client: Client, message: Message):
-    from_user_id = message.from_user.id
-    user_data = await get_user(from_user_id)
+    # Fetch all users from the database
+    all_users = await get_all_users()
 
-    if not user_data:
-        return await message.reply("❌ **User not found in the database!**")
+    # Prepare a list of couples
+    couples = []
+    for user_data in all_users:
+        user = User(**user_data)
+        if user.couple:  # Check if the user is in a couple
+            partner_data = await get_user(user.couple)
+            if partner_data:  # Ensure partner data exists
+                partner_name = partner_data.get("name", "Unknown")
+                couples.append((user.name, partner_name))
 
-    # Check if the `couple` attribute exists and fallback if missing
-    partner_id = getattr(user_data, "couple", None)
+    if not couples:
+        return await message.reply("💔 **No couples found!**")
 
-    if not partner_id:
-        return await message.reply("❌ **You are not in a couple!**")
+    # Format the couples list
+    couples_list = "\n".join([f"💞 **{proposer}** ❤️ **{partner}**" for proposer, partner in couples])
 
-    partner_data = await get_user(partner_id)
-
-    if not partner_data:
-        return await message.reply("❌ **Your partner's data is missing!**")
-
-    # Access the partner's name directly
-    partner_name = partner_data.name if hasattr(partner_data, "name") else "Unknown"
-
-    await message.reply(f"💞 **You are in a couple with** {partner_name}!")
+    await message.reply(f"**Couples List:**\n\n{couples_list}")
