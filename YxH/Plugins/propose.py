@@ -122,12 +122,15 @@ async def couples_handler(client: Client, message: Message):
     # Prepare a list of couples
     couples = []
     for user_data in all_users:
-        user = User(**user_data)
-        if user.couple:  # Check if the user is in a couple
-            partner_data = await get_user(user.couple)
-            if partner_data:  # Ensure partner data exists
-                partner_name = partner_data.get("name", "Unknown")
-                couples.append((user.name, partner_name))
+        # Ensure we pass a mapping (dictionary) to the User class
+        if isinstance(user_data, dict):
+            user = User(**user_data)
+            if user.couple:  # Check if the user is in a couple
+                partner_data = await get_user(user.couple)
+                if isinstance(partner_data, dict):  # Ensure partner_data is valid
+                    proposer_name = user_data.get("name", "Unknown")
+                    partner_name = partner_data.get("name", "Unknown")
+                    couples.append((proposer_name, partner_name))
 
     if not couples:
         return await message.reply("💔 **No couples found!**")
