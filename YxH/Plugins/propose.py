@@ -116,33 +116,22 @@ async def breakup_handler(client: Client, message: Message):
 
 @Client.on_message(filters.command("couples"))
 async def couples_handler(client: Client, message: Message):
-    # Fetch all users
-    all_users = await get_all_users()
-    couples = []
+    from_user_id = message.from_user.id
+    user_data = await get_user(from_user_id)
 
-    # Iterate through users and find couples
-    for user_data in all_users:
-        # Check if user_data is already a User instance
-        if isinstance(user_data, User):
-            user = user_data  # Use the existing User instance
-        elif isinstance(user_data, dict):
-            user = User(**user_data)  # Create a User instance from the data
-        else:
-            continue  # Skip invalid entries
+    if not user_data:
+        return await message.reply("❌ **User not found in the database!**")
 
-        partner_id = await user.get_partner()
-        if partner_id:
-            # Avoid duplicate pairs (e.g., User1-User2 and User2-User1)
-            if not any(partner_id == c[0] and user.id == c[1] for c in couples):
-                couples.append((user.id, partner_id))
+    # Check if the `couple` attribute exists and fallback if missing
+    partner_id = getattr(user_data, "couple", None)
 
-    # Prepare the response
-    if not couples:
-        return await message.reply("❌ **No couples found!**")
+    if not partner_id:
+        return await message.reply("❌ **You are not in a couple!**")
 
-    response = "💖 **Couples List:**\n"
-    for idx, (user1, user2) in enumerate(couples, 1):
-        response += f"{idx}. User {user1} ❤️ User {user2}\n"
+    partner_data = await get_user(partner_id)
 
-    # Send the couples list
-    await message.reply(response)
+    if not partner_data:
+        return await message.reply("❌ **Your partner's data is missing!**")
+
+    partner_name = partner_data.get("name", "Unknown")  # Adjust based on your structure
+    await message.reply(f"💞 **You are in a couple with** {partner_name}!")
