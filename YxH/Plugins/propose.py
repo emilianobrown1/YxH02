@@ -133,5 +133,7 @@ async def couples_handler(client: Client, message: Message):
     if not partner_data:
         return await message.reply("❌ **Your partner's data is missing!**")
 
-    partner_name = partner_data.get("name", "Unknown")  # Adjust based on your structure
+    # Access the partner's name directly
+    partner_name = partner_data.name if hasattr(partner_data, "name") else "Unknown"
+
     await message.reply(f"💞 **You are in a couple with** {partner_name}!")
