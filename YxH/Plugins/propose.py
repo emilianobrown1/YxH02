@@ -124,20 +124,19 @@ async def couples_handler(client: Client, message: Message):
     processed_users = set()  # To avoid duplicate couples in the list
 
     for user_data in all_users:
-        # Ensure we pass a mapping (dictionary) to the User class
         if isinstance(user_data, dict):
             user = User(**user_data)
-            partner_id = user.partner  # Assuming `partner` holds the partner's ID dynamically
-            if partner_id and partner_id not in processed_users:
-                # Fetch the partner's user data
+            partner_id = user.couple  # Using the `couple` attribute
+            if partner_id and user.user_id not in processed_users:
+                # Fetch partner data dynamically
                 partner_data = next(
                     (u for u in all_users if u.get("user_id") == partner_id), None
                 )
                 if partner_data:
-                    partner_name = partner_data.get("name", "Unknown")
-                    proposer_name = user_data.get("name", "Unknown")
+                    proposer_name = user_data.get("user_id")
+                    partner_name = partner_data.get("user_id")
                     couples.append((proposer_name, partner_name))
-                    processed_users.add(user.user_id)  # Add both users to processed set
+                    processed_users.add(user.user_id)
                     processed_users.add(partner_id)
 
     if not couples:
