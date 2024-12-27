@@ -119,25 +119,32 @@ async def couples_handler(client: Client, message: Message):
     # Fetch all users from the database
     all_users = await get_all_users()
 
+    if not all_users:
+        return await message.reply("💔 **No users found in the database!**")
+
     # Prepare a list of couples
     couples = []
     processed_users = set()  # To avoid duplicate couples in the list
 
     for user_data in all_users:
+        # Ensure user_data is valid
         if isinstance(user_data, dict):
             user = User(**user_data)
-            partner_id = user.couple  # Using the `couple` attribute
+            partner_id = user.couple  # Check the 'couple' attribute
             if partner_id and user.user_id not in processed_users:
-                # Fetch partner data dynamically
+                # Fetch partner directly from all_users
                 partner_data = next(
                     (u for u in all_users if u.get("user_id") == partner_id), None
                 )
                 if partner_data:
-                    proposer_name = user_data.get("user_id")
-                    partner_name = partner_data.get("user_id")
+                    proposer_name = user_data.get("user_id")  # Use user_id temporarily
+                    partner_name = partner_data.get("user_id")  # Use partner's user_id
                     couples.append((proposer_name, partner_name))
                     processed_users.add(user.user_id)
                     processed_users.add(partner_id)
+
+    # Debug: Log the list of couples found
+    print("Couples Found:", couples)
 
     if not couples:
         return await message.reply("💔 **No couples found!**")
