@@ -121,16 +121,22 @@ async def couples_handler(client: Client, message: Message):
 
     # Prepare a list of couples
     couples = []
+    processed_users = set()  # To avoid duplicate couples in the list
+
     for user_data in all_users:
         # Ensure we pass a mapping (dictionary) to the User class
         if isinstance(user_data, dict):
             user = User(**user_data)
-            if user.couple:  # Check if the user is in a couple
-                partner_data = await get_user(user.couple)
-                if isinstance(partner_data, dict):  # Ensure partner_data is valid
+            partner_id = user.partner_id  # Assuming `partner_id` holds the partner's ID
+            if partner_id and partner_id not in processed_users:
+                partner_data = await get_user(partner_id)
+                if isinstance(partner_data, dict):
+                    partner = User(**partner_data)
                     proposer_name = user_data.get("name", "Unknown")
                     partner_name = partner_data.get("name", "Unknown")
                     couples.append((proposer_name, partner_name))
+                    processed_users.add(user.user_id)  # Add both users to the processed set
+                    processed_users.add(partner_id)
 
     if not couples:
         return await message.reply("💔 **No couples found!**")
