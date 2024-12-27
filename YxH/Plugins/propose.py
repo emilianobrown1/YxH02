@@ -127,15 +127,17 @@ async def couples_handler(client: Client, message: Message):
         # Ensure we pass a mapping (dictionary) to the User class
         if isinstance(user_data, dict):
             user = User(**user_data)
-            partner_id = user.partner_id  # Assuming `partner_id` holds the partner's ID
+            partner_id = user.partner  # Assuming `partner` holds the partner's ID dynamically
             if partner_id and partner_id not in processed_users:
-                partner_data = await get_user(partner_id)
-                if isinstance(partner_data, dict):
-                    partner = User(**partner_data)
-                    proposer_name = user_data.get("name", "Unknown")
+                # Fetch the partner's user data
+                partner_data = next(
+                    (u for u in all_users if u.get("user_id") == partner_id), None
+                )
+                if partner_data:
                     partner_name = partner_data.get("name", "Unknown")
+                    proposer_name = user_data.get("name", "Unknown")
                     couples.append((proposer_name, partner_name))
-                    processed_users.add(user.user_id)  # Add both users to the processed set
+                    processed_users.add(user.user_id)  # Add both users to processed set
                     processed_users.add(partner_id)
 
     if not couples:
