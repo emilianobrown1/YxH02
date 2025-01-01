@@ -4,18 +4,22 @@ import random
 from .equipments import equipment_data as equipments_data, check_expiry
 from datetime import datetime, timedelta
 from ..Database.chats import get_all_chats  # Import chats database functions
+import asyncio  # For scheduling tasks
 
 percentage_range: list[int] = list(range(20, 80))
 fest_hour_active = False
 fest_hour_start = None
 daily_fest_hour = None  # Store the daily Fest Hour start time (hour)
 
+
 def set_daily_fest_hour():
     """
     Randomly selects a Fest Hour start time within an 18-hour period (6 AM to midnight).
     """
     global daily_fest_hour
-    daily_fest_hour = random.randint(3, 22)  # Random hour between 6 AM and 11 PM
+    daily_fest_hour = random.randint(6, 23)  # Random hour between 6 AM and 11 PM
+    print(f"[INFO] Daily Fest Hour set to: {daily_fest_hour}")
+
 
 def is_fest_hour():
     """
@@ -29,9 +33,11 @@ def is_fest_hour():
             return True
         else:
             # End Fest Hour after 1 hour
+            print("[INFO] Fest Hour ended.")
             fest_hour_active = False
             fest_hour_start = None
     return False
+
 
 async def start_fest_hour(client):
     """
@@ -42,6 +48,8 @@ async def start_fest_hour(client):
     if not fest_hour_active:
         fest_hour_active = True
         fest_hour_start = datetime.now()
+        print("[INFO] Fest Hour started.")
+
         # Fetch all active chats
         chats = await get_all_chats()
         for chat in chats:
@@ -54,8 +62,10 @@ async def start_fest_hour(client):
                         "Don't miss your chance to strike big!"
                     )
                 )
+                print(f"[INFO] Notified chat: {chat.chat_id}")
             except Exception as e:
-                print(f"Failed to notify chat {chat.chat_id}: {e}")
+                print(f"[ERROR] Failed to notify chat {chat.chat_id}: {e}")
+
 
 async def check_and_start_fest_hour(client):
     """
@@ -63,12 +73,24 @@ async def check_and_start_fest_hour(client):
     """
     global daily_fest_hour, fest_hour_active
     now = datetime.now()
+
     if daily_fest_hour is None:
         set_daily_fest_hour()  # Set Fest Hour if not already set
 
     # Start Fest Hour if it's the pre-selected daily hour
     if now.hour == daily_fest_hour and not fest_hour_active:
+        print("[INFO] Triggering Fest Hour.")
         await start_fest_hour(client)
+
+
+async def schedule_fest_hour_check(client):
+    """
+    Periodically checks and starts the Fest Hour.
+    """
+    while True:
+        await check_and_start_fest_hour(client)
+        await asyncio.sleep(60)  # Check every minute
+
 
 @Client.on_message(filters.command("mine"))
 @YxH(private=False)
