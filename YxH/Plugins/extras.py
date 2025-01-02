@@ -1,8 +1,9 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
+from . import YxH, get_anime_character
 from pyrogram.types import CallbackQuery
 from telegraph import Telegraph
-from . import YxH, get_anime_character
+
 from YxH.Database.characters import get_all as get_all_anime_characters
 
 # Initialize the Telegraph object
@@ -14,7 +15,7 @@ async def create_telegraph_page_for_duplicates(user, duplicates):
     telegraph.create_account(short_name=user.first_name)
 
     # Prepare the content for the page
-    content = f"<h2>{user.first_name}'s Duplicate Characters:</h2><ul>"
+    content = f"<strong>{user.first_name}'s Duplicate Characters:</strong><ul>"
     for dup_id in duplicates.keys():
         char = await get_anime_character(dup_id)
         content += f"<li>{char.name} (ID: {char.id})</li>"
@@ -34,7 +35,7 @@ async def create_telegraph_page_for_uncollected(user, uncollected):
     telegraph.create_account(short_name=user.first_name)
 
     # Prepare the content for the page
-    content = f"<h2>{user.first_name}'s Uncollected Characters:</h2><ul>"
+    content = f"<strong>{user.first_name}'s Uncollected Characters:</strong><ul>"
     for char in uncollected:
         content += f"<li>{char.name} (ID: {char.id})</li>"
     content += "</ul>"
