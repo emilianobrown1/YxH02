@@ -27,3 +27,25 @@ async def track_messages(client, message):
             photo=power["image"],  # Use the local file path
             caption=f"🎉 Congratulations! You've unlocked **{power['name']}**!"
         )
+
+@Client.on_message(filters.command("power"))
+async def show_powers(client, message):
+    user_id = message.from_user.id
+    user = await get_user(user_id)  # Retrieve user from the database
+
+    if not user or not user.powers:
+        return await message.reply("You haven't unlocked any powers yet. Keep chatting to unlock one!")
+
+    # Fetch the first power
+    first_power = user.powers[0]
+    power_info = next((p for p in powers if p["name"] == first_power), None)
+    
+    if not power_info:
+        return await message.reply("Error fetching your powers. Please try again later.")
+    
+    # Send the first power with a "Next" button
+    await message.reply_photo(
+        photo=power_info["image_path"],  # Use the local file path
+        caption=f"🌟 **{power_info['name']}**\n\nDescription: {power_info.get('description', 'No description available.')}",
+        reply_markup=power_navigation_markup(user_id, 0)
+    )
