@@ -3,7 +3,7 @@ from pyrogram import Client, filters
 
 # Sample powers with local image paths
 powers = [
-    {"name": "Power A", "image": "./images/power_a.jpg"},
+    {"Hammer": "Power Hammer", "image": "./Powers/Hammer.jpg"},
     {"name": "Power B", "image": "./images/power_b.jpg"},
     {"name": "Power C", "image": "./images/power_c.jpg"},
     {"name": "Power D", "image": "./images/power_d.jpg"},
