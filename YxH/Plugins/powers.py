@@ -12,7 +12,7 @@ powers = [
 # User message tracking
 user_message_count = {}
 
-@Client.on_message(filters.text & ~filters.private)
+@Client.on_message(filters.text &  filters.private)
 async def track_messages(client, message):
     user_id = message.from_user.id
     user_message_count[user_id] = user_message_count.get(user_id, 0) + 1
