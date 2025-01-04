@@ -13,7 +13,7 @@ async def set_fest_hour() -> int:
     return random_hour
 
 async def get_fest_hour() -> int:
-    x = await db.find({'date': today()})
+    x = await db.find_one({'date': today()})
     if x:
         return x['fest_hour']
     return await set_fest_hour()
