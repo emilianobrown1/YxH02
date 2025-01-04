@@ -1,96 +1,24 @@
 from pyrogram import Client, filters
 from . import YxH
+from yxh import YxH as app
+from ..Database.fest_hour import get_fest_hour
 import random
 from .equipments import equipment_data as equipments_data, check_expiry
 from datetime import datetime, timedelta
 from ..Database.chats import get_all_chats  # Import chats database functions
+from config import SUPPORT_GROUP
 import asyncio  # For scheduling tasks
 
-percentage_range: list[int] = list(range(20, 80))
-fest_hour_active = False
-fest_hour_start = None
-daily_fest_hour = None  # Store the daily Fest Hour start time (hour)
-
-
-def set_daily_fest_hour():
-    """
-    Randomly selects a Fest Hour start time within an 18-hour period (6 AM to midnight).
-    """
-    global daily_fest_hour
-    daily_fest_hour = random.randint(6, 23)  # Random hour between 6 AM and 11 PM
-    print(f"[INFO] Daily Fest Hour set to: {daily_fest_hour}")
-
-
-def is_fest_hour():
-    """
-    Check if Fest Hour is active.
-    Returns True if Fest Hour is active, otherwise False.
-    """
-    global fest_hour_active, fest_hour_start
-    if fest_hour_active and fest_hour_start:
-        now = datetime.now()
-        if now < fest_hour_start + timedelta(hours=1):
-            return True
-        else:
-            # End Fest Hour after 1 hour
-            print("[INFO] Fest Hour ended.")
-            fest_hour_active = False
-            fest_hour_start = None
-    return False
-
-
-async def start_fest_hour(client):
-    """
-    Starts the Fest Hour at the pre-selected daily time.
-    Notifies all chats about the event.
-    """
-    global fest_hour_active, fest_hour_start, daily_fest_hour
-    if not fest_hour_active:
-        fest_hour_active = True
-        fest_hour_start = datetime.now()
-        print("[INFO] Fest Hour started.")
-
-        # Fetch all active chats
-        chats = await get_all_chats()
-        for chat in chats:
-            try:
-                await client.send_message(
-                    chat_id=chat.chat_id,
-                    text=(
-                        "🎉 **Fest Hour is live!** 🎉\n\n"
-                        "💰 Higher success rates for mining are now active for the next hour. "
-                        "Don't miss your chance to strike big!"
-                    )
-                )
-                print(f"[INFO] Notified chat: {chat.chat_id}")
-            except Exception as e:
-                print(f"[ERROR] Failed to notify chat {chat.chat_id}: {e}")
-
-
-async def check_and_start_fest_hour(client):
-    """
-    Checks if the current time matches the daily Fest Hour and starts it.
-    """
-    global daily_fest_hour, fest_hour_active
-    now = datetime.now()
-
-    if daily_fest_hour is None:
-        set_daily_fest_hour()  # Set Fest Hour if not already set
-
-    # Start Fest Hour if it's the pre-selected daily hour
-    if now.hour == daily_fest_hour and not fest_hour_active:
-        print("[INFO] Triggering Fest Hour.")
-        await start_fest_hour(client)
-
-
-async def schedule_fest_hour_check(client):
-    """
-    Periodically checks and starts the Fest Hour.
-    """
-    while True:
-        await check_and_start_fest_hour(client)
-        await asyncio.sleep(60)  # Check every minute
-
+async def get_percentage_and_is_profit() -> tuple[int, bool]:
+    current_hour = int(str(datetime.now()).split()[1].split(':')[0])
+    fest_hour = await get_fest_hour()
+    if current_hour == fest_hour:
+        percentage = random.randint(50, 100)
+        is_profit = random.choices([True, False], weights=[95, 5])[0]
+    else:
+        percentage = random.randint(20, 80)
+        is_profit = random.choice([True, False])
+    return percentage, is_profit
 
 @Client.on_message(filters.command("mine"))
 @YxH(private=False)
@@ -120,13 +48,7 @@ async def mine(_, m, user):
         return await m.reply(f"Mining limit reached, try again after `{after}` minutes.")
     user.mine[now] = val + 1
 
-    # Fest Hour success logic
-    if is_fest_hour():
-        success = random.choices([True, False], weights=[95, 5], k=1)[0]
-        percentage = random.choice(range(50, 100))  # Higher percentages for Fest Hour
-    else:
-        success = random.choice([True, False])
-        percentage = random.choice(percentage_range)
+    percentage, success = await get_percentage_and_is_profit()
 
     gold = int((inp * percentage) / 100)
 
@@ -153,3 +75,19 @@ async def mine(_, m, user):
         )
     await user.update()
     await m.reply(txt)
+
+async def fest_hour_task(app):
+    while True:
+        current_hour = int(str(datetime.now()).split()[1].split(':')[0])
+        if current_hour == await get_fest_hour():
+            text = (
+                "🎉 **Fest Hour is live!** 🎉\n\n"
+                "💰 Higher success rates for mining are now active for the next hour. "
+                "Don't miss your chance to strike big!"
+            )
+            mess = await app.send_message(SUPPORT_GROUP, text)
+            await mess.pin()
+            await asyncio.sleep(3600)
+        await asyncio.sleep(60)
+
+asyncio.create_task(fest_hour_task(app))
