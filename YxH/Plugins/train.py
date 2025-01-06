@@ -83,20 +83,20 @@ async def show_barracks(client, message):
         return
 
     barracks_text = (
-        f"🏰 **Your Armoury**\n\n"
-        f"**Troops:**\n"
-        f"Shinobi 🥷: {user['troops']['shinobi']}\n"
-        f"Wizard 🧙: {user['troops']['wizard']}\n"
-        f"Sensei 🧝: {user['troops']['sensei']}\n\n"
-        f"**Powers:**\n"
-        f"Hammer 🔨 : {user.powers['Hammer']}\n"
-        f"Ice ❄️: {user.powers['ice']}\n"
-        f"Lightning ⚡: {user.powers['lightning']}\n\n"
-        f"**Beasts:**\n"
-        f"Dragon 🐉: {user['beasts']['dragon']}\n"
-        f"Phoenix 🦅: {user['beasts']['phoenix']}\n"
-        f"Tiger 🐅: {user['beasts']['tiger']}\n"
-    )
+    f"🏰 Your Armoury\n\n"
+    f"Troops:\n"
+    f"Shinobi 🥷: {user.troops['shinobi']}\n"
+    f"Wizard 🧙: {user.troops['wizard']}\n"
+    f"Sensei 🧝: {user.troops['sensei']}\n\n"
+    f"Powers:\n"
+    f"Hammer 🔨: {user.powers['Hammer']}\n"
+    f"Ice ❄️: {user.powers['ice']}\n"
+    f"Lightning ⚡: {user.powers['lightning']}\n\n"
+    f"Beasts:\n"
+    f"Dragon 🐉: {user.beasts['dragon']}\n"
+    f"Phoenix 🦅: {user.beasts['phoenix']}\n"
+    f"Tiger 🐅: {user.beasts['tiger']}\n"
+)
 
     await message.reply_photo(
         "Images/barrack.jpg",
