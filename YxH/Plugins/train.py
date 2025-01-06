@@ -99,6 +99,6 @@ async def show_barracks(client, message):
     )
 
     await message.reply_photo(
-        "barrack.jpg",
+        "Images/barrack.jpg",
         caption=barracks_text
     )
