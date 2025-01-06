@@ -97,7 +97,6 @@ async def show_barracks(client, message):
     f"Phoenix 🦅: {user.beasts['phoenix']}\n"
     f"Tiger 🐅: {user.beasts['tiger']}\n"
 )
-
     await message.reply_photo(
         "Images/barrack.jpg",
         caption=barracks_text
