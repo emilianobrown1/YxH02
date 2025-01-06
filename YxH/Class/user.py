@@ -35,12 +35,14 @@ class User:
         self.convertx = {}  # {date: "converted"}
         self.couple = None
         self.buy_crystals = {}
-        self.powers = []
         self.scramble = []
+        self.troops = {"shinobi": 0, "wizard": 0, "sensei": 0}
+        self.powers = {"Power Of Hammer": 0, "ice": 0, "lightning": 0}
+        self.beasts = {"dragon": 0, "phoenix": 0, "tiger": 0}
         self.swap = {
             "count": 0  # Track the number of swaps
         }
-        self.barracks = {}
+        self.barracks = []
         self.inventory = {
             "Magic Key 🗝️": 0,
             "Magic Diamond 💎": 0,
