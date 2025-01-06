@@ -11,7 +11,7 @@ def get_user(user_id):
         "gold": 5000000,  # Example starting gold
         "barracks": {"shinobi": 0, "wizard": 0, "sensei": 0},
         "troops": {"shinobi": 0, "wizard": 0, "sensei": 0},
-        "powers": {"fire": 0, "ice": 0, "lightning": 0},
+        "powers": {"Power of Hammer": 0, "ice": 0, "lightning": 0},
         "beasts": {"dragon": 0, "phoenix": 0, "tiger": 0},
         "update": lambda: None,  # Example mock update
     }
