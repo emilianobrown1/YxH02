@@ -157,6 +157,40 @@ async def process_training(client: Client, callback_query: CallbackQuery, user: 
     else:
         await callback_query.answer("Failed to start training!", show_alert=True)
 
+@Client.on_callback_query(filters.regex("troop_info"))
+@YxH(private=True)
+async def show_troop_info(client: Client, callback_query: CallbackQuery, user: Any) -> None:
+    info_text = "📖 Troop Information:\n\n"
+    for troop_type, config in TROOP_CONFIGS.items():
+        info_text += (
+            f"{config.emoji} {troop_type.capitalize()}\n"
+            f"├ Cost: {config.cost:,} gold\n"
+            f"├ Training: {config.training_time} minutes\n"
+            f"├ Power: {config.power}\n"
+            f"└ {config.description}\n\n"
+        )
+    
+    await callback_query.answer()
+    await callback_query.message.edit_text(
+        info_text,
+        reply_markup=InlineKeyboardMarkup([[
+            InlineKeyboardButton("🔙 Back to Training", callback_data="back_to_training")
+        ]])
+    )
+
+@Client.on_callback_query(filters.regex("back_to_training"))
+@YxH(private=True)
+async def back_to_training(client: Client, callback_query: CallbackQuery, user: Any) -> None:
+    training_manager = TrainingManager()
+    keyboard = training_manager.create_training_keyboard()
+    status = training_manager.get_training_status(user)
+    
+    await callback_query.answer()
+    await callback_query.message.edit_text(
+        f"Select the type of troop to train:\n\n{status}",
+        reply_markup=keyboard
+    )
+
 @Client.on_message(filters.command("my_barracks"))
 @YxH(private=True)
 async def show_barracks(client: Client, message: Message, user: Any) -> None:
@@ -177,12 +211,7 @@ async def show_barracks(client: Client, message: Message, user: Any) -> None:
         f"Beasts:\n"
         f"Dragon 🐉: {user.beasts['dragon']}\n"
         f"Phoenix 🦅: {user.beasts['phoenix']}\n"
-        f"Tiger 🐅: {user.beasts['tiger']}\n\n"
-        f"Inventory:\n"
-        f"Magic Key 🗝️: {user.inventory['Magic Key 🗝️']}\n"
-        f"Magic Diamond 💎: {user.inventory['Magic Diamond 💎']}\n"
-        f"Magic Potion 🧪: {user.inventory['Magic Potion 🧪']}\n"
-        f"Magic Stone 🪨: {user.inventory['Magic Stone 🪨']}"
+        f"Tiger 🐅: {user.beasts['tiger']}"
     )
     
     try:
