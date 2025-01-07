@@ -174,18 +174,33 @@ async def back_to_training(client: Client, callback_query: CallbackQuery, user: 
     )
 
 @Client.on_message(filters.command("my_barracks"))
-async def show_barracks(client: Client, message: Message, user: Any) -> None:
+async def show_barracks(client: Client, message: Message):
+    # Fetch the user data
+    user_id = message.from_user.id
+    user = await get_user(user_id)
+
+    if not user:
+        await message.reply("You need to start the bot first.")
+        return
+
+    # Initialize TrainingManager
     training_manager = TrainingManager()
+
+    # Get current training status
     current_trainings = training_manager.get_training_status(user)
+
+    # Prepare barracks details
     barracks_text = (
         f"🏰 Your Barracks\n\n"
         f"Current Trainings:\n{current_trainings}\n\n"
         f"Troops:\n"
     )
 
+    # List user's troops
     for troop_type, config in TROOP_CONFIGS.items():
         barracks_text += f"{config.emoji} {troop_type.capitalize()}: {user.troops.get(troop_type, 0)}\n"
 
+    # Try to send an image with the barracks details
     try:
         await message.reply_photo(
             "Images/barrack.jpg",
