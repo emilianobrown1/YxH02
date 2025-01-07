@@ -13,7 +13,7 @@ TRAINING_DETAILS = {
 # Command to start troop training
 @Client.on_message(filters.command("train"))
 @YxH()
-async def train_troops(client, message):
+async def train_troops(_, m, u):
     user_id = message.from_user.id
     user = await db.get_user(user_id)  # Get user data from the database
     
