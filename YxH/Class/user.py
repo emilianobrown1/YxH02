@@ -4,7 +4,7 @@ import time
 
 class User:
     def __init__(self, user_id):
-        self.user_id = user_id  # Renamed from `user` to `user_id` for clarity
+        self.user = user_id  # Renamed from `user` to `user_id` for clarity
         self.crystals = 0
         self.gems = 0
         self.gold = 0
