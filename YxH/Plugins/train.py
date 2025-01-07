@@ -14,11 +14,23 @@ class TroopConfig:
     power: int
     description: str
 
-# Configuration for different troop types
+# Configuration for troops, powers, and beasts
 TROOP_CONFIGS = {
     "shinobi": TroopConfig(1000000, 5, "🥷", 100, "Stealthy warrior with high speed"),
     "wizard": TroopConfig(2000000, 10, "🧙", 150, "Powerful magic user"),
     "sensei": TroopConfig(3000000, 15, "🧝", 200, "Master of martial arts"),
+}
+
+POWER_CONFIGS = {
+    "hammer": TroopConfig(500000, 3, "🔨", 50, "Crushes enemies with sheer force"),
+    "ice": TroopConfig(800000, 4, "❄️", 80, "Freezes opponents to immobilize them"),
+    "lightning": TroopConfig(1200000, 6, "⚡", 120, "Strikes with a powerful bolt"),
+}
+
+BEAST_CONFIGS = {
+    "dragon": TroopConfig(5000000, 20, "🐉", 500, "A fierce and powerful fire-breathing dragon"),
+    "phoenix": TroopConfig(3000000, 15, "🦅", 300, "A mystical bird that rises from ashes"),
+    "tiger": TroopConfig(2000000, 10, "🐅", 200, "A fast and agile beast with sharp claws"),
 }
 
 class TrainingManager:
@@ -28,16 +40,14 @@ class TrainingManager:
     def can_start_training(self, user: Any) -> bool:
         return len(user.barracks) < self.max_trainings
 
-    async def start_training(self, user: Any, troop_type: str) -> bool:
-        if not self.can_start_training(user):
-            return False
-
-        config = TROOP_CONFIGS.get(troop_type)
-        if not config or user.gold < config.cost:
+    async def start_training(self, user: Any, category: str, item_type: str) -> bool:
+        config = self.get_config(category, item_type)
+        if not self.can_start_training(user) or not config or user.gold < config.cost:
             return False
 
         training_entry = {
-            "type": troop_type,
+            "type": item_type,
+            "category": category,
             "start_time": time.time(),
             "end_time": time.time() + (config.training_time * 60),
         }
@@ -49,19 +59,34 @@ class TrainingManager:
     async def complete_training(self, user: Any, training_index: int) -> None:
         if 0 <= training_index < len(user.barracks):
             training = user.barracks[training_index]
-            troop_type = training["type"]
-            user.troops[troop_type] = user.troops.get(troop_type, 0) + 1
+            item_type = training["type"]
+            category = training["category"]
+            target_dict = getattr(user, category)  # e.g., user.troops, user.powers, or user.beasts
+            target_dict[item_type] = target_dict.get(item_type, 0) + 1
             user.barracks.pop(training_index)
             await user.update()
 
     @staticmethod
-    def create_training_keyboard() -> InlineKeyboardMarkup:
+    def get_config(category: str, item_type: str) -> TroopConfig:
+        return {
+            "troops": TROOP_CONFIGS,
+            "powers": POWER_CONFIGS,
+            "beasts": BEAST_CONFIGS,
+        }.get(category, {}).get(item_type)
+
+    @staticmethod
+    def create_training_keyboard(category: str) -> InlineKeyboardMarkup:
+        configs = {
+            "troops": TROOP_CONFIGS,
+            "powers": POWER_CONFIGS,
+            "beasts": BEAST_CONFIGS,
+        }.get(category, {})
         buttons = []
         row = []
-        for troop_type, config in TROOP_CONFIGS.items():
+        for item_type, config in configs.items():
             button = InlineKeyboardButton(
-                f"{config.emoji} {troop_type.capitalize()} ({config.cost:,} gold)",
-                callback_data=f"train_{troop_type}",
+                f"{config.emoji} {item_type.capitalize()} ({config.cost:,} gold)",
+                callback_data=f"train_{category}_{item_type}",
             )
             row.append(button)
             if len(row) == 2:
@@ -70,64 +95,64 @@ class TrainingManager:
 
         if row:
             buttons.append(row)
-
-        buttons.append([InlineKeyboardButton("ℹ️ Troop Info", callback_data="troop_info")])
+        buttons.append([InlineKeyboardButton("ℹ️ Info", callback_data=f"{category}_info")])
         return InlineKeyboardMarkup(buttons)
 
     def get_training_status(self, user: Any) -> str:
         if not user.barracks:
-            return "No troops currently training!"
+            return "No items currently training!"
 
         current_time = time.time()
         status = "🏰 Current Training Status:\n\n"
         for i, training in enumerate(user.barracks):
-            config = TROOP_CONFIGS[training["type"]]
+            config = self.get_config(training["category"], training["type"])
             remaining_time = max(0, training["end_time"] - current_time)
             remaining_minutes = int(remaining_time / 60)
             status += (
-                f"{i+1}. {config.emoji} {training['type'].capitalize()}\n"
+                f"{i+1}. {config.emoji} {training['type'].capitalize()} ({training['category'].capitalize()})\n"
                 f"   ⏳ {remaining_minutes} minutes remaining\n"
             )
         return status
 
 @Client.on_message(filters.command("train"))
-async def train_troops(client: Client, message: Message, user: Any) -> None:
-    training_manager = TrainingManager()
-    keyboard = training_manager.create_training_keyboard()
-    status = training_manager.get_training_status(user)
-    await message.reply(
-        f"Select the type of troop to train:\n\n{status}",
-        reply_markup=keyboard,
+async def train_items(client: Client, message: Message, user: Any) -> None:
+    keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("⚔️ Troops", callback_data="train_category_troops")],
+            [InlineKeyboardButton("🪄 Powers", callback_data="train_category_powers")],
+            [InlineKeyboardButton("🐾 Beasts", callback_data="train_category_beasts")],
+        ]
     )
+    await message.reply("Select a category to train:", reply_markup=keyboard)
+
+@Client.on_callback_query(filters.regex(r"^train_category_"))
+async def select_training_category(client: Client, callback_query: CallbackQuery) -> None:
+    category = callback_query.data.split("_")[2]
+    training_manager = TrainingManager()
+    keyboard = training_manager.create_training_keyboard(category)
+    await callback_query.message.edit_text(f"Select an item to train in {category.capitalize()}:", reply_markup=keyboard)
 
 @Client.on_callback_query(filters.regex(r"^train_"))
 async def process_training(client: Client, callback_query: CallbackQuery, user: Any) -> None:
+    _, category, item_type = callback_query.data.split("_")
     training_manager = TrainingManager()
-    troop_type = callback_query.data.split("_")[1]
-    config = TROOP_CONFIGS.get(troop_type)
+    config = training_manager.get_config(category, item_type)
 
     if not config:
-        await callback_query.answer("Invalid troop type!", show_alert=True)
+        await callback_query.answer("Invalid item type!", show_alert=True)
         return
 
     if not training_manager.can_start_training(user):
-        await callback_query.answer(
-            "Barracks are full! Complete current training to free up space.",
-            show_alert=True,
-        )
+        await callback_query.answer("Barracks are full! Complete current training to free up space.", show_alert=True)
         return
 
     if user.gold < config.cost:
-        await callback_query.answer(
-            f"Not enough gold! You need {config.cost:,} gold.",
-            show_alert=True,
-        )
+        await callback_query.answer(f"Not enough gold! You need {config.cost:,} gold.", show_alert=True)
         return
 
-    if await training_manager.start_training(user, troop_type):
+    if await training_manager.start_training(user, category, item_type):
         progress_message = await callback_query.message.reply(
-            f"⏳ Training {config.emoji} {troop_type.capitalize()}...\n"
-            f"Time remaining: {config.training_time} minutes"
+            f"⏳ Training {config.emoji} {item_type.capitalize()}...\nTime remaining: {config.training_time} minutes"
         )
 
         training_index = len(user.barracks) - 1
@@ -135,47 +160,13 @@ async def process_training(client: Client, callback_query: CallbackQuery, user: 
         await training_manager.complete_training(user, training_index)
 
         await progress_message.edit_text(
-            f"✅ Training completed!\n"
-            f"Added 1 {config.emoji} {troop_type.capitalize()} to your army."
+            f"✅ Training completed!\nAdded 1 {config.emoji} {item_type.capitalize()} to your {category.capitalize()}."
         )
     else:
         await callback_query.answer("Failed to start training!", show_alert=True)
 
-@Client.on_callback_query(filters.regex("troop_info"))
-async def show_troop_info(client: Client, callback_query: CallbackQuery, user: Any) -> None:
-    info_text = "📖 Troop Information:\n\n"
-    for troop_type, config in TROOP_CONFIGS.items():
-        info_text += (
-            f"{config.emoji} {troop_type.capitalize()}\n"
-            f"├ Cost: {config.cost:,} gold\n"
-            f"├ Training: {config.training_time} minutes\n"
-            f"├ Power: {config.power}\n"
-            f"└ {config.description}\n\n"
-        )
-
-    await callback_query.answer()
-    await callback_query.message.edit_text(
-        info_text,
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🔙 Back to Training", callback_data="back_to_training")]]
-        ),
-    )
-
-@Client.on_callback_query(filters.regex("back_to_training"))
-async def back_to_training(client: Client, callback_query: CallbackQuery, user: Any) -> None:
-    training_manager = TrainingManager()
-    keyboard = training_manager.create_training_keyboard()
-    status = training_manager.get_training_status(user)
-
-    await callback_query.answer()
-    await callback_query.message.edit_text(
-        f"Select the type of troop to train:\n\n{status}",
-        reply_markup=keyboard,
-    )
-
 @Client.on_message(filters.command("my_barracks"))
 async def show_barracks(client: Client, message: Message):
-    # Fetch the user data
     user_id = message.from_user.id
     user = await get_user(user_id)
 
@@ -183,28 +174,27 @@ async def show_barracks(client: Client, message: Message):
         await message.reply("You need to start the bot first.")
         return
 
-    # Initialize TrainingManager
     training_manager = TrainingManager()
-
-    # Get current training status
     current_trainings = training_manager.get_training_status(user)
 
-    # Prepare barracks details
     barracks_text = (
         f"🏰 Your Barracks\n\n"
         f"Current Trainings:\n{current_trainings}\n\n"
         f"Troops:\n"
     )
 
-    # List user's troops
     for troop_type, config in TROOP_CONFIGS.items():
         barracks_text += f"{config.emoji} {troop_type.capitalize()}: {user.troops.get(troop_type, 0)}\n"
 
-    # Try to send an image with the barracks details
+    barracks_text += "\nPowers:\n"
+    for power_type, config in POWER_CONFIGS.items():
+        barracks_text += f"{config.emoji} {power_type.capitalize()}: {user.powers.get(power_type, 0)}\n"
+
+    barracks_text += "\nBeasts:\n"
+    for beast_type, config in BEAST_CONFIGS.items():
+        barracks_text += f"{config.emoji} {beast_type.capitalize()}: {user.beasts.get(beast_type, 0)}\n"
+
     try:
-        await message.reply_photo(
-            "Images/barrack.jpg",
-            caption=barracks_text,
-        )
+        await message.reply_photo("Images/barrack.jpg", caption=barracks_text)
     except Exception:
         await message.reply(barracks_text)
