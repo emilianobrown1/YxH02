@@ -33,7 +33,6 @@ class User:
         self.invite_link = None
         self.invited_by = None
         self.convertx = {}  # {date: "converted"}
-        self.couple = None
         self.buy_crystals = {}
         self.scramble = []
         self.troops = {"shinobi": 0, "wizard": 0, "sensei": 0}
@@ -80,19 +79,6 @@ class User:
         # Perform additional actions if needed
         # Example: Log the unblocking action
         # Example: Notify the user about the unblocking
-    async def get_partner(self):
-        """Retrieve the partner's user ID."""
-        return self.couple
-
-    async def set_partner(self, partner_id):
-        """Set the user's partner."""
-        self.couple = partner_id
-        await self.update()
-
-    async def remove_partner(self):
-        """Remove the user's partner."""
-        self.couple = None
-        await self.update()
     
     def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
