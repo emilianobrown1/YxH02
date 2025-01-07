@@ -1,7 +1,11 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import asyncio
-from . import get_user, YxH
+
+# Importing necessary modules and functions
+from . import YxH  # Assuming YxH is a valid decorator
+from ..Database.users import get_user  # Assuming get_user function is available for database interactions
+from ..Class.user import User  # Assuming User class exists and is used for user operations
 
 # Troop Training Costs and Time
 TRAINING_DETAILS = {
@@ -15,7 +19,7 @@ TRAINING_DETAILS = {
 @YxH()  # Assuming YxH is a valid decorator
 async def train_troops(_, m, u):
     user_id = m.from_user.id  # Correct variable reference (using 'm' instead of 'message')
-    user = await db.get_user(user_id)  # Get user data from the database
+    user = await get_user(user_id)  # Get user data from the database
 
     # Check if the user has enough gold
     markup = troop_selection_markup()
@@ -33,18 +37,18 @@ def troop_selection_markup():
 async def process_training_selection(client, callback_query):
     user_id = callback_query.from_user.id
     troop_type = callback_query.data
-    user = await db.get_user(user_id)
+    user = await get_user(user_id)  # Fetch user data using the get_user function
 
     # Store the troop type for the next step
     user.active_troop_type = troop_type
-    await db.update_user(user)
+    await user.update()  # Assuming the `User` class has an `update` method
 
     await callback_query.message.edit("How many troops would you like to train? (1 to 3)")
 
 @Client.on_message(filters.regex(r"^[1-3]$"))
 async def confirm_training(client, m):
     user_id = m.from_user.id
-    user = await db.get_user(user_id)  # Get user data from the database
+    user = await get_user(user_id)  # Get user data from the database
 
     # Retrieve the active troop type and training count
     troop_type = user.active_troop_type
@@ -61,7 +65,7 @@ async def confirm_training(client, m):
     # Deduct gold and start training
     user.gold -= total_cost
     user.troops[troop_type] += troop_count
-    await db.update_user(user)
+    await user.update()  # Update the user's data in the database
 
     # Start the training process (asynchronously)
     await m.reply(f"Training {troop_count} {troop_type}s started!")
@@ -75,4 +79,4 @@ async def confirm_training(client, m):
 
     # Clear active troop type after training
     user.active_troop_type = None
-    await db.update_user(user)
+    await user.update()  # Update the user's data after clearing active troop type
