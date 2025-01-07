@@ -14,6 +14,8 @@ TRAINING_DETAILS = {
     "sensei": {"cost": 3000000, "time": 15}   # 15 minutes
 }
 
+BARRACKS_COST = 5000000  # Cost of barracks
+
 # Command to start troop training
 @Client.on_message(filters.command("train"))
 @YxH()  # Assuming YxH is a valid decorator
@@ -21,7 +23,16 @@ async def train_troops(_, m, u):
     user_id = m.from_user.id  # Correct variable reference (using 'm' instead of 'message')
     user = await get_user(user_id)  # Get user data from the database
 
-    # Check if the user has enough gold
+    # Check if the user has a barracks
+    if not user.barracks:
+        # If the user doesn't have a barracks, prompt them to buy one
+        markup = InlineKeyboardMarkup([
+            [InlineKeyboardButton("Buy Barracks for 5,000,000 gold", callback_data="buy_barracks")]
+        ])
+        await m.reply("You don't have a barracks. You need one to train troops. Would you like to buy one?", reply_markup=markup)
+        return
+
+    # If the user has a barracks, allow them to proceed with troop training
     markup = troop_selection_markup()
     await m.reply("Select the troop type to train:", reply_markup=markup)
 
@@ -44,6 +55,23 @@ async def process_training_selection(client, callback_query):
     await user.update()  # Assuming the `User` class has an `update` method
 
     await callback_query.message.edit("How many troops would you like to train? (1 to 3)")
+
+@Client.on_callback_query(filters.regex(r"buy_barracks"))
+async def buy_barracks(client, callback_query):
+    user_id = callback_query.from_user.id
+    user = await get_user(user_id)  # Fetch user data
+
+    # Check if the user has enough gold to buy a barracks
+    if user.gold < BARRACKS_COST:
+        await callback_query.message.edit("You don't have enough gold to buy a barracks!")
+        return
+
+    # Deduct the gold and give the user a barracks
+    user.gold -= BARRACKS_COST
+    user.barracks = True  # Assuming 'barracks' is a boolean field
+    await user.update()  # Update the user's data in the database
+
+    await callback_query.message.edit("You have successfully bought a barracks! Now you can train troops.")
 
 @Client.on_message(filters.regex(r"^[1-3]$"))
 async def confirm_training(client, m):
