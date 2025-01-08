@@ -12,50 +12,50 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 @Client.on_message(filters.command("start") & filters.private)
-async def start_(_, m):
-    if "clan_" in m.text:
-        clan_id = int(m.text.split("_")[1])
-        clan_data = await get_clan(clan_id)
-        txt, markup = await clan_info(clan_data, m.from_user.id)
-        return await m.reply(txt, reply_markup=markup)
-
+async def start_command(_, message):
     try:
-        # Send welcome photo and message
-        await m.reply_photo("Images/start.JPG", start_text.format(m.from_user.first_name), reply_markup=await start_markup())
+        # Check for clan related start command
+        if "clan_" in message.text:
+            clan_id = int(message.text.split("_")[1])
+            clan_data = await get_clan(clan_id)
+            txt, markup = await clan_info(clan_data, message.from_user.id)
+            return await message.reply(txt, reply_markup=markup)
 
-        user = await get_user(m.from_user.id)
+        # Respond with a welcome image and message
+        await message.reply_photo("Images/start.JPG", start_text.format(message.from_user.first_name), reply_markup=await start_markup())
 
-        if not user:
-            # Create a new user
-            u = User(m.from_user.id)
-            u.crystals += 50  # Add 50 crystals to the new user
+        user = await get_user(message.from_user.id)
 
-            # Check if the user was invited via an invite link
-            if len(m.command) > 1:
+        if user is None:
+            # Create a new user and assign initial crystals
+            new_user = User(message.from_user.id)
+            new_user.crystals += 50  # Add initial 50 crystals
+
+            # Handle user invite mechanism if present in the command
+            if len(message.command) > 1:
                 try:
-                    inviter_id = int(m.command[1])  # Get inviter ID from the start command
+                    inviter_id = int(message.command[1])
                     inviter = await get_user(inviter_id)
                     if inviter:
-                        u.invited_by = inviter_id  # Set the inviter ID for the new user
-                        inviter.crystals += 20  # Add 20 crystals to the inviter
-                        await inviter.update()  # Update the inviter's data in the database
+                        new_user.invited_by = inviter_id
+                        inviter.crystals += 20  # Reward inviter with 20 crystals
+                        await inviter.update()
                         logger.info(f"Inviter {inviter_id} rewarded with 20 crystals.")
                 except ValueError:
-                    logger.warning("Invalid invite ID.")
-                    pass  # Handle cases where the invite ID is not a valid integer
+                    logger.warning("Invalid invite ID provided.")
+                    pass  # No action on invalid invite ID
 
-            await u.update()  # Update the new user's data in the database
-
-            # Notify the new user and optionally the inviter
-            await m.reply("Welcome! You've received 50 crystals as a new user!")
-            if u.invited_by:
-                await m.reply("Your inviter has been rewarded with 20 crystals!")
-            logger.info(f"New user {u.id} created and updated.")
+            # Save the new user in the database
+            await new_user.update()
+            await message.reply("Welcome! You have received 50 crystals as a new user!")
+            if new_user.invited_by:
+                await message.reply("Your inviter has been rewarded with 20 crystals!")
+            logger.info(f"New user {new_user.id} created and updated.")
         else:
-            # If the user already exists, send a welcome back message
-            await m.reply("Welcome back..!")
+            # Welcome the existing user
+            await message.reply("Welcome back! Glad to see you again!")
             logger.info(f"Existing user {user.id} logged in.")
 
-    except Exception as e:
-        logger.error(f"Error occurred during /start command: {e}")
-        await m.reply("An error occurred, please try again later.")
+    except Exception as error:
+        logger.error(f"Error occurred during the /start command: {error}")
+        await message.reply("An error occurred while processing your request. Please try again later.")
