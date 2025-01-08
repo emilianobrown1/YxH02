@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 @Client.on_message(filters.command("start") & filters.private)
-async def start(_, m):
+async def start_(_, m):
     if "clan_" in m.text:
         clan_id = int(m.text.split("_")[1])
         clan_data = await get_clan(clan_id)
