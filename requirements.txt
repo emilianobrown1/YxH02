@@ -8,3 +8,4 @@ aiohttp>
 psutil
 beautifulsoup4
 numpy
+flask
