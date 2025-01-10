@@ -6,6 +6,4 @@ Pillow
 english-words
 psutil
 beautifulsoup4
-flask==2.2.3
-numpy
 requests>=2.25.1
