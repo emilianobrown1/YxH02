@@ -7,3 +7,4 @@ english-words
 aiohttp>
 psutil
 beautifulsoup4
+numpy
