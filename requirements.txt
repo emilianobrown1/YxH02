@@ -4,7 +4,7 @@ telegraph
 motor
 Pillow
 english-words
-aiohttp>
+aiohttp==3.11.11
 psutil
 beautifulsoup4
 flask==2.2.3
