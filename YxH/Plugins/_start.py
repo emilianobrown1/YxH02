@@ -44,4 +44,4 @@ async def start(_, m):
             await m.reply("Your inviter has been rewarded with 20 crystals!")
     else:
         # If the user already exists, send a welcome back message
-        await m.reply("Welcome back..!")
+        await m.reply("Welcome back...!")
