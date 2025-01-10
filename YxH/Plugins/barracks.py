@@ -31,7 +31,7 @@ async def start_command(_, message):
 
         if user is None:
             # Create a new user and assign initial crystals
-            new_user = User(message.from_user.id)
+            new_user = User(message.from_user)
             new_user.crystals += 50  # Add initial 50 crystals
 
             # Handle user invite mechanism if present in the command
