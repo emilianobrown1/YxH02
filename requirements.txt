@@ -7,5 +7,6 @@ english-words
 aiohttp>
 psutil
 beautifulsoup4
+flask==2.2.3
 numpy
-flask
+requests>=2.25.1
