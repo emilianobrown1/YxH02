@@ -14,7 +14,7 @@ TRAINING_DETAILS = {
     "sensei": {"cost": 3000000, "time": 15}   # 15 minutes
 }
 
-BARRACKS_COST = 5000000  # Cost of barracks
+BARRACKS_COST = 100  # Cost of barracks
 
 # Command to start troop training
 @Client.on_message(filters.command("train"))
@@ -27,7 +27,7 @@ async def train_troops(_, m, u):
     if not user.barracks:
         # If the user doesn't have a barracks, prompt them to buy one
         markup = InlineKeyboardMarkup([
-            [InlineKeyboardButton("Buy Barracks for 5,000,000 gold", callback_data="buy_barracks")]
+            [InlineKeyboardButton("Buy Barracks for 100 Crystal 🔮", callback_data="buy_barracks")]
         ])
         await m.reply("You don't have a barracks. You need one to train troops. Would you like to buy one?", reply_markup=markup)
         return
@@ -67,7 +67,7 @@ async def buy_barracks(client, callback_query):
         return
 
     # Deduct the gold and give the user a barracks
-    user.gold -= BARRACKS_COST
+    user.crystal -= BARRACKS_COST
     user.barracks = True  # Assuming 'barracks' is a boolean field
     await user.update()  # Update the user's data in the database
 
