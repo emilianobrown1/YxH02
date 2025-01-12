@@ -86,8 +86,8 @@ async def confirm_training(client, m):
     cost_per_troop = TRAINING_DETAILS[troop_type]["cost"]
     total_cost = cost_per_troop * troop_count
 
-    if user.gold < total_cost:
-        await m.reply(f"Insufficient gold! You need {total_cost} gold.")
+    if user.crystal < total_cost:
+        await m.reply(f"Insufficient crystal! You need {total_cost} 🔮.")
         return
 
     # Deduct gold and start training
