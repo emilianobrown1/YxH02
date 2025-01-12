@@ -1,13 +1,11 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import asyncio
+from . import YxH
+from ..Database.users import get_user
+from ..Class.user import User
 
-# Importing necessary modules and functions
-from . import YxH  # Assuming YxH is a valid decorator
-from ..Database.users import get_user  # Assuming get_user function is available for database interactions
-from ..Class.user import User  # Assuming User class exists and is used for user operations
 
-# Troop Training Costs and Time
 TRAINING_DETAILS = {
     "shinobi": {"cost": 1000000, "time": 5},  # 5 minutes
     "wizard": {"cost": 2000000, "time": 10},  # 10 minutes
