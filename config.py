@@ -8,7 +8,7 @@ BOT_TOKEN = getenv("BOT_TOKEN", "6410981698:AAGLfD-VHkZUHWq8VwIGKQzJcPRkX_wtgJg"
 MONGO_DB_URI = getenv("MONGO_DB_URI", "mongodb+srv://phil:phil9665@cluster0.vvs2pmw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
 SUDO_USERS = getenv("SUDO_USERS",  "1086394021")
-OWNER_ID = int(getenv("OWNER_ID", "5903688119"))
+OWNER_ID = int(getenv("OWNER_ID", "1086394021"))
 
 LOG_GROUP_ID = getenv("LOG_GROUP_ID", -1001876710416)
 ANIME_CHAR_CHANNEL_ID = -1002139511906
