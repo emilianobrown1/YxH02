@@ -15,13 +15,14 @@ def key_func(user):
 
 @Client.on_message(filters.command("top"))
 @YxH()
-async def top(_, m, u):
+async def top(client, m, u):
     users = await get_all_users()
     # Get the top 10 users based on the amount of gold they hold
     top10 = heapq.nlargest(10, users, key=key_func)
     txt = "Top Miners\n\n"
     for x, y in enumerate(top10):
-        txt += f"{x+1}. {y.first_name} - {y.gold}\n"  # Directly use 'first_name' attribute
+        user_info = await client.get_users(y.user_id)  # Dynamically fetch user info
+        txt += f"{x+1}. {user_info.first_name} - {y.gold}\n"
     with open(TOP_MINERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
 
@@ -31,13 +32,14 @@ def c_func(user):
 
 @Client.on_message(filters.command("ctop"))
 @YxH()
-async def ctop(_, m, u):
+async def ctop(client, m, u):
     users = await get_all_users()
     # Get the top 10 users based on the collection size
     top10 = heapq.nlargest(10, users, key=c_func)
     txt = "Top Collectors\n\n"
     for x, y in enumerate(top10):
-        txt += f"{x+1}. {y.first_name} - {len(y.collection)}\n"  # Directly use 'first_name' attribute
+        user_info = await client.get_users(y.user_id)  # Dynamically fetch user info
+        txt += f"{x+1}. {user_info.first_name} - {len(y.collection)}\n"
     with open(TOP_COLLECTORS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
 
@@ -47,12 +49,13 @@ def cr_func(user):
 
 @Client.on_message(filters.command("crtop"))
 @YxH()
-async def crtop(_, m, u):
+async def crtop(client, m, u):
     users = await get_all_users()
     # Get the top 10 users based on the amount of crystals they hold
     top10 = heapq.nlargest(10, users, key=cr_func)
     txt = "Top Crystal Holders\n\n"
     for x, y in enumerate(top10):
-        txt += f"{x+1}. {y.first_name} - {y.crystals}\n"  # Directly use 'first_name' attribute
+        user_info = await client.get_users(y.user_id)  # Dynamically fetch user info
+        txt += f"{x+1}. {user_info.first_name} - {y.crystals}\n"
     with open(TOP_CRYSTAL_HOLDERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
