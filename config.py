@@ -21,5 +21,5 @@ if not OWNER_ID in SUDO_USERS:
   SUDO_USERS.append(OWNER_ID)
 
 MAIN_GROUP_ID = -1002014537230
-SUPPORT_GROUP = "+agpLZtZzb0dmNzM1" # ENTER WITHOUT "@"
+SUPPORT_GROUP = "International_animez_community" # ENTER WITHOUT "@"
 SUPPORT_CHANNEL = "YxH_Homeland" # ENTER WITHOUT "@"
