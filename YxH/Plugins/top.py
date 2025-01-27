@@ -2,7 +2,6 @@ from pyrogram import Client, filters
 from ..Database.users import get_all_users
 from ..universal_decorator import YxH
 import heapq
-from . import YxH
 
 TOP_MINERS_IMAGE_PATH = "Images/mtop.jpg"
 TOP_COLLECTORS_IMAGE_PATH = "Images/top.jpg"
@@ -20,8 +19,8 @@ async def top(client, m, u):
     top10 = heapq.nlargest(10, users, key=key_func)
     txt = "Top Miners\n\n"
     for x, y in enumerate(top10):
-        user_info = await client.get_users(y.id)  # Dynamically fetch user info
-        txt += f"{x+1}. {user_info.first_name} ({y.id}) - {y.gold}\n"
+        user_info = await client.get_users(y.user)  # Dynamically fetch user info
+        txt += f"{x+1}. {user_info.first_name} ({y.user}) - {y.gold}\n"
     with open(TOP_MINERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
 
@@ -37,8 +36,8 @@ async def ctop(client, m, u):
     top10 = heapq.nlargest(10, users, key=c_func)
     txt = "Top Collectors\n\n"
     for x, y in enumerate(top10):
-        user_info = await client.get_users(y.id)  # Dynamically fetch user info
-        txt += f"{x+1}. {user_info.first_name} ({y.id}) - {len(y.collection)}\n"
+        user_info = await client.get_users(y.user)  # Dynamically fetch user info
+        txt += f"{x+1}. {user_info.first_name} ({y.user}) - {len(y.collection)}\n"
     with open(TOP_COLLECTORS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
 
@@ -54,7 +53,7 @@ async def crtop(client, m, u):
     top10 = heapq.nlargest(10, users, key=cr_func)
     txt = "Top Crystal Holders\n\n"
     for x, y in enumerate(top10):
-        user_info = await client.get_users(y.id)  # Dynamically fetch user info
-        txt += f"{x+1}. {user_info.first_name} ({y.id}) - {y.crystals}\n"
+        user_info = await client.get_users(y.user)  # Dynamically fetch user info
+        txt += f"{x+1}. {user_info.first_name} ({y.user}) - {y.crystals}\n"
     with open(TOP_CRYSTAL_HOLDERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
