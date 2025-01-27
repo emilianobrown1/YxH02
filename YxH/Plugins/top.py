@@ -15,11 +15,15 @@ def key_func(user):
 @YxH()
 async def top(client, m, u):
     users = await get_all_users()
+    if not users or not isinstance(users, list):  # Ensure it's a list
+        await m.reply_text("No users found in the leaderboard.")
+        return
+
     # Get the top 10 users based on the amount of gold they hold
     top10 = heapq.nlargest(10, users, key=key_func)
     txt = "Top Miners\n\n"
     for x, y in enumerate(top10):
-        user_info = await client.get_users(y.user)  # Dynamically fetch user info
+        user_info = await client.get_users(y.user)  # Fetch user info dynamically
         txt += f"{x+1}. {user_info.first_name} ({y.user}) - {y.gold}\n"
     with open(TOP_MINERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
@@ -32,11 +36,15 @@ def c_func(user):
 @YxH()
 async def ctop(client, m, u):
     users = await get_all_users()
+    if not users or not isinstance(users, list):  # Ensure it's a list
+        await m.reply_text("No users found in the leaderboard.")
+        return
+
     # Get the top 10 users based on the collection size
     top10 = heapq.nlargest(10, users, key=c_func)
     txt = "Top Collectors\n\n"
     for x, y in enumerate(top10):
-        user_info = await client.get_users(y.user)  # Dynamically fetch user info
+        user_info = await client.get_users(y.user)  # Fetch user info dynamically
         txt += f"{x+1}. {user_info.first_name} ({y.user}) - {len(y.collection)}\n"
     with open(TOP_COLLECTORS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
@@ -49,11 +57,15 @@ def cr_func(user):
 @YxH()
 async def crtop(client, m, u):
     users = await get_all_users()
+    if not users or not isinstance(users, list):  # Ensure it's a list
+        await m.reply_text("No users found in the leaderboard.")
+        return
+
     # Get the top 10 users based on the amount of crystals they hold
     top10 = heapq.nlargest(10, users, key=cr_func)
     txt = "Top Crystal Holders\n\n"
     for x, y in enumerate(top10):
-        user_info = await client.get_users(y.user)  # Dynamically fetch user info
+        user_info = await client.get_users(y.user)  # Fetch user info dynamically
         txt += f"{x+1}. {user_info.first_name} ({y.user}) - {y.crystals}\n"
     with open(TOP_CRYSTAL_HOLDERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
