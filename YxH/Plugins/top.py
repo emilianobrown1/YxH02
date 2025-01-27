@@ -24,8 +24,8 @@ async def top(client, m, u):
     for x, y in enumerate(top10):
         if y.user_id not in seen_users:
             user_info = await client.get_users(y.user_id)  # Dynamically fetch user info
-            txt += f"{x+1}. {user_info.first_name} ({y.user_id}) - {y.gold}\n"
-            seen_users.add(y.user_id)
+            txt += f"{x+1}. {user_info.first_name} ({y.user}) - {y.gold}\n"
+            seen_users.add(y.user)
     with open(TOP_MINERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
 
@@ -43,8 +43,8 @@ async def ctop(client, m, u):
     seen_users = set()
     for x, y in enumerate(top10):
         if y.user_id not in seen_users:
-            user_info = await client.get_users(y.user_id)  # Dynamically fetch user info
-            txt += f"{x+1}. {user_info.first_name} ({y.user_id}) - {len(y.collection)}\n"
+            user_info = await client.get_users(y.user)  # Dynamically fetch user info
+            txt += f"{x+1}. {user_info.first_name} ({y.user}) - {len(y.collection)}\n"
             seen_users.add(y.user_id)
     with open(TOP_COLLECTORS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
@@ -64,7 +64,7 @@ async def crtop(client, m, u):
     for x, y in enumerate(top10):
         if y.user_id not in seen_users:
             user_info = await client.get_users(y.user_id)  # Dynamically fetch user info
-            txt += f"{x+1}. {user_info.first_name} ({y.user_id}) - {y.crystals}\n"
-            seen_users.add(y.user_id)
+            txt += f"{x+1}. {user_info.first_name} ({y.user}) - {y.crystals}\n"
+            seen_users.add(y.user)
     with open(TOP_CRYSTAL_HOLDERS_IMAGE_PATH, "rb") as image_file:
         await m.reply_photo(image_file, caption=txt)
