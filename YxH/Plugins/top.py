@@ -1,71 +1,63 @@
 from pyrogram import Client, filters
-from ..Database.users import get_all_users
-from ..universal_decorator import YxH
-import heapq
+from ..Database.users import get_top_users_by
 
+# Image paths for leaderboards
 TOP_MINERS_IMAGE_PATH = "Images/mtop.jpg"
 TOP_COLLECTORS_IMAGE_PATH = "Images/top.jpg"
 TOP_CRYSTAL_HOLDERS_IMAGE_PATH = "Images/ctop.jpg"
 
-# Function to calculate the amount of gold held by each user
-def key_func(user):
-    return user.gold  # Assuming 'gold' is the attribute that holds the gold amount
 
-@Client.on_message(filters.command("top"))
-@YxH()
-async def top(client, m, u):
-    users = await get_all_users()
-    if not users or not isinstance(users, list):  # Ensure it's a list
-        await m.reply_text("No users found in the leaderboard.")
-        return
+async def get_leaderboard(attribute, title, unit, top_limit=10):
+    """
+    Helper function to generate leaderboard text.
+    """
+    top_users = await get_top_users_by(attribute, top_limit)
+    leaderboard = f"🏆 **{title}** 🏆\n"
+    leaderboard += "\n".join(
+        [f"{i + 1}. User {user.user}: {getattr(user, attribute)} {unit}" for i, user in enumerate(top_users)]
+    )
+    return leaderboard
 
-    # Get the top 10 users based on the amount of gold they hold
-    top10 = heapq.nlargest(10, users, key=key_func)
-    txt = "Top Miners\n\n"
-    for x, y in enumerate(top10):
-        user_info = await client.get_users(y.user)  # Fetch user info dynamically
-        txt += f"{x+1}. {user_info.first_name} ({y.user}) - {y.gold}\n"
-    with open(TOP_MINERS_IMAGE_PATH, "rb") as image_file:
-        await m.reply_photo(image_file, caption=txt)
 
-# Function to calculate the size of the collection of each user
-def c_func(user):
-    return len(user.collection)
+@app.on_message(filters.command("top"))
+async def top_gold(_, message):
+    """
+    Command to show the top gold holders.
+    Usage: /top
+    """
+    leaderboard = await get_leaderboard("gold", "Top 10 Gold Holders", "Gold")
+    await message.reply_photo(
+        photo=TOP_MINERS_IMAGE_PATH,
+        caption=leaderboard
+    )
 
-@Client.on_message(filters.command("ctop"))
-@YxH()
-async def ctop(client, m, u):
-    users = await get_all_users()
-    if not users or not isinstance(users, list):  # Ensure it's a list
-        await m.reply_text("No users found in the leaderboard.")
-        return
 
-    # Get the top 10 users based on the collection size
-    top10 = heapq.nlargest(10, users, key=c_func)
-    txt = "Top Collectors\n\n"
-    for x, y in enumerate(top10):
-        user_info = await client.get_users(y.user)  # Fetch user info dynamically
-        txt += f"{x+1}. {user_info.first_name} ({y.user}) - {len(y.collection)}\n"
-    with open(TOP_COLLECTORS_IMAGE_PATH, "rb") as image_file:
-        await m.reply_photo(image_file, caption=txt)
+@app.on_message(filters.command("crtop"))
+async def top_crystals(_, message):
+    """
+    Command to show the top crystal holders.
+    Usage: /crtop
+    """
+    leaderboard = await get_leaderboard("crystals", "Top 10 Crystal Holders", "Crystals")
+    await message.reply_photo(
+        photo=TOP_CRYSTAL_HOLDERS_IMAGE_PATH,
+        caption=leaderboard
+    )
 
-# Function to calculate the number of crystals held by each user
-def cr_func(user):
-    return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount
 
-@Client.on_message(filters.command("crtop"))
-@YxH()
-async def crtop(client, m, u):
-    users = await get_all_users()
-    if not users or not isinstance(users, list):  # Ensure it's a list
-        await m.reply_text("No users found in the leaderboard.")
-        return
-
-    # Get the top 10 users based on the amount of crystals they hold
-    top10 = heapq.nlargest(10, users, key=cr_func)
-    txt = "Top Crystal Holders\n\n"
-    for x, y in enumerate(top10):
-        user_info = await client.get_users(y.user)  # Fetch user info dynamically
-        txt += f"{x+1}. {user_info.first_name} ({y.user}) - {y.crystals}\n"
-    with open(TOP_CRYSTAL_HOLDERS_IMAGE_PATH, "rb") as image_file:
-        await m.reply_photo(image_file, caption=txt)
+@app.on_message(filters.command("ctop"))
+async def top_collections(_, message):
+    """
+    Command to show the top collection holders.
+    Usage: /ctop
+    """
+    top_limit = 10
+    top_users = await get_top_users_by("collection", top_limit)
+    leaderboard = "📚 **Top 10 Collections** 📚\n"
+    leaderboard += "\n".join(
+        [f"{i + 1}. User {user.user}: {len(user.collection)} Characters" for i, user in enumerate(top_users)]
+    )
+    await message.reply_photo(
+        photo=TOP_COLLECTORS_IMAGE_PATH,
+        caption=leaderboard
+    )
