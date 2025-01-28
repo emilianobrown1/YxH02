@@ -20,6 +20,6 @@ SUDO_USERS = list(map(int, SUDO_USERS.split()))
 if not OWNER_ID in SUDO_USERS:
   SUDO_USERS.append(OWNER_ID)
 
-MAIN_GROUP_ID = -1002014537230
+MAIN_GROUP_ID = -1002461084481
 SUPPORT_GROUP = "International_animez_community" # ENTER WITHOUT "@"
 SUPPORT_CHANNEL = "YxH_Homeland" # ENTER WITHOUT "@"
