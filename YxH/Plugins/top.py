@@ -17,7 +17,7 @@ async def get_top_users(attribute, top_limit=10):
     return sorted_users[:top_limit]
 
 
-@app.on_message(filters.command("top"))
+@Client.on_message(filters.command("top"))
 async def top_gold(_, message):
     """
     Command to show the top gold holders.
@@ -34,7 +34,7 @@ async def top_gold(_, message):
     )
 
 
-@app.on_message(filters.command("crtop"))
+@Client.on_message(filters.command("crtop"))
 async def top_crystals(_, message):
     """
     Command to show the top crystal holders.
@@ -51,7 +51,7 @@ async def top_crystals(_, message):
     )
 
 
-@app.on_message(filters.command("ctop"))
+@Client.on_message(filters.command("ctop"))
 async def top_collections(_, message):
     """
     Command to show the top collection holders.
