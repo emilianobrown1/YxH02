@@ -1,82 +1,62 @@
 from pyrogram import Client, filters
 from ..Database.users import get_all_users
+from ..universal_decorator import YxH
+import heapq
 
-# Image paths for leaderboards
-TOP_MINERS_IMAGE_PATH = "Images/mtop.jpg"
-TOP_COLLECTORS_IMAGE_PATH = "Images/top.jpg"
-TOP_CRYSTAL_HOLDERS_IMAGE_PATH = "Images/ctop.jpg"
+# Change this function to calculate the sum of gold held by each user
+def key_func(user):
+    return user.gold  # Assuming 'gold' is the attribute that holds the gold amount
 
 def get_display_name(user):
     """
     Get a display name for the user.
     If first_name or username is not available, fallback to user_id.
     """
-    return getattr(user, "first_name", None) or getattr(user, "username", None) or f"User {user.user}"
-
-async def get_top_users_by(attribute, limit=10):
-    """
-    Fetch the top users based on a specified attribute (e.g., 'gold', 'crystals').
-    """
-    # Fetch all users from the database
-    all_users = await get_all_users()
-    
-    # Sort users by the specified attribute in descending order
-    sorted_users = sorted(all_users, key=lambda user: getattr(user, attribute, 0), reverse=True)
-    
-    # Return the top 'limit' users
-    return sorted_users[:limit]
-
-async def get_leaderboard(attribute, title, unit, top_limit=10):
-    """
-    Helper function to generate leaderboard text.
-    """
-    top_users = await get_top_users_by(attribute, top_limit)
-    leaderboard = f"🏆 **{title}** 🏆\n"
-    leaderboard += "\n".join(
-        [f"{i + 1}. {get_display_name(user)}: {getattr(user, attribute)} {unit}" for i, user in enumerate(top_users)]
-    )
-    return leaderboard
-
+    # Use user.user to get the name information
+    name = getattr(user.user, "first_name", None) or getattr(user.user, "username", None) or f"User {user.user.id}"
+    return name
 
 @Client.on_message(filters.command("top"))
-async def top_gold(_, message):
-    """
-    Command to show the top gold holders.
-    Usage: /top
-    """
-    leaderboard = await get_leaderboard("gold", "Top 10 Gold Holders", "Gold")
-    await message.reply_photo(
-        photo=TOP_MINERS_IMAGE_PATH,
-        caption=leaderboard
-    )
+@YxH()
+async def top(_, m, u):
+    users = await get_all_users()
+    # This will get the top 10 users based on the amount of gold they hold
+    top10 = heapq.nlargest(10, users, key=key_func)
+    txt = "**Top Miners**"
+    txt += "\n\n"
+    for x, y in enumerate(top10):
+        # Use get_display_name function to correctly handle name extraction
+        txt += f"`{x+1}.` **{get_display_name(y)}** - `{y.gold}`\n"  # Display the gold amount
+    await m.reply(txt)
 
-
-@Client.on_message(filters.command("crtop"))
-async def top_crystals(_, message):
-    """
-    Command to show the top crystal holders.
-    Usage: /crtop
-    """
-    leaderboard = await get_leaderboard("crystals", "Top 10 Crystal Holders", "Crystals")
-    await message.reply_photo(
-        photo=TOP_CRYSTAL_HOLDERS_IMAGE_PATH,
-        caption=leaderboard
-    )
-
+def c_func(user):
+    return len(user.collection)
 
 @Client.on_message(filters.command("ctop"))
-async def top_collections(_, message):
-    """
-    Command to show the top collection holders.
-    Usage: /ctop
-    """
-    top_limit = 10
-    top_users = await get_top_users_by("collection", top_limit)
-    leaderboard = "📚 **Top 10 Collections** 📚\n"
-    leaderboard += "\n".join(
-        [f"{i + 1}. {get_display_name(user)}: {len(user.collection)} Characters" for i, user in enumerate(top_users)]
-    )
-    await message.reply_photo(
-        photo=TOP_COLLECTORS_IMAGE_PATH,
-        caption=leaderboard
-    )
+@YxH()
+async def ctop(_, m, u):
+    users = await get_all_users()
+    # This will get the top 10 users based on the amount of gold they hold
+    top10 = heapq.nlargest(10, users, key=c_func)
+    txt = "**Top Collectors**"
+    txt += "\n\n"
+    for x, y in enumerate(top10):
+        # Use get_display_name function to correctly handle name extraction
+        txt += f"`{x+1}.` **{get_display_name(y)}** - `{len(y.collection)}`\n"  # Display the collection size
+    await m.reply(txt)
+
+def cr_func(user):
+    return user.crystals  # Assuming 'crystals' is the attribute that holds the crystals amount
+
+@Client.on_message(filters.command("crtop"))
+@YxH()
+async def crtop(_, m, u):
+    users = await get_all_users()
+    # This will get the top 10 users based on the amount of crystals they hold
+    top10 = heapq.nlargest(10, users, key=cr_func)
+    txt = "**Top Crystal Holders**"
+    txt += "\n\n"
+    for x, y in enumerate(top10):
+        # Use get_display_name function to correctly handle name extraction
+        txt += f"`{x+1}.` **{get_display_name(y)}** - `{y.crystals}`\n"  # Display the crystals amount
+    await m.reply(txt)
