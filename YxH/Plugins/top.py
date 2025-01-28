@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from ..Database.users import get_top_users_by
+from ..Database.users import get_user
 
 # Image paths for leaderboards
 TOP_MINERS_IMAGE_PATH = "Images/mtop.jpg"
