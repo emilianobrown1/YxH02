@@ -19,6 +19,13 @@ async def get_top_users(attribute, top_limit=10):
     return sorted_users[:top_limit]
 
 
+def get_display_name(user):
+    """
+    Get the display name of a user.
+    """
+    return user.first_name or user.username or f"User {user.user}"
+
+
 def truncate_leaderboard(leaderboard_text):
     """
     Truncate the leaderboard text to fit within Telegram's 1024-character limit.
@@ -39,7 +46,7 @@ async def top_gold(client, message):
     top_users = await get_top_users("gold", 10)
     leaderboard = "🏆 **Top 10 Gold Holders** 🏆\n"
     leaderboard += "\n".join(
-        [f"{i + 1}. User {user.user}: {user.gold} Gold" for i, user in enumerate(top_users)]
+        [f"{i + 1}. {get_display_name(user)}: {user.gold} Gold" for i, user in enumerate(top_users)]
     )
     leaderboard = truncate_leaderboard(leaderboard)
     await message.reply_photo(
@@ -57,7 +64,7 @@ async def top_crystals(client, message):
     top_users = await get_top_users("crystals", 10)
     leaderboard = "💎 **Top 10 Crystal Holders** 💎\n"
     leaderboard += "\n".join(
-        [f"{i + 1}. User {user.user}: {user.crystals} Crystals" for i, user in enumerate(top_users)]
+        [f"{i + 1}. {get_display_name(user)}: {user.crystals} Crystals" for i, user in enumerate(top_users)]
     )
     leaderboard = truncate_leaderboard(leaderboard)
     await message.reply_photo(
@@ -75,7 +82,7 @@ async def top_collections(client, message):
     top_users = await get_top_users("collection", 10)
     leaderboard = "📚 **Top 10 Collections** 📚\n"
     leaderboard += "\n".join(
-        [f"{i + 1}. User {user.user}: {len(user.collection)} Characters" for i, user in enumerate(top_users)]
+        [f"{i + 1}. {get_display_name(user)}: {len(user.collection)} Characters" for i, user in enumerate(top_users)]
     )
     leaderboard = truncate_leaderboard(leaderboard)
     await message.reply_photo(
