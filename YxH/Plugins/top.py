@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from ..Database.users import get_user
+from ..Database.users import get_all_users
 
 # Image paths for leaderboards
 TOP_MINERS_IMAGE_PATH = "Images/mtop.jpg"
@@ -12,6 +12,19 @@ def get_display_name(user):
     If first_name or username is not available, fallback to user_id.
     """
     return getattr(user, "first_name", None) or getattr(user, "username", None) or f"User {user.user}"
+
+async def get_top_users_by(attribute, limit=10):
+    """
+    Fetch the top users based on a specified attribute (e.g., 'gold', 'crystals').
+    """
+    # Fetch all users from the database
+    all_users = await get_all_users()
+    
+    # Sort users by the specified attribute in descending order
+    sorted_users = sorted(all_users, key=lambda user: getattr(user, attribute, 0), reverse=True)
+    
+    # Return the top 'limit' users
+    return sorted_users[:limit]
 
 async def get_leaderboard(attribute, title, unit, top_limit=10):
     """
