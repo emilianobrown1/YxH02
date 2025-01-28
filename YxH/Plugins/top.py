@@ -6,6 +6,8 @@ TOP_MINERS_IMAGE_PATH = "Images/mtop.jpg"
 TOP_COLLECTORS_IMAGE_PATH = "Images/top.jpg"
 TOP_CRYSTAL_HOLDERS_IMAGE_PATH = "Images/ctop.jpg"
 
+MAX_CAPTION_LENGTH = 1024  # Telegram's caption limit
+
 
 async def get_top_users(attribute, top_limit=10):
     """
@@ -17,8 +19,19 @@ async def get_top_users(attribute, top_limit=10):
     return sorted_users[:top_limit]
 
 
+def truncate_leaderboard(leaderboard_text):
+    """
+    Truncate the leaderboard text to fit within Telegram's 1024-character limit.
+    """
+    if len(leaderboard_text) > MAX_CAPTION_LENGTH:
+        truncated_text = leaderboard_text[:MAX_CAPTION_LENGTH - 50]  # Reserve space for ellipsis
+        truncated_text += "\n...and more!"
+        return truncated_text
+    return leaderboard_text
+
+
 @Client.on_message(filters.command("top"))
-async def top_gold(_, message):
+async def top_gold(client, message):
     """
     Command to show the top gold holders.
     Usage: /top
@@ -28,6 +41,7 @@ async def top_gold(_, message):
     leaderboard += "\n".join(
         [f"{i + 1}. User {user.user}: {user.gold} Gold" for i, user in enumerate(top_users)]
     )
+    leaderboard = truncate_leaderboard(leaderboard)
     await message.reply_photo(
         photo=TOP_MINERS_IMAGE_PATH,
         caption=leaderboard
@@ -35,7 +49,7 @@ async def top_gold(_, message):
 
 
 @Client.on_message(filters.command("crtop"))
-async def top_crystals(_, message):
+async def top_crystals(client, message):
     """
     Command to show the top crystal holders.
     Usage: /crtop
@@ -45,6 +59,7 @@ async def top_crystals(_, message):
     leaderboard += "\n".join(
         [f"{i + 1}. User {user.user}: {user.crystals} Crystals" for i, user in enumerate(top_users)]
     )
+    leaderboard = truncate_leaderboard(leaderboard)
     await message.reply_photo(
         photo=TOP_CRYSTAL_HOLDERS_IMAGE_PATH,
         caption=leaderboard
@@ -52,7 +67,7 @@ async def top_crystals(_, message):
 
 
 @Client.on_message(filters.command("ctop"))
-async def top_collections(_, message):
+async def top_collections(client, message):
     """
     Command to show the top collection holders.
     Usage: /ctop
@@ -62,6 +77,7 @@ async def top_collections(_, message):
     leaderboard += "\n".join(
         [f"{i + 1}. User {user.user}: {len(user.collection)} Characters" for i, user in enumerate(top_users)]
     )
+    leaderboard = truncate_leaderboard(leaderboard)
     await message.reply_photo(
         photo=TOP_COLLECTORS_IMAGE_PATH,
         caption=leaderboard
