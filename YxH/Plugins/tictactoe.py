@@ -82,17 +82,34 @@ async def start_game(client, message: Message, user: User):
 async def forfeit_game(client, message: Message, user: User):
     chat_id = message.chat.id
     game = game_manager.get(chat_id)
-    
+
     if not game or message.from_user.id not in [game['p1'], game['p2']]:
-        return await message.reply("No active game to forfeit!")
+        return await message.reply("🚫 No active game to forfeit!")
+
+    # Determine winner and loser
+    if message.from_user.id == game['p1']:
+        winner_id, winner_name = game['p2'], game['p2_name']
+        loser_id = game['p1']
+    else:
+        winner_id, winner_name = game['p1'], game['p1_name']
+        loser_id = game['p2']
+
+    # Get winner's User object
+    winner_user = await get_user(winner_id)
     
-    winner_id = game['p2'] if message.from_user.id == game['p1'] else game['p1']
-    winner = await get_user(winner_id)
-    await winner.add_tictactoe_win()
-    
-    # Record result
-    loser_id = message.from_user.id
-    await add_tictactoe_game(winner_id, loser_id, "win")
-    
+    # Add crystal reward
+    try:
+        await winner_user.add_crystals(2)  # Use the new method
+        await winner_user.update()  # Ensure update is called
+        await add_tictactoe_game(winner_id, loser_id, "forfeit")
+    except Exception as e:
+        print(f"Error updating crystals: {e}")
+        return await message.reply("❌ Could not process reward!")
+
+    # Cleanup game state
     game_manager.delete(chat_id)
-    await message.reply(f"🏳️ {message.from_user.first_name} forfeited! {winner.user.first_name} wins!")
+    
+    await message.reply(
+        f"🏳️ {message.from_user.first_name} forfeited!\n"
+        f"🎉 {winner_name} wins and receives 2 crystals! 💎"
+    )
