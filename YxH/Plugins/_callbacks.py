@@ -77,7 +77,7 @@ async def cbq(_, q: CallbackQuery):
 
         await q.message.edit_text(f"💖 {sender.user.first_name} and {receiver.user.first_name} are now a couple! 💑")
 
-    elif q.data.startswith("reject_"):
+  elif q.data.startswith("reject_"):
         sender_id = int(q.data.split("_")[1])
 
         sender = await get_user(sender_id)
