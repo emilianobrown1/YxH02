@@ -73,7 +73,7 @@ class User:
     async def add_tictactoe_win(self):
         """Increments Tic-Tac-Toe wins, gives gems, and updates the database."""
         self.tictactoe_wins += 1
-        self.crystal += 2  # Reward 100,000 gems per win
+        self.crystals += 2  # Reward 100,000 gems per win
         await self.update()
 
     async def add_crystals(self, amount: int):
