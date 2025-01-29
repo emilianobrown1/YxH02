@@ -23,7 +23,7 @@ from ..Utils.datetime import get_date
 from ..Class import User, AnimeCharacter
 from .spinxwin import spin_cbq
 from .gift import gifts_cbq
-from .propose import accept_proposal, reject_proposal
+from .propose import accept_, reject_
 # MODULE FUNCTIONS IMPORTS
 
 from .bonus import claim_cbq
@@ -55,7 +55,36 @@ async def cbq(_, q: CallbackQuery):
     u = await get_user(q.from_user.id)
     count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
+      
+  elif q.data.startswith("accept_"):
+        sender_id = int(q.data.split("_")[1])
+        receiver_id = q.from_user.id
 
+        sender = await get_user(sender_id)
+        receiver = await get_user(receiver_id)
+
+        if not sender or not receiver:
+            return await q.answer("User data not found!", show_alert=True)
+
+        if receiver.partner or sender.partner:
+            return await q.answer("One of you is already in a relationship!", show_alert=True)
+
+        sender.partner = receiver.user.id
+        receiver.partner = sender.user.id
+        await add_couple(sender.user.id, receiver.user.id)
+        await sender.update()
+        await receiver.update()
+
+        await q.message.edit_text(f"💖 {sender.user.first_name} and {receiver.user.first_name} are now a couple! 💑")
+
+    elif q.data.startswith("reject_"):
+        sender_id = int(q.data.split("_")[1])
+
+        sender = await get_user(sender_id)
+        if not sender:
+            return await q.answer("User data not found!", show_alert=True)
+
+        await q.message.edit_text("💔 Proposal rejected.")
 
   data, actual = q.data.split("_")
   actual = int(actual)
