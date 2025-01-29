@@ -50,7 +50,7 @@ class User:
             "Magic Stone 🪨": 0
         }
         self.magic_uses = 0  # Track magic command usage
-         self.tictactoe_wins = 0  # Track Tic-Tac-Toe wins
+        self.tictactoe_wins = 0  # Track Tic-Tac-Toe wins
         self.last_magic_use_time = 0
         # Dev Requirements.
         self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
