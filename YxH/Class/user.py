@@ -77,9 +77,9 @@ class User:
         await self.update()
 
     async def add_crystals(self, amount: int):
-    """Generic method to add crystals"""
-    self.crystals += amount
-    await self.update()
+        """Generic method to add crystals"""
+        self.crystals += amount
+        await self.update()
 
     def is_blocked(self):
         return self.blocked
