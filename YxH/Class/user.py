@@ -32,6 +32,7 @@ class User:
         self.gifts = 0  # no.of gifts can be gifted
         self.invite_link = None
         self.invited_by = None
+        self.partner = None 
         self.convertx = {}  # {date: "converted"}
         self.buy_crystals = {}
         self.scramble = []
