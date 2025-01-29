@@ -5,7 +5,6 @@ import random
 from pyrogram import Client
 from pyrogram.types import CallbackQuery, InputMediaPhoto
 from ..Database.users import get_user
-from ..Database.couples import add_couple, get_partner, remove_couple
 from ..Database.characters import get_anime_character
 from ..Utils.markups import (
     gender_markup,
@@ -57,35 +56,6 @@ async def cbq(_, q: CallbackQuery):
     count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
 
-  if data.startswith("accept_"):
-        sender_id = int(data.split("_")[1])
-        receiver_id = q.from_user.id
-
-        sender = await get_user(sender_id)
-        receiver = await get_user(receiver_id)
-
-        if not sender or not receiver:
-            return await q.answer("User data not found!", show_alert=True)
-
-        if receiver.partner or sender.partner:
-            return await q.answer("One of you is already in a relationship!", show_alert=True)
-
-        sender.partner = receiver.user.id
-        receiver.partner = sender.user.id
-        await add_couple(sender.user.id, receiver.user.id)
-        await sender.update()
-        await receiver.update()
-
-        await q.message.edit_text(f"💖 {sender.user.first_name} and {receiver.user.first_name} are now a couple! 💑")
-
-    elif data.startswith("reject_"):
-        sender_id = int(data.split("_")[1])
-
-        sender = await get_user(sender_id)
-        if not sender:
-            return await q.answer("User data not found!", show_alert=True)
-
-        await q.message.edit_text("💔 Proposal rejected.")
 
   data, actual = q.data.split("_")
   actual = int(actual)
