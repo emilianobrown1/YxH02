@@ -76,6 +76,11 @@ class User:
         self.crystal += 2  # Reward 100,000 gems per win
         await self.update()
 
+    async def add_crystals(self, amount: int):
+    """Generic method to add crystals"""
+    self.crystals += amount
+    await self.update()
+
     def is_blocked(self):
         return self.blocked
 
