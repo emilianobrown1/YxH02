@@ -18,3 +18,8 @@ async def remove_couple(user_id):
     couple = await couples_db.find_one({"user1": user_id}) or await couples_db.find_one({"user2": user_id})
     if couple:
         await couples_db.delete_one({"_id": couple["_id"]})
+
+async def get_all_couples():
+    """Retrieve all couples from the database."""
+    couples = await couples_db.find().to_list(length=None)
+    return [(couple["user1"], couple["user2"]) for couple in couples]
