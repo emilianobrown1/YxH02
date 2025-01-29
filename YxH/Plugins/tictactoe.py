@@ -36,7 +36,7 @@ def check_winner(board):
 
     return None
 
-@Client.on_message(filters.command("tictactoe") & filters.reply)
+@Client.on_message(filters.command("ttt") & filters.reply)
 async def start_tictactoe(client, message):
     """Starts a Tic-Tac-Toe game with the replied user."""
     chat_id = message.chat.id
