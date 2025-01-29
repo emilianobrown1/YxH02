@@ -88,6 +88,66 @@ async def cbq(_, q: CallbackQuery):
 
         await q.message.edit_text("💔 Proposal rejected.")
 
+  if q.data.startswith("ttt_"):
+        try:
+            _, chat_id, row, col = q.data.split('_')
+            chat_id = int(chat_id)
+            row = int(row)
+            col = int(col)
+            
+            game = game_manager.get(chat_id)
+            if not game:
+                return await q.answer("Game expired!", show_alert=True)
+            
+            user_id = q.from_user.id
+            if user_id not in [game['p1'], game['p2']]:
+                return await q.answer("You're not playing!", show_alert=True)
+            if user_id != game['turn']:
+                return await q.answer("Not your turn!", show_alert=True)
+            
+            if game['board'][row][col] != "⬜":
+                return await q.answer("Invalid move!", show_alert=True)
+            
+            # Update board
+            symbol = "❌" if user_id == game['p1'] else "⭕"
+            game['board'][row][col] = symbol
+            
+            # Check game state
+            result = check_winner(game['board'])
+            if result:
+                if result == "draw":
+                    await query.message.edit("🤝 It's a draw!")
+                    await add_tictactoe_game(game['p1'], game['p2'], "draw")
+                else:
+                    winner_id = game['p1'] if result == "❌" else game['p2']
+                    loser_id = game['p2'] if result == "❌" else game['p1']
+                    winner = await get_user(winner_id)
+                    await winner.add_tictactoe_win()
+                    await add_tictactoe_game(winner_id, loser_id, "win")
+                    
+                    await q.message.edit(
+                        f"🎉 {winner.user.first_name} won! +2 crystals 💎",
+                        reply_markup=create_board(game['board'], chat_id)
+                    )
+                game_manager.delete(chat_id)
+                return
+            
+            # Switch turns
+            game['turn'] = game['p2'] if user_id == game['p1'] else game['p1']
+            turn_name = game['p1_name'] if game['turn'] == game['p1'] else game['p2_name']
+            
+            await q.message.edit(
+                f"{turn_name}'s turn!",
+                reply_markup=create_board(game['board'], chat_id)
+            )
+            await q.answer()
+            return
+            
+        except Exception as e:
+            await q.answer("⚠️ Error processing move!", show_alert=True)
+            print(f"Tic-Tac-Toe error: {str(e)}")
+            return
+
   data, actual = q.data.split("_")
   actual = int(actual)
   if actual != q.from_user.id:
