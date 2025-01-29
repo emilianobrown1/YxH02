@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from ..class.user import User
 from ..Database.users import get_user
-from ..Database.couples import add_couple, get_partner
+from ..Database.couples import add_couple, get_partner, remove_couple
 
 @Client.on_message(filters.command("propose") & filters.reply)
 async def propose(client, message):
@@ -61,3 +61,27 @@ async def reject_proposal(client, query: CallbackQuery):
         return await query.answer("User data not found!", show_alert=True)
 
     await query.message.edit_text("💔 Proposal rejected.")
+
+
+@Client.on_message(filters.command("breakup"))
+async def breakup(client, message):
+    user = await get_user(message.from_user.id)
+
+    if not user:
+        return await message.reply_text("User not found in the database.")
+
+    if not user.partner:
+        return await message.reply_text("You are not in a relationship.")
+
+    partner_id = user.partner
+    partner = await get_user(partner_id)
+
+    if partner:
+        partner.partner = None
+        await partner.update()
+
+    user.partner = None
+    await user.update()
+    await remove_couple(user.user.id)
+
+    await message.reply_text(f"You have broken up with {partner.user.first_name}. 💔")
