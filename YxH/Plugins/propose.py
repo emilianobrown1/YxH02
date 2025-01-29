@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from ..class.user import User
+from ..Class.user import User
 from ..Database.users import get_user
 from ..Database.couples import add_couple, get_partner, remove_couple
 
