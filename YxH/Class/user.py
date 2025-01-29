@@ -50,6 +50,7 @@ class User:
             "Magic Stone 🪨": 0
         }
         self.magic_uses = 0  # Track magic command usage
+         self.tictactoe_wins = 0  # Track Tic-Tac-Toe wins
         self.last_magic_use_time = 0
         # Dev Requirements.
         self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
@@ -68,6 +69,12 @@ class User:
             {'$set': {'info': pickle.dumps(self)}},
             upsert=True
         )
+
+    async def add_tictactoe_win(self):
+        """Increments Tic-Tac-Toe wins, gives gems, and updates the database."""
+        self.tictactoe_wins += 1
+        self.crystal += 2  # Reward 100,000 gems per win
+        await self.update()
 
     def is_blocked(self):
         return self.blocked
