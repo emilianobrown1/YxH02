@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from ..Class.user import User
 from ..Database.users import get_user
-from ..Database.couples import add_couple, get_partner, remove_couple
+from ..Database.couples import add_couple, get_partner, remove_couple, get_all_couples
 
 @Client.on_message(filters.command("propose") & filters.reply)
 async def propose(client, message):
@@ -85,3 +85,22 @@ async def breakup(client, message):
     await remove_couple(user.user.id)
 
     await message.reply_text(f"You have broken up with {partner.user.first_name}. 💔")
+
+
+@Client.on_message(filters.command("couples"))
+async def show_couples(client, message):
+    couples = await get_all_couples()
+    
+    if not couples:
+        return await message.reply_text("There are no couples yet! 💔")
+
+    response = "💖 **Couples in the Game** 💖\n\n"
+    
+    for index, (user1_id, user2_id) in enumerate(couples, start=1):
+        user1 = await get_user(user1_id)
+        user2 = await get_user(user2_id)
+        
+        if user1 and user2:
+            response += f"{index}. {user1.user.first_name} ❤️ {user2.user.first_name}\n"
+
+    await message.reply_text(response)
