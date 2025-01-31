@@ -1,3 +1,8 @@
+from pyrogram import Client, filters
+from ..Class.user import User
+from ..Utils.snake import 
+
+
 @Client.on_message(filters.command(["snake", "snakebattle"]))
 @YxH(group=True)
 async def start_snake(client, message: Message, user: User):
