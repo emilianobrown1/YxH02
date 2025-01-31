@@ -89,7 +89,7 @@ async def _handle_snake_move(q: CallbackQuery, game, user_id, direction):
         winner_id = next(iter(game['players'].keys()), None)
         if winner_id:
             winner = await User.get(winner_id)
-            winner.crystals += 15
+            winner.crystals += 2
             await winner.update()
             await add_snake_game(winner_id, list(game['players'].keys()), game['start_time'])
             await q.edit_message_text(
