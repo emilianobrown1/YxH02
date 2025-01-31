@@ -89,6 +89,9 @@ async def cbq(_, q: CallbackQuery):
 
         await q.message.edit_text("💔 Proposal rejected.")
 
+  if await handle_snake_game(_, q):
+        return
+
   if q.data.startswith("ttt_"):
         try:
             _, chat_id, row, col = q.data.split('_')
