@@ -1,8 +1,7 @@
-
 from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardMarkup
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton  # ADD THIS IMPORT
 from ..Class.user import User
-from ..Utils.snake import snake_manager 
+from ..Utils.snake import snake_manager
 from ..Database.snake import add_snake_game
 from ..universal_decorator import YxH
 
@@ -17,9 +16,9 @@ async def start_snake(client: Client, message: Message, user: User):
     markup = InlineKeyboardMarkup([[InlineKeyboardButton("Join Battle 🐍", callback_data=f"snake_join_{chat_id}")]])
 
     await message.reply(
-        f"🐍 **Snake Battle Arena**\n"
-        f"Players: 0/4\n"
+        "🐍 **Snake Battle Arena**\n"
+        "Players: 0/4\n"
         "Use arrows to move!\n"
-        "Last surviving snake wins 15 crystals! 💎",
+        "Last surviving snake wins 2 crystals! 💎",
         reply_markup=markup
     )
