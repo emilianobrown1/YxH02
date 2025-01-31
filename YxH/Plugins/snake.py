@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from ..Class.user import User
 from ..Utils.snake import
-from ..Database.tictactoe import add_snake_game
+from ..Database.snake import add_snake_game
 from ..universal_decorator import YxH
 
 
