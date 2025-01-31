@@ -26,6 +26,7 @@ from .gift import gifts_cbq
 from .propose import accept_proposal, reject_proposal
 from .tictactoe import game_manager, create_board, check_winner
 from ..Database.tictactoe import add_tictactoe_game
+from .snake_callback import handle_snake_game
 # MODULE FUNCTIONS IMPORTS
 
 from .bonus import claim_cbq
