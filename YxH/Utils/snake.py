@@ -50,6 +50,9 @@ class SnakeGameManager:
             del self.games[chat_id]['players'][user_id]
             self.update_free_spaces(chat_id)
 
+# Singleton instance creation
+snake_manager = SnakeGameManager()
+
 def create_snake_board(game):
     board = []
     for i in range(10):
@@ -87,3 +90,5 @@ def create_snake_board(game):
     board.append([InlineKeyboardButton("Quit ❌", callback_data=f"snake_quit_{game['chat_id']}")])
     
     return board
+
+__all__ = ['snake_manager', 'create_snake_board', 'SnakeGameManager']
