@@ -92,6 +92,12 @@ async def cbq(_, q: CallbackQuery):
   if await handle_snake_game(_, q):
         return
 
+
+  if q.data.startswith("snake_"):
+        await q.answer("Use arrow buttons to move!", show_alert=True)
+        return
+    await q.answer("⚠️ This button isn't active!", show_alert=True)  
+    
   if q.data.startswith("ttt_"):
         try:
             _, chat_id, row, col = q.data.split('_')
@@ -295,9 +301,6 @@ async def cbq(_, q: CallbackQuery):
     await shield_cbq(_, q, u)
   elif data.startswith("gifts"):
     await gifts_cbq(_, q, u)
-      if q.data.startswith("snake_"):
-        await q.answer("Use arrow buttons to move!", show_alert=True)
-        return
-    await q.answer("⚠️ This button isn't active!", show_alert=True)
+      
   else:
     return await q.answer("Under maintenance.", show_alert=True)
