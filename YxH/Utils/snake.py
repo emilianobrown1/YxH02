@@ -24,6 +24,10 @@ class SnakeGameManager:
             'free_spaces': []
         }
         self.creators[chat_id] = creator_id
+        
+        # Populate free_spaces after walls are set
+        self.update_free_spaces(chat_id)  # <-- CRITICAL FIX
+        
         self.generate_food(chat_id)
         return self.games[chat_id]
 
@@ -69,7 +73,7 @@ class SnakeGameManager:
             game['player_order'].remove(user_id)
             self.update_free_spaces(chat_id)
 
-# Create a singleton instance of the game manager
+# Singleton instance
 snake_manager = SnakeGameManager()
 
 def create_snake_board(game):
@@ -96,7 +100,7 @@ def create_snake_board(game):
                 if not btn_added:
                     row.append(InlineKeyboardButton("⬛", callback_data="snake_empty"))
         board.append(row)
-    
+
     # Control buttons
     controls = [
         [
@@ -111,5 +115,4 @@ def create_snake_board(game):
     ]
     return board
 
-# Export the manager and other necessary functions
 __all__ = ['snake_manager', 'create_snake_board']
