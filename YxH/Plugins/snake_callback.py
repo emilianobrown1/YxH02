@@ -8,18 +8,18 @@ from ..Class.user import User
 async def handle_snake_game(client, q: CallbackQuery):
     if not q.data.startswith("snake_"):
         return False
-    
+
     parts = q.data.split('_')
     action = parts[1]
     chat_id = int(parts[2])
     game = snake_manager.games.get(chat_id)
-    
+
     if not game:
         await q.answer("Game expired!", show_alert=True)
         return True
-    
+
     user_id = q.from_user.id
-    
+
     try:
         if action == "join":
             return await handle_join(client, q, game, user_id, chat_id)
@@ -30,7 +30,7 @@ async def handle_snake_game(client, q: CallbackQuery):
         else:
             await q.answer("Use arrow buttons to move your snake!", show_alert=True)
             return True
-            
+
     except Exception as e:
         print(f"Snake error: {e}")
         await q.answer("🐍 Game error!", show_alert=True)
@@ -41,15 +41,21 @@ async def handle_join(client, q, game, user_id, chat_id):
     if game['status'] != 'waiting':
         await q.answer("Game already started!", show_alert=True)
         return True
-    
+
     if user_id in game['players']:
         await q.answer("Already joined!", show_alert=True)
         return True
-    
+
     if len(game['players']) >= 4:
         await q.answer("Lobby full!", show_alert=True)
         return True
-    
+
+    # SAFEGUARD: Check if free_spaces is empty
+    if not game['free_spaces']:
+        await q.answer("No available spaces!", show_alert=True)
+        snake_manager.end_game(chat_id)
+        return True
+
     # Add player with random position
     start_pos = random.choice(game['free_spaces'])
     game['players'][user_id] = {
@@ -60,7 +66,7 @@ async def handle_join(client, q, game, user_id, chat_id):
     }
     game['player_order'].append(user_id)
     snake_manager.update_free_spaces(chat_id)
-    
+
     # Update lobby message
     player_count = len(game['players'])
     await client.edit_message_text(
@@ -76,7 +82,7 @@ async def handle_join(client, q, game, user_id, chat_id):
             callback_data=f"snake_join_{chat_id}"
         )]])
     )
-    
+
     # Start game when 4 players join
     if player_count == 4:
         game['status'] = 'playing'
@@ -87,7 +93,7 @@ async def handle_join(client, q, game, user_id, chat_id):
             f"🏁 Game Started!\n"
             f"First turn: {game['players'][current_player]['name']}"
         )
-    
+
     await q.answer()
     return True
 
@@ -95,7 +101,7 @@ async def handle_move(q, game, user_id, direction, chat_id):
     if game['status'] != 'playing':
         await q.answer("Game not active!", show_alert=True)
         return True
-    
+
     current_player = snake_manager.get_current_player(chat_id)
     if user_id != current_player:
         await q.answer(
@@ -103,29 +109,29 @@ async def handle_move(q, game, user_id, direction, chat_id):
             show_alert=True
         )
         return True
-    
+
     snake = game['players'][user_id]
     # Prevent 180° turn
     if (snake['direction'], direction) in [('up','down'), ('down','up'), 
                                          ('left','right'), ('right','left')]:
         await q.answer("Can't reverse direction!", show_alert=True)
         return True
-    
+
     # Update direction
     snake['direction'] = direction
-    
+
     # Calculate new head position
     head_x, head_y = snake['body'][0]
     new_head = (
         head_x + (-1 if direction == 'up' else 1 if direction == 'down' else 0),
         head_y + (-1 if direction == 'left' else 1 if direction == 'right' else 0)
     )
-    
+
     # Collision check
     collision = new_head in game['walls']
     if not collision:
         collision = any(new_head in p['body'] for pid, p in game['players'].items() if pid != user_id)
-    
+
     if collision:
         snake_manager.remove_player(chat_id, user_id)
         await q.answer(f"💀 Collision! {q.from_user.first_name} eliminated!", show_alert=True)
@@ -137,7 +143,7 @@ async def handle_move(q, game, user_id, direction, chat_id):
         else:
             snake['body'].pop()
         snake_manager.update_free_spaces(chat_id)
-    
+
     # Check game end
     if len(game['players']) == 1:
         winner_id = next(iter(game['players'].keys()))
@@ -157,7 +163,7 @@ async def handle_move(q, game, user_id, direction, chat_id):
             q.client, game,
             f"⏭️ Next turn: {game['players'][next_player]['name']}"
         )
-    
+
     await q.answer()
     return True
 
@@ -175,10 +181,10 @@ async def update_board(client, game, text=None):
     try:
         current_player = snake_manager.get_current_player(game['chat_id'])
         status_text = f"Current turn: {game['players'][current_player]['name']}" if current_player else "Game Over"
-        
+
         if text:
             status_text = f"{text}\n{status_text}"
-        
+
         await client.edit_message_text(
             chat_id=game['chat_id'],
             message_id=game['message_id'],
