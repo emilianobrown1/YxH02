@@ -295,5 +295,9 @@ async def cbq(_, q: CallbackQuery):
     await shield_cbq(_, q, u)
   elif data.startswith("gifts"):
     await gifts_cbq(_, q, u)
+      if q.data.startswith("snake_"):
+        await q.answer("Use arrow buttons to move!", show_alert=True)
+        return
+    await q.answer("⚠️ This button isn't active!", show_alert=True)
   else:
     return await q.answer("Under maintenance.", show_alert=True)
