@@ -96,7 +96,7 @@ async def cbq(_, q: CallbackQuery):
   if q.data.startswith("snake_"):
         await q.answer("Use arrow buttons to move!", show_alert=True)
         return
-    await q.answer("⚠️ This button isn't active!", show_alert=True)  
+        await q.answer("⚠️ This button isn't active!", show_alert=True)  
     
   if q.data.startswith("ttt_"):
         try:
