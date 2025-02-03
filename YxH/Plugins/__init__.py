@@ -1,6 +1,5 @@
 from .. import bot_info
 from ..Utils.datetime import get_date, get_week
-from ..Utils.snake import snake_manager, create_snake_board
 from ..Database.users import get_user
 from ..Database.chats import get_chat
 from ..Database.characters import get_anime_character, anime_characters_count
@@ -32,5 +31,3 @@ def grt(seconds: int) -> str:
     time_list.reverse()
     ping_time += ":".join(time_list)
     return ping_time
-
-__all__ = ['snake_manager', 'create_snake_board']
