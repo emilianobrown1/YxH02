@@ -89,14 +89,7 @@ async def cbq(_, q: CallbackQuery):
 
         await q.message.edit_text("💔 Proposal rejected.")
 
-  if await handle_snake_game(_, q):
-        return
-
-
-  if q.data.startswith("snake_"):
-        await q.answer("Use arrow buttons to move!", show_alert=True)
-        return
-        await q.answer("⚠️ This button isn't active!", show_alert=True)  
+  
     
   if q.data.startswith("ttt_"):
         try:
