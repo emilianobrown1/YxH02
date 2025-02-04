@@ -39,6 +39,6 @@ async def info(_, m):
 
 
 
-@Client.on_message(filters.text & filters.command, group=couple_watcher)  # Assign to group 5
+@Client.on_message(filters.text & filters.command, group=couple_watcher)  
 async def handle_couple_messages(client, message):
     
