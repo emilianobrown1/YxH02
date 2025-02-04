@@ -34,3 +34,9 @@ async def scramble(_, m):
 @Client.on_message(filters.group, group=info_watcher)
 async def info(_, m):
     await info_cwf(_, m)
+
+
+
+@Client.on_message(filters.text & filters.command, group=couple_watcher)  # Assign to group 5
+async def handle_couple_messages(client, message):
+    
