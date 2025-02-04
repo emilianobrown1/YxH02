@@ -5,7 +5,7 @@ from pyrogram import Client, filters
 from .fw import cwf as fw_cwf
 from .info_watcher import cwf as info_cwf
 from .copx import cwf as copx_cwf
-from .propose import handle_couple_chat_messages
+from .propose import handle_couple_messages
 from .scramble import catch_scramble_response  
 
 from .watchers import (
