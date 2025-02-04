@@ -3,7 +3,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 from ..Class.user import User
 from ..Database.users import get_user
 from ..Database.couples import add_couple, get_partner, remove_couple, get_all_couples, increment_couple_chat_messages
-from ..watchers import couple_watcher  
+from .watchers import couple_watcher  
 
 @Client.on_message(filters.command("propose") & filters.reply)
 async def propose(client, message):
