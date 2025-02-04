@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from ..Class.user import User
 from ..Database.users import get_user
-from ..Database.couples import add_couple, get_partner, remove_couple, get_all_couples
+from ..Database.couples import add_couple, get_partner, remove_couple, get_all_couples, increment_couple_chat_messages
 
 @Client.on_message(filters.command("propose") & filters.reply)
 async def propose(client, message):
@@ -104,3 +104,47 @@ async def show_couples(client, message):
             response += f"{index}. {user1.user.first_name} ❤️ {user2.user.first_name}\n"
 
     await message.reply_text(response)
+
+
+@Client.on_message(filters.text & ~filters.command)
+async def handle_couple_messages(client, message):
+    if not message.from_user:
+        return
+
+    sender_id = message.from_user.id
+    chat_id = message.chat.id
+    partner_id = await get_partner(sender_id)
+
+    if not partner_id:
+        return
+
+    couple = await get_couple(sender_id)
+    if not couple:
+        return
+
+    user1 = couple["user1"]
+    user2 = couple["user2"]
+
+    try:
+        count = await increment_couple_chat_messages(user1, user2, chat_id)
+    except Exception as e:
+        print(f"Error updating message count: {e}")
+        return
+
+    if count % 100 == 0:
+        user1_obj = await get_user(user1)
+        user2_obj = await get_user(user2)
+
+        if user1_obj:
+            await user1_obj.add_crystals(10)
+        if user2_obj:
+            await user2_obj.add_crystals(5)
+
+        try:
+            await message.reply_text(
+                f"🎉 **Congratulations {user1_obj.user.first_name} and {user2_obj.user.first_name}!**\n"
+                "You've sent 100 messages here! 💌\n"
+                f"• {user1_obj.user.first_name} +10 💎\n• {user2_obj.user.first_name} +5 💎"
+            )
+        except Exception as e:
+            print(f"Couldn't send congrat message: {e}")
