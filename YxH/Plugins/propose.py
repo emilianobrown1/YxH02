@@ -7,7 +7,13 @@ from ..Database.couples import add_couple, get_partner, remove_couple, get_all_c
 @Client.on_message(filters.command("propose") & filters.reply)
 async def propose(client, message):
     sender = await get_user(message.from_user.id)
-    receiver = await get_user(message.reply_to_message.from_user.id)
+    receiver_user = message.reply_to_message.from_user
+
+    # Prevent proposing to self
+    if message.from_user.id == receiver_user.id:
+        return await message.reply_text("You can't propose to yourself! 😢")
+
+    receiver = await get_user(receiver_user.id)
 
     if not sender or not receiver:
         return await message.reply_text("User not found in the database.")
@@ -17,6 +23,8 @@ async def propose(client, message):
 
     if receiver.partner:
         return await message.reply_text("This user is already in a relationship.")
+
+    
 
     # Create inline buttons for Accept & Reject
     keyboard = InlineKeyboardMarkup([
@@ -106,7 +114,7 @@ async def show_couples(client, message):
     await message.reply_text(response)
 
 
-@Client.on_message(filters.text & ~filters.command)
+@Client.on_message(filters.text & filters.command)
 async def handle_couple_messages(client, message):
     if not message.from_user:
         return
@@ -118,12 +126,9 @@ async def handle_couple_messages(client, message):
     if not partner_id:
         return
 
-    couple = await get_couple(sender_id)
-    if not couple:
-        return
-
-    user1 = couple["user1"]
-    user2 = couple["user2"]
+    # Determine couple order (to avoid duplicates)
+    user1 = min(sender_id, partner_id)
+    user2 = max(sender_id, partner_id)
 
     try:
         count = await increment_couple_chat_messages(user1, user2, chat_id)
