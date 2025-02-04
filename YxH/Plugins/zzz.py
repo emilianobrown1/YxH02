@@ -6,12 +6,14 @@ from .fw import cwf as fw_cwf
 from .info_watcher import cwf as info_cwf
 from .copx import cwf as copx_cwf
 from .scramble import catch_scramble_response 
+from ..watchers import couple_watcher  
 
 from .watchers import (
     info_watcher,
     fw_watcher,
     copx_watcher,
-    scramble_watcher
+    scramble_watcher,
+    couple_watcher
 )
 
 @Client.on_message(filters.group, group=fw_watcher)
