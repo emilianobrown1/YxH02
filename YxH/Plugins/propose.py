@@ -114,7 +114,7 @@ async def show_couples(client, message):
     await message.reply_text(response)
 
 
-@Client.on_message(filters.text & ~filters.command)  # Track non-command messages
+@Client.on_message(filters.text & ~filters.command())  # Track non-command messages
 async def handle_couple_messages(client, message):
     if not message.from_user:
         return
