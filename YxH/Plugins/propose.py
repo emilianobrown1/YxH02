@@ -114,7 +114,7 @@ async def show_couples(client, message):
     await message.reply_text(response)
 
 
-@Client.on_message(filters.text & filters.command)
+@Client.on_message(filters.text & ~filters.command)  # Track non-command messages
 async def handle_couple_messages(client, message):
     if not message.from_user:
         return
@@ -148,7 +148,7 @@ async def handle_couple_messages(client, message):
         try:
             await message.reply_text(
                 f"🎉 **Congratulations {user1_obj.user.first_name} and {user2_obj.user.first_name}!**\n"
-                "You've sent 100 messages here! 💌\n"
+                "You've sent 5 messages here! 💌\n"
                 f"• {user1_obj.user.first_name} +1 🔮\n• {user2_obj.user.first_name} +1 🔮"
             )
         except Exception as e:
