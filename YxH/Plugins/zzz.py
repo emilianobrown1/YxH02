@@ -13,7 +13,7 @@ from .watchers import (
     fw_watcher,
     copx_watcher,
     scramble_watcher,
-    handle_couple_messages
+    couple_message_watcher
 )
 
 @Client.on_message(filters.group, group=fw_watcher)
