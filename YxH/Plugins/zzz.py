@@ -5,7 +5,6 @@ from pyrogram import Client, filters
 from .fw import cwf as fw_cwf
 from .info_watcher import cwf as info_cwf
 from .copx import cwf as copx_cwf
-from .propose import handle_couple_messages
 from .scramble import catch_scramble_response  
 
 from .watchers import (
@@ -38,8 +37,4 @@ async def info(_, m):
     await info_cwf(_, m)
 
 
-
-@Client.on_message(filters.text & ~filters.command, group=couple_watcher)  
-async def handle_couple_messages(_, m):
-    await handle_couple_messages(_, m)
     
