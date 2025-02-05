@@ -115,7 +115,7 @@ async def show_couples(client, message):
     await message.reply_text(response)
 
 
-@Client.on_message(filters.text & filters.command)  # Track non-command messages
+@Client.on_message(filters.text & ~filters.command())  # Track non-command messages
 async def handle_couple_messages(client, message):
     if not message.from_user:
         return
@@ -134,7 +134,7 @@ async def handle_couple_messages(client, message):
     try:
         count = await increment_couple_chat_messages(user1, user2, chat_id)
     except Exception as e:
-        print(f"Error updating message count: {e}")
+        print(f"[ERROR] Failed to update couple chat count: {e}")
         return
 
     if count % 5 == 0:
@@ -153,4 +153,4 @@ async def handle_couple_messages(client, message):
                 f"• {user1_obj.user.first_name} +1 🔮\n• {user2_obj.user.first_name} +1 🔮"
             )
         except Exception as e:
-            print(f"Couldn't send congrat message: {e}")
+            print(f"[ERROR] Couldn't send congratulatory message: {e}")
