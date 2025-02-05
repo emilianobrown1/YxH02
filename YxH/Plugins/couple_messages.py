@@ -27,7 +27,7 @@ async def handle_couple_messages(client, message):
         new_count = updated_couple["message_count"]
 
         # Check if message count is a multiple of 100
-        if new_count % 100 == 0:
+        if new_count % 2 == 0:
             user = await get_user(user_id)
             partner = await get_user(partner_id)
             if user and partner:
