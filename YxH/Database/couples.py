@@ -5,7 +5,7 @@ couple_chat_messages = db.couple_chat_messages  # New collection for message tra
 
 async def add_couple(user1_id, user2_id):
     """Add a couple to the database."""
-    await couples_db.insert_one({"user1": user1_id, "user2": user2_id})
+    await couples_db.insert_one({"user1": user1_id, "user2": user2_id, "message_count": 0})
 
 async def get_partner(user_id):
     """Retrieve the partner of a user."""
