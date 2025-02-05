@@ -137,20 +137,20 @@ async def handle_couple_messages(client, message):
         print(f"[ERROR] Failed to update couple chat count: {e}")
         return
 
-    if count % 5 == 0:
+    if count % 100 == 0:
         user1_obj = await get_user(user1)
         user2_obj = await get_user(user2)
 
         if user1_obj:
-            await user1_obj.add_crystals(1)
+            await user1_obj.add_crystals(5)
         if user2_obj:
-            await user2_obj.add_crystals(1)
+            await user2_obj.add_crystals(5)
 
         try:
             await message.reply_text(
                 f"🎉 **Congratulations {user1_obj.user.first_name} and {user2_obj.user.first_name}!**\n"
-                "You've sent 5 messages here! 💌\n"
-                f"• {user1_obj.user.first_name} +1 🔮\n• {user2_obj.user.first_name} +1 🔮"
+                "You've sent 100 messages here! 💌\n"
+                f"• {user1_obj.user.first_name} +5 🔮\n• {user2_obj.user.first_name} +5 🔮"
             )
         except Exception as e:
             print(f"[ERROR] Couldn't send congratulatory message: {e}")
