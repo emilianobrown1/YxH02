@@ -3,6 +3,7 @@ from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as 
 from . import YxH, get_anime_character
 from pyrogram.types import CallbackQuery
 from telegraph import Telegraph
+import asyncio
 
 from YxH.Database.characters import get_all as get_all_anime_characters
 
@@ -70,6 +71,7 @@ async def find_duplicates(_, m, u):
     await m.reply(f"Here are your duplicate characters: {telegraph_url}")
 
 
+
 # Function to create paginated Telegraph pages for uncollected characters
 async def create_telegraph_pages_for_uncollected(user, uncollected):
     telegraph.create_account(short_name=user.first_name)
@@ -90,6 +92,9 @@ async def create_telegraph_pages_for_uncollected(user, uncollected):
             html_content=content
         )
         pages.append(page['url'])
+
+        # **Prevent flood limit by adding a delay**
+        await asyncio.sleep(2)  # Wait for 2 seconds before the next request
 
     return pages
 
