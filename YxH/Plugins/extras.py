@@ -75,9 +75,9 @@ async def find_duplicates(_, m, u):
 @Client.on_message(filters.command('uncollected'))
 @YxH()
 async def uncollected_characters(_, m, u):
-    # Send a message with an inline button
-    markup = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("Show Uncollected Characters", callback_data="uncollected")]]
+    # Use the imported aliases ikm and ikb
+    markup = ikm(
+        [[ikb("Show Uncollected Characters", callback_data="uncollected")]]
     )
     await m.reply(
         "Click the button below to view your uncollected characters.",
