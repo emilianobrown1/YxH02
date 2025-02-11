@@ -71,34 +71,7 @@ async def find_duplicates(_, m, u):
     await m.reply(f"Here are your duplicate characters: {telegraph_url}")
 
 
-
-# Function to create paginated Telegraph pages for uncollected characters
-async def create_telegraph_pages_for_uncollected(user, uncollected):
-    telegraph.create_account(short_name=user.first_name)
-
-    pages = []
-    chunk_size = 100  # Limit to 100 characters per page
-
-    for i in range(0, len(uncollected), chunk_size):
-        chunk = uncollected[i:i + chunk_size]
-
-        content = f"<strong>{user.first_name}'s Uncollected Characters:</strong><ul>"
-        for char in chunk:
-            content += f"<li>{char.name} (ID: {char.id})</li>"
-        content += "</ul>"
-
-        page = telegraph.create_page(
-            title=f"{user.first_name}'s Uncollected Characters (Page {len(pages) + 1})",
-            html_content=content
-        )
-        pages.append(page['url'])
-
-        # **Prevent flood limit by adding a delay**
-        await asyncio.sleep(2)  # Wait for 2 seconds before the next request
-
-    return pages
-
-# Updated Uncollected Characters Command
+Uncollected Characters Command
 @Client.on_message(filters.command('uncollected'))
 @YxH()
 async def uncollected_characters(_, m, u):
@@ -114,9 +87,8 @@ async def uncollected_characters(_, m, u):
     if not uncollected:
         return await m.reply("You have collected all characters!")
 
-    # Generate Telegraph pages with pagination
-    telegraph_urls = await create_telegraph_pages_for_uncollected(m.from_user, uncollected)
+    # Generate Telegraph page URL for uncollected characters
+    telegraph_url = await create_telegraph_page_for_uncollected(m.from_user, uncollected)
 
-    # Send multiple URLs if necessary
-    reply_text = "Here are your uncollected characters:\n\n" + "\n".join(telegraph_urls)
-    await m.reply(reply_text)
+    # Send the Telegraph page link to the user
+    await m.reply(f"Here are your uncollected characters: {telegraph_url}")
