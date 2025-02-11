@@ -26,6 +26,7 @@ from .gift import gifts_cbq
 from .propose import accept_proposal, reject_proposal
 from .tictactoe import game_manager, create_board, check_winner
 from ..Database.tictactoe import add_tictactoe_game
+from . extras import uncollected_characters
 
 # MODULE FUNCTIONS IMPORTS
 
@@ -89,7 +90,24 @@ async def cbq(_, q: CallbackQuery):
 
         await q.message.edit_text("💔 Proposal rejected.")
 
-  
+  elif q.data == "uncollected":
+    u = await get_user(q.from_user.id)  # Fetch the user from the database
+    coll_dict: dict = u.collection
+    all_characters = await get_all_anime_characters()
+
+    if not all_characters:  
+        await q.answer("No characters are available.", show_alert=True)
+        return
+
+    uncollected = [char for char in all_characters.values() if char.id not in coll_dict]
+
+    if not uncollected:  
+        await q.answer("You have collected all characters!", show_alert=True)
+        return
+
+    telegraph_url = await create_telegraph_page_for_uncollected(q.from_user, uncollected)
+    await q.message.reply(f"Here are your uncollected characters: {telegraph_url}")
+    await q.answer()  # Acknowledge the button press
     
   if q.data.startswith("ttt_"):
         try:
