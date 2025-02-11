@@ -71,24 +71,15 @@ async def find_duplicates(_, m, u):
     await m.reply(f"Here are your duplicate characters: {telegraph_url}")
 
 
-Uncollected Characters Command
+
 @Client.on_message(filters.command('uncollected'))
 @YxH()
 async def uncollected_characters(_, m, u):
-    coll_dict: dict = u.collection
-    all_characters = await get_all_anime_characters()
-
-    if not all_characters:
-        return await m.reply("No characters are available.")
-
-    # Filter out characters the user hasn't collected
-    uncollected = [char for char in all_characters.values() if char.id not in coll_dict]
-
-    if not uncollected:
-        return await m.reply("You have collected all characters!")
-
-    # Generate Telegraph page URL for uncollected characters
-    telegraph_url = await create_telegraph_page_for_uncollected(m.from_user, uncollected)
-
-    # Send the Telegraph page link to the user
-    await m.reply(f"Here are your uncollected characters: {telegraph_url}")
+    # Send a message with an inline button
+    markup = InlineKeyboardMarkup(
+        [[InlineKeyboardButton("Show Uncollected Characters", callback_data="uncollected")]]
+    )
+    await m.reply(
+        "Click the button below to view your uncollected characters.",
+        reply_markup=markup
+    )
