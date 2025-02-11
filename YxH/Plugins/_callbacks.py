@@ -27,6 +27,7 @@ from .propose import accept_proposal, reject_proposal
 from .tictactoe import game_manager, create_board, check_winner
 from ..Database.tictactoe import add_tictactoe_game
 from . extras import uncollected_characters
+from ..Database.characters import get_all as get_all_anime_characters
 
 # MODULE FUNCTIONS IMPORTS
 
