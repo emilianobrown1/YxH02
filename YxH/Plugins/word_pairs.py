@@ -1,4 +1,94 @@
 word_pairs = [
+    ("envanglion", "navgionlen"),  # Evangelion
+    ("chrollolucifer", "rllcholucrefi"),  # Chrollo Lucifer
+    ("ryougi", "yirgou"),  # Ryougi (Shiki)
+    ("okabe", "beako"),  # Okabe (Rintarou)
+    ("kamado", "amkado"),  # Kamado (Tanjirou)
+    ("remuru", "umrure"),  # Rimuru (Tempest)
+    ("rengoku", "kuronge"),  # Rengoku (Kyojuro)
+    ("zoldyck", "dlykocz"),  # Zoldyck (Family)
+    ("sakuragi", "ugarsaki"),  # Sakuragi (Hanamichi)
+    ("guts", "tugs"),  # Guts (Berserk)
+    ("getou", "ogtue"),  # Getou (Suguru)
+    ("hollows", "wllhoos"),  # Hollows (Bleach)
+    ("kurapika", "krupakia"),  # Kurapika
+    ("shinigami", "mgaihinsi"),  # Shinigami
+    ("homunculus", "nlumushocu"),  # Homunculus
+    ("zangetsu", "sangetzu"),  # Zangetsu
+    ("senju", "ujens"),  # Senju
+    ("shibata", "bhsitaa"),  # Shibata
+    ("ryomen", "menory"),  # Ryomen Sukuna
+    ("esdeath", "ethsaed"),  # Esdeath
+    ("vashthestampede", "tpdshevamhsaet"),  # Vash The Stampede
+    ("rezero", "erorez"),  # Re:Zero
+    ("tokiwadai", "awdiatok"),  # Tokiwadai (Railgun)
+    ("hachiman", "namchiah"),  # Hachiman
+    ("mikazuki", "zukakimi"),  # Mikazuki (Augus)
+    ("byakuya", "akyuyba"),  # Byakuya
+    ("yoruichi", "ichruoyi"),  # Yoruichi
+    ("mitsuri", "ruimtsi"),  # Mitsuri (Kanroji)
+    ("izaya", "aayiz"),  # Izaya (Orihara)
+    ("shiba", "bahsi"),  # Shiba (Ichigo’s family)
+    ("arceuid", "iduacer"),  # Arcueid (Brunestud)
+    ("gilgamesh", "hsagilmge"),  # Gilgamesh
+    ("lancaster", "tarsnacle"),  # Lancaster (Weiss)
+    ("francoise", "cosafiren"),  # Francoise (009)
+    ("tsukishima", "tmahisuiks"),  # Tsukishima
+    ("fushiguro", "higurusfo"),  # Fushiguro (Megumi)
+    ("benimaru", "mibaneur"),  # Benimaru
+    ("mugen", "engmu"),  # Mugen (Samurai Champloo)
+    ("hiyori", "rihyoi"),  # Hiyori (Iki)
+    ("tohsaka", "shatoak"),  # Tohsaka (Rin)
+    ("fujimaru", "ufaimrju"),  # Fujimaru (Ritsuka)
+    ("roswaal", "larowas"),  # Roswaal
+    ("ichimaru", "urimaich"),  # Ichimaru (Gin)
+    ("toji", "ojti"),  # Toji (Fushiguro)
+    ("shiba", "hbsia"),  # Shiba (Kaien)
+    ("escanor", "aesnroc"),  # Escanor
+    ("charlotte", "ltorcetha"),  # Charlotte
+    ("akabane", "akaenab"),  # Akabane (Kurodo)
+    ("hollowfication", "llwhofictoiain"),  # Hollowfication
+    ("rukh", "hukr"),  # Rukh (Magi)
+    ("sasaki", "kaisast"),  # Sasaki (Haise)
+    ("rayleigh", "yiglreah"),  # Rayleigh (Silvers)
+    ("kobayashi", "bkosayahi"),  # Kobayashi
+    ("netero", "tereno"),  # Netero (Isaac)
+    ("kaguya", "gaukya"),  # Kaguya (Ōtsutsuki)
+    ("fateapocrypha", "teapcryohfapa"),  # Fate/Apocrypha
+    ("kisaragi", "grsakiai"),  # Kisaragi (Saya)
+    ("hinamizawa", "wahianzmia"),  # Hinamizawa (Higurashi)
+    ("chamber", "ehmcrab"),  # Chamber (Suisei no Gargantia)
+    ("codegeass", "esgdoca"),  # Code Geass
+    ("hoshigaki", "oighishak"),  # Hoshigaki (Kisame)
+    ("himura", "urmhai"),  # Himura (Kenshin)
+    ("edolas", "soldea"),  # Edolas (Fairy Tail)
+    ("amaterasu", "mtersaaau"),  # Amaterasu
+    ("darkcontinent", "rontdaentick"),  # Dark Continent (HxH)
+    ("balmung", "lubmgna"),  # Balmung
+    ("touka", "kaout"),  # Touka (Tokyo Ghoul)
+    ("hanekawa", "khaweana"),  # Hanekawa (Tsubasa)
+    ("kizuna", "zaukni"),  # Kizuna
+    ("shiranui", "nisuhari"),  # Shiranui
+    ("berserker", "rsrreekeb"),  # Berserker
+    ("argonavis", "gsaonravi"),  # Argonavis
+    ("osamu", "maosu"),  # Osamu (Dazai)
+    ("umineko", "unomike"),  # Umineko
+    ("pannacotta", "acnpttoana"),  # Pannacotta (Fugo)
+    ("femto", "mftoe"),  # Femto (Berserk)
+    ("hellsalemslot", "llhestmoslel"),  # Hellsalem’s Lot
+    ("sakurafubuki", "kufasurubki"),  # Sakura Fubuki
+    ("amuro", "mruoa"),  # Amuro (Toru)
+    ("shichibukai", "isibckahuh"),  # Shichibukai
+    ("cocytus", "ytucosc"),  # Cocytus (Overlord)
+    ("genjutsu", "sgunetju"),  # Genjutsu
+    ("euphie", "peuhie"),  # Euphemia
+    ("hokuto", "tuhoko"),  # Hokuto (Hyoudou)
+    ("grimoire", "irmgioer"),  # Grimoire
+    ("chaldea", "chdleaa"),  # Chaldea
+    ("reichswein", "isrchiwene"),  # Reichswein
+    ("iskandar", "rknaisda"),  # Iskandar (Fate)
+    ("celestia", "leseatci"),  # Celestia
+    ("altair", "itral"),  # Altair (Re:Creators)
     ("python", "nohtyp"),
     ("banana", "ananab"),
     ("computer", "putermoc"),
