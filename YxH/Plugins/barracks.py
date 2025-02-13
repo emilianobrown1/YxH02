@@ -1,9 +1,7 @@
 from pyrogram import Client, filters
-from . import YxH
 from ..Class.user import User
 
 @Client.on_message(filters.command("barracks"))
-@YxH()
 async def barracks(_, m, u):
     # Parse the count from the command
     spl = m.text.split()
