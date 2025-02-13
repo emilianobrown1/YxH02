@@ -3,7 +3,7 @@ from ..Class.user import User
 from . import YxH
 
 @Client.on_message(filters.command("barracks"))
-YxH()
+@YxH()
 async def barracks(_, m, u):
     # Parse the count from the command
     spl = m.text.split()
