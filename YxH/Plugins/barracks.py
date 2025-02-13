@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from . import YxH
-
+from ..Class.user import User
 
 @Client.on_message(filters.command("barracks"))
 @YxH()
