@@ -18,6 +18,15 @@ ATTACKERS = {
     "Pyraxion": "Pyraxion"
 }
 
+POWERS = {
+    "Darkness Shadow": "Darkness Shadow",
+    "Frost Snow": "Frost Snow",
+    "Thunder Storm": "Thunder Storm",
+    "Nature Ground": "Nature Ground",
+    "Flame Heat Inferno": "Flame Heat Inferno",
+    "Aqua Jet": "Aqua Jet"
+}
+
 @Client.on_message(filters.command("barracks"))
 @YxH()
 async def barracks(_, m, u):
@@ -74,7 +83,7 @@ async def my_barracks(_, m, u):
 
     # Formatting troops, powers, and beasts count
     troops_text = "\n".join([f"🔹 **{k.capitalize()}:** `{v}`" for k, v in u.troops.items()])
-    powers_text = "\n".join([f"⚡ **{k}:** `{v}`" for k, v in u.powers.items()])
+    powers_text = "\n".join([f"⚡ **{v}:** `{u.powers.get(k, 0)}`" for k, v in POWERS.items()])
     
     # Categorizing beasts into Protectors and Attackers
     protectors_text = "\n".join([f"🛡 **{v}:** `{u.beasts.get(k, 0)}`" for k, v in PROTECTORS.items()])
