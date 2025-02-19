@@ -5,17 +5,17 @@ import time
 
 # Beast names categorized
 PROTECTORS = {
-    "Collection": "Aurumfang",
-    "Crystals": "Glacivern",
-    "Shield": "Aegisclaw",
-    "Treasure": "Vaultwyrm"
+    "Titanus Aegisorn": "Titanus Aegisorn",
+    "Glacelynx": "Glacelynx",
+    "Voltiscar": "Voltiscar",
+    "Cerberus": "Cerberus"
 }
 
 ATTACKERS = {
-    "Collection": "Greedfang",
-    "Crystals": "Shattermaw",
-    "Shield": "Blitzguard",
-    "Treasure": "Gildedfang"
+    "Ignirax": "Ignirax",
+    "Frostclaw": "Frostclaw",
+    "Vilescale": "Vilescale",
+    "Pyraxion": "Pyraxion"
 }
 
 @Client.on_message(filters.command("barracks"))
@@ -66,7 +66,6 @@ async def barracks(_, m, u):
 
 
 
-
 @Client.on_message(filters.command("my_barracks"))
 @YxH()
 async def my_barracks(_, m, u):
@@ -75,12 +74,11 @@ async def my_barracks(_, m, u):
 
     # Formatting troops, powers, and beasts count
     troops_text = "\n".join([f"🔹 **{k.capitalize()}:** `{v}`" for k, v in u.troops.items()])
-    powers_text = "\n".join([f"⚡ **{k.capitalize()}:** `{v}`" for k, v in u.powers.items()])
-    beasts_text = "\n".join([f"🐉 **{k.capitalize()}:** `{v}`" for k, v in u.beasts.items()])
-
+    powers_text = "\n".join([f"⚡ **{k}:** `{v}`" for k, v in u.powers.items()])
+    
     # Categorizing beasts into Protectors and Attackers
-    protectors_text = "\n".join([f"🛡️ **{v}:** `{u.beasts.get(k.lower(), 0)}`" for k, v in PROTECTORS.items()])
-    attackers_text = "\n".join([f"⚔️ **{v}:** `{u.beasts.get(k.lower(), 0)}`" for k, v in ATTACKERS.items()])
+    protectors_text = "\n".join([f"🛡 **{v}:** `{u.beasts.get(k, 0)}`" for k, v in PROTECTORS.items()])
+    attackers_text = "\n".join([f"⚔ **{v}:** `{u.beasts.get(k, 0)}`" for k, v in ATTACKERS.items()])
 
     # Creating the final message
     message = (
@@ -88,9 +86,9 @@ async def my_barracks(_, m, u):
         f"📦 **Total Barracks:** `{len(u.barracks)}`\n\n"
         f"👥 **Troops:**\n{troops_text if troops_text else 'None'}\n\n"
         f"⚡ **Powers:**\n{powers_text if powers_text else 'None'}\n\n"
-        f"🐉 **Beasts:**\n{beasts_text if beasts_text else 'None'}\n\n"
-        f"🛡️ **Protectors:**\n{protectors_text if protectors_text else 'None'}\n\n"
-        f"⚔️ **Attackers:**\n{attackers_text if attackers_text else 'None'}"
+        f"🐉 **Beasts:**\n\n"
+        f"🛡 **PROTECTORS**\n{protectors_text if protectors_text else 'None'}\n\n"
+        f"⚔ **ATTACKERS**\n{attackers_text if attackers_text else 'None'}"
     )
 
     await m.reply_photo(
