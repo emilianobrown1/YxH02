@@ -30,12 +30,12 @@ BEAST_INFO = {
     }
 }
 
-@Client.on_message(filters.command("info"))
+@Client.on_message(filters.command("infox"))
 @YxH()
 async def beast_info(_, m, u):
     spl = m.text.split(maxsplit=1)
     if len(spl) < 2:
-        return await m.reply("❌ Please specify a beast name. Example: `/info Titanus Aegisorn`")
+        return await m.reply("❌ Please specify a beast name. Example: `/infox Titanus Aegisorn`")
     
     beast_name = spl[1]
     beast_data = BEAST_INFO.get(beast_name)
