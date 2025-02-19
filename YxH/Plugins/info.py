@@ -10,7 +10,7 @@ BEAST_INFO = {
         "Lore": "Titanus Aegisorn, known as 'The Shield of the Ancients,' is a legendary guardian beast forged from the very core of the earth.",
         "Abilities": ["Aegis Barrier", "Earthquake Stomp", "Thorned Rampage"],
         "Weakness": "None specified",
-        "Image": "Beast/Titanus"
+        "Image": "Beast/Titanus.jpg"
     },
     "Ignirax": {
         "Name Meaning": "Ignis = Fire, Rax = Destroyer",
@@ -18,7 +18,7 @@ BEAST_INFO = {
         "Lore": "Ignirax, the Molten Annihilator, is the ultimate force of destruction, forged from the heart of an eternal volcanic storm. Born from the ashes of a forgotten war, Ignirax was created by an ancient civilization as a living siege weapon.",
         "Abilities": ["Lava Charge", "Magma Surge", "Obsidian Horn Thrust", "Volcanic Roar", "Infernal Wrath (Ultimate Ability)"],
         "Weakness": "Weak against water-based attacks and celestial magic.",
-        "Image": "Beast/Ignirax"
+        "Image": "Beast/Ignirax.jpg"
     },
     "Voltaryn": {
         "Name Meaning": "Volt = Electricity, Aryn = Protector",
@@ -26,7 +26,7 @@ BEAST_INFO = {
         "Lore": "Deep within the Evergreen Highlands, where nature thrives in harmony with the elements, a sacred guardian watches over the land.",
         "Abilities": ["Thunder Shield", "Storm Dash", "Electric Claw Strike"],
         "Weakness": "Vulnerable to dark magic and shadow-based creatures.",
-        "Image": "Beast/Voltiscar"
+        "Image": "Beast/Voltiscar.jpg"
     }
 }
 
