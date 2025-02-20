@@ -7,27 +7,44 @@ import math
 async def xgift(_, m, u):
     if u.gifts == 0:
         return await m.reply("You have no gifts left.\n\nHowever you can buy them using /xgifts.")
+    
+    current_date = get_date()
+    sent_today = u.gifts_sent.get(current_date, 0)
+    if sent_today >= 10:
+        return await m.reply("You've reached the daily limit of 10 gifts. Try again tomorrow.")
+    
     if not m.reply_to_message or not m.reply_to_message.from_user:
-        return await m.reply("Reply to an user.")
+        return await m.reply("Reply to a user.")
+    
     t = await get_user(m.reply_to_message.from_user.id)
     if not t:
         return await m.reply("Replied user is not a player.")
+    
     try:
         id = int(m.text.split()[1])
     except:
         return await m.reply("Usage: /xgift [character id]")
-    if not id in u.collection:
+    
+    if id not in u.collection:
         return await m.reply("You do not own this character.")
+    
     if u.collection[id] == 1:
         u.collection.pop(id)
     else:
         u.collection[id] -= 1
+    
     t.collection[id] = t.collection.get(id, 0) + 1
     u.gifts -= 1
+    u.gifts_sent[current_date] = sent_today + 1
+    
     await t.update()
     await u.update()
-    await m.reply(f"**{u.user.first_name}** has gifted the character of ID `{id}` to **{t.user.first_name}**.\n\nGifts left: `{u.gifts}`.")
-    #await _.send_message(t.user.id, f"{u.user.first_name} has gifted you the character of ID `{id}`.")
+    
+    await m.reply(
+        f"**{u.user.first_name}** gifted ID `{id}` to **{t.user.first_name}**.\n"
+        f"Gifts left: `{u.gifts}`\n"
+        f"Today's sent: `{u.gifts_sent[current_date]}/10`"
+    )
 
 def markup(user_id, gifts):
     return ikm([[ikb("Buy", callback_data=f"gifts|{gifts}_{user_id}")], [ikb("Close", callback_data=f"close_{user_id}")]])
