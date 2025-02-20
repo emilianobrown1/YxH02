@@ -6,6 +6,13 @@ from ..Database.characters import get_anime_character_ids
 import time
 import random
 
+MAX_LIMITS = {
+    "Magic Key 🗝️": 100,
+    "Magic Diamond 💎": 100,
+    "Magic Potion 🧪": 100,
+    "Magic Stone 🪨": 100
+}
+
 @Client.on_message(filters.command("magic"))
 @YxH(private=False)
 async def magic(_, m, u):
@@ -21,11 +28,16 @@ async def magic(_, m, u):
         await m.reply("You don't have enough gold! You need 25,000 gold to get a magic item.")
         return
 
-    u.gold -= 25000
-
     items = ["Magic Key 🗝️", "Magic Diamond 💎", "Magic Potion 🧪", "Magic Stone 🪨"]
     selected_item = random.choice(items)
-    u.inventory[selected_item] = u.inventory.get(selected_item, 0) + 1
+
+    # Check if adding exceeds the max limit
+    if u.inventory.get(selected_item, 0) >= MAX_LIMITS[selected_item]:
+        await m.reply(f"You already have the maximum limit of {MAX_LIMITS[selected_item]} {selected_item}.")
+        return
+
+    u.gold -= 25000
+    u.inventory[selected_item] = min(u.inventory.get(selected_item, 0) + 1, MAX_LIMITS[selected_item])
 
     u.magic_uses += 1
     u.last_magic_use_time = current_time
