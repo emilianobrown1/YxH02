@@ -24,8 +24,8 @@ async def magic(_, m, u):
             await m.reply(f"Cooldown active. Please wait {minutes} minutes and {seconds} seconds before using the magic command again.")
             return
 
-    if u.gold < 25000:
-        await m.reply("You don't have enough gold! You need 25,000 gold to get a magic item.")
+    if u.gold < 55000:
+        await m.reply("You don't have enough gold! You need 55,000 gold to get a magic item.")
         return
 
     items = ["Magic Key 🗝️", "Magic Diamond 💎", "Magic Potion 🧪", "Magic Stone 🪨"]
@@ -36,7 +36,7 @@ async def magic(_, m, u):
         await m.reply(f"You already have the maximum limit of {MAX_LIMITS[selected_item]} {selected_item}.")
         return
 
-    u.gold -= 25000
+    u.gold -= 55000
     u.inventory[selected_item] = min(u.inventory.get(selected_item, 0) + 1, MAX_LIMITS[selected_item])
 
     u.magic_uses += 1
@@ -91,23 +91,23 @@ async def use_magic_item(_, m, u):
         return
 
     if magic_item == "Magic Key 🗝️":
-        if u.inventory[magic_item] >= 5:
+        if u.inventory[magic_item] >= 35:
             u.gold += 1_000_000
-            u.inventory[magic_item] -= 5
-            await m.reply("You used 5 Magic Keys 🗝️ and earned 1,000,000 gold!")
+            u.inventory[magic_item] -= 35
+            await m.reply("You used 35 Magic Keys 🗝️ and earned 1,000,000 gold!")
         else:
             await m.reply("You need at least 5 Magic Keys 🗝️ to use them.")
 
     elif magic_item == "Magic Diamond 💎":
-        if u.inventory[magic_item] >= 15:
+        if u.inventory[magic_item] >= 40:
             u.gems += 2_000_00
-            u.inventory[magic_item] -= 15
-            await m.reply("You used 15 Magic Diamonds 💎 and earned 2,000,00 gems!")
+            u.inventory[magic_item] -= 40
+            await m.reply("You used 40 Magic Diamonds 💎 and earned 2,000,00 gems!")
         else:
             await m.reply("You need at least 15 Magic Diamonds 💎 to use them.")
 
     elif magic_item == "Magic Potion 🧪":
-        if u.inventory[magic_item] >= 30:
+        if u.inventory[magic_item] >= 45:
             character_ids = await get_anime_character_ids()  # Get all character IDs
             selected_characters = random.sample(character_ids, 2)  # Randomly select 2 characters
             
@@ -116,19 +116,19 @@ async def use_magic_item(_, m, u):
                 u.collection[char] = u.collection.get(char, 0) + 1  # Update collection with selected characters
                 obtained_characters.append(char)
             
-            u.inventory[magic_item] -= 30  # Deduct 10 Magic Potions
+            u.inventory[magic_item] -= 45  # Deduct 10 Magic Potions
             
             # Create a reply message with the obtained character IDs
             char_ids_str = ", ".join(str(char) for char in obtained_characters)
-            await m.reply(f"You used 30 Magic Potions 🧪 and received 2 new random characters with IDs: {char_ids_str}!")
+            await m.reply(f"You used 45 Magic Potions 🧪 and received 2 new random characters with IDs: {char_ids_str}!")
         else:
             await m.reply("You need at least 30 Magic Potions 🧪 to use them.")
             
     elif magic_item == "Magic Stone 🪨":
-        if u.inventory[magic_item] >= 20:
+        if u.inventory[magic_item] >= 50:
             u.crystals += 10
-            u.inventory[magic_item] -= 20
-            await m.reply("You used 20 Magic Stones 🪨 and earned 10 crystals!")
+            u.inventory[magic_item] -= 50
+            await m.reply("You used 50 Magic Stones 🪨 and earned 10 crystals!")
         else:
             await m.reply("You need at least 20 Magic Stones 🪨 to use them.")
 
