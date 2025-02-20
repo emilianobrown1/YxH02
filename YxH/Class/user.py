@@ -30,6 +30,7 @@ class User:
         self.latest_defend = None  # time.time() object
         self.favourite_character = None  # char_id
         self.gifts = 0  # no.of gifts can be gifted
+        self.gifts_sent = {}  # Track daily gifts sent {date: count}
         self.invite_link = None
         self.invited_by = None
         self.partner = None 
@@ -95,6 +96,11 @@ class User:
         # Perform additional actions if needed
         # Example: Log the unblocking action
         # Example: Notify the user about the unblocking
+    def __setstate__(self, state):
+        self.__dict__ = state
+        # Initialize new attributes for backward compatibility
+        if not hasattr(self, 'gifts_sent'):
+            self.gifts_sent = {}
     
     def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
