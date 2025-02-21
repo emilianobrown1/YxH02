@@ -1,4 +1,6 @@
-from pyrogram import Client, filters from ..Class.user import User from . import YxH
+from pyrogram import Client, filters
+from ..Class.user import User
+from . import YxH
 
 Beast information dictionary
 
