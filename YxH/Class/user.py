@@ -79,6 +79,13 @@ class User:
         self.crystals += amount
         await self.update()
 
+    def __setstate__(self, state):
+        self.__dict__ = state
+       # Initialize new attributes for backward compatibility
+        if not hasattr(self, 'gifts_sent'):
+            self.gifts_sent = {}
+            
+
     def is_blocked(self):
         return self.blocked
 
@@ -88,13 +95,8 @@ class User:
     def unblock_user(self):
         self.blocked = False
         # Perform additional actions if needed
-        # Example: Log the unblocking action
+        
         # Example: Notify the user about the unblocking
-    def __setstate__(self, state):
-        self.__dict__ = state
-        # Initialize new attributes for backward compatibility
-        if not hasattr(self, 'gifts_sent'):
-            self.gifts_sent = {}
 
     
     def get_old(self) -> int:
