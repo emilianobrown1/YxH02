@@ -79,11 +79,7 @@ class User:
         self.crystals += amount
         await self.update()
 
-    def __setstate__(self, state):
-        self.__dict__ = state
-       # Initialize new attributes for backward compatibility
-        if not hasattr(self, 'gifts_sent'):
-            self.gifts_sent = {}
+ 
             
 
     def is_blocked(self):
