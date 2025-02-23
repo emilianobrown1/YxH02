@@ -1,4 +1,3 @@
-e
 from pyrogram import Client, filters
 import asyncio
 from ..Class.user import User
