@@ -25,15 +25,15 @@ async def start_training(m, troop_type):
     # Calculate max troops user can train
     max_troops = len(user.barracks) * BARRACKS_CAPACITY
     
-    # Deduct crystals and start training
+    # Deduct gold and start training
     cost_per_troop = TRAINING_DETAILS[troop_type]["cost"]
     total_cost = cost_per_troop * max_troops
     
     if user.gold < total_cost:
-        await m.reply(f"Insufficient crystal! You need {total_cost} 📯 to train {max_troops} {troop_type}s.")
+        await m.reply(f"Insufficient gold! You need {total_cost} 📯 to train {max_troops} {troop_type}s.")
         return
     
-    user.crystals -= total_cost
+    user.gold -= total_cost
     
     # Distribute troops across barracks
     troops_per_barrack = BARRACKS_CAPACITY
