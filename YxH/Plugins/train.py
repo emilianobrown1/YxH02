@@ -1,41 +1,54 @@
+e
 from pyrogram import Client, filters
 import asyncio
-import time
 from ..Class.user import User
-from ..Class.barracks import BarracksManager  # If direct access needed
-from .. import YxH  # Assuming YxH is in parent __init__.py
+from .. import YxH
 
-async def start_training(m, troop_type):
-    user = await get_user(m.from_user.id)
-    bm = user.barracks
-
-    # Process completed trainings first
-    completed = bm.process_completed_trainings()
-    if sum(completed.values()) > 0:
-        await user.update()
-
-    # Calculate possible training
+@Client.on_message(filters.command(["shinobi", "wizard", "sensei"]))
+@YxH()
+async def train_troops(client, m, u: User):
     try:
-        gold_cost, duration = bm.start_training(
-            troop_type=troop_type,
-            quantity=5 * len(user.barracks.barracks),  # Max 5 per barrack
-            user_gold=user.gold
+        troop_type = m.command[0].lower()
+        bm = u.barracks_manager
+        
+        # Process completed trainings first
+        completed = bm.process_completed_trainings()
+        if sum(completed.values()) > 0:
+            await u.update()
+
+        # Calculate max possible troops
+        max_troops = len(bm.barracks) * 5
+        if max_troops <= 0:
+            await m.reply("❌ You need at least 1 barrack!")
+            return
+
+        # Start training
+        try:
+            cost, duration = bm.start_training(troop_type, max_troops)
+        except ValueError:
+            await m.reply("❌ Invalid troop type!")
+            return
+
+        if u.gold < cost:
+            await m.reply(f"💰 Insufficient gold! Need: {cost:,} 🪙")
+            return
+
+        # Deduct gold and update
+        u.gold -= cost
+        await u.update()
+
+        # Send response
+        minutes = int(duration // 60)
+        await m.reply(
+            f"⚡ Training started!\n"
+            f"🔢 Quantity: {max_troops} {troop_type.capitalize()}s\n"
+            f"⏳ Duration: {minutes} minutes\n"
+            f"💸 Cost: {cost:,} 🪙"
         )
-    except ValueError:
-        return await m.reply("❌ Invalid troop type!")
 
-    if gold_cost == 0:
-        return await m.reply("❌ Not enough gold or barracks capacity!")
+        # Schedule completion notification
+        await asyncio.sleep(duration)
+        await m.reply(f"✅ Training complete! {max_troops} {troop_type.capitalize()}s added to your barracks!")
 
-    # Deduct gold and update
-    user.gold -= gold_cost
-    await user.update()
-
-    # Format response
-    minutes = int(duration // 60)
-    await m.reply(
-        f"⚡ Training started!\n"
-        f"🔢 Troops: {gold_cost // TRAINING_DETAILS[troop_type]['cost']}\n"
-        f"⏳ Duration: {minutes} minutes\n"
-        f"💸 Cost: {gold_cost:,} 🪙"
-    )
+    except Exception as e:
+        await m.reply(f"❌ Error: {str(e)}")
