@@ -1,4 +1,5 @@
 from ..Database import db
+from .barracks import BarracksManager 
 import pickle
 import time
 
@@ -37,12 +38,7 @@ class User:
         self.convertx = {}  # {date: "converted"}
         self.buy_crystals = {}
         self.scramble = []
-        self.troops = {"shinobi": 0, "wizard": 0, "sensei": 0}
-        self.powers = {"Darkness Shadow": 0, "Frost Snow": 0, "Thunder Storm": 0,
-            "Nature Ground": 0, "Flame Heat Inferno": 0, "Aqua Jet": 0, "Speed": 0, "Strength": 0}
-        self.beasts = {"Titanus Aegisorn": 0, "Glacelynx": 0, "Voltiscar": 0,
-            "Cerberus": 0, "Ignirax": 0, "Frostclaw": 0,
-            "Vilescale": 0, "Pyraxion": 0}
+        self.barracks = BarracksManager()
         self.swap = {
             "count": 0  # Track the number of swaps
         }
