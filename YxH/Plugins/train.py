@@ -2,7 +2,7 @@ e
 from pyrogram import Client, filters
 import asyncio
 from ..Class.user import User
-from .. import YxH
+from . import YxH
 
 @Client.on_message(filters.command(["shinobi", "wizard", "sensei"]))
 @YxH()
