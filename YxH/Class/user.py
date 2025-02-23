@@ -38,7 +38,7 @@ class User:
         self.convertx = {}  # {date: "converted"}
         self.buy_crystals = {}
         self.scramble = []
-        self.barracks = BarracksManager()
+        self.barracks_manager = BarracksManager()
         self.swap = {
             "count": 0  # Track the number of swaps
         }
