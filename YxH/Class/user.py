@@ -42,7 +42,7 @@ class User:
         self.swap = {
             "count": 0  # Track the number of swaps
         }
-        self.barracks = []
+        
         self.inventory = {
             "Magic Key 🗝️": 0,
             "Magic Diamond 💎": 0,
