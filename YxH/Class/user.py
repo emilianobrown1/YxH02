@@ -1,5 +1,4 @@
-from ..Database import db
-from .barracks import BarracksManager 
+from ..Database import db 
 import pickle
 import time
 
@@ -38,7 +37,6 @@ class User:
         self.convertx = {}  # {date: "converted"}
         self.buy_crystals = {}
         self.scramble = []
-        self.barracks_manager = BarracksManager()
         self.swap = {
             "count": 0  # Track the number of swaps
         }
@@ -98,24 +96,6 @@ class User:
         if not hasattr(self, 'gifts_sent'):
             self.gifts_sent = {}
 
-    def __setstate__(self, state):
-        self.__dict__ = state
-        # Migrate old barracks data
-        if hasattr(self, 'barracks'):
-            self.barracks_manager.initialize_barracks(self.barracks)
-            del self.barracks
-        if hasattr(self, 'troops'):
-            self.barracks_manager.troops = self.troops
-            del self.troops
-        # ... other backward compatibility checks ...
-
-    @property
-    def troops(self):
-        return self.barracks_manager.troops
-        
-    @property
-    def barracks(self):
-        return self.barracks_manager.barracks
     
     def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
