@@ -29,8 +29,8 @@ async def start_training(m, troop_type):
     cost_per_troop = TRAINING_DETAILS[troop_type]["cost"]
     total_cost = cost_per_troop * max_troops
     
-    if user.crystals < total_cost:
-        await m.reply(f"Insufficient crystal! You need {total_cost} 🔮 to train {max_troops} {troop_type}s.")
+    if user.gold < total_cost:
+        await m.reply(f"Insufficient crystal! You need {total_cost} 📯 to train {max_troops} {troop_type}s.")
         return
     
     user.crystals -= total_cost
