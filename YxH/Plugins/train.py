@@ -12,10 +12,19 @@ TRAINING_DETAILS = {
 
 BARRACKS_CAPACITY = 5  # Troops per barracks
 
+# Ensure barracks storage structure is correct
+def initialize_barracks(user):
+    if not isinstance(user.barracks, list):
+        user.barracks = []
+    for i in range(len(user.barracks)):
+        if not isinstance(user.barracks[i], dict):
+            user.barracks[i] = {"timestamp": time.time(), "troops": {"shinobi": 0, "wizard": 0, "sensei": 0}}
+
 # Generalized training command
 async def start_training(m, troop_type):
     user_id = m.from_user.id
     user = await get_user(user_id)  # Get user data from the database
+    initialize_barracks(user)
 
     # Check if the user has barracks
     if len(user.barracks) < 1:
@@ -30,17 +39,14 @@ async def start_training(m, troop_type):
     total_cost = cost_per_troop * max_troops
     
     if user.gold < total_cost:
-        await m.reply(f"Insufficient gold! You need {total_cost} 📯 to train {max_troops} {troop_type}s.")
+        await m.reply(f"Insufficient gold! You need {total_cost} 🪙 to train {max_troops} {troop_type}s.")
         return
     
     user.gold -= total_cost
     
     # Distribute troops across barracks
-    troops_per_barrack = BARRACKS_CAPACITY
-    for i in range(len(user.barracks)):
-        if "troops" not in user.barracks[i]:
-            user.barracks[i]["troops"] = {"shinobi": 0, "wizard": 0, "sensei": 0}
-        user.barracks[i]["troops"][troop_type] += troops_per_barrack
+    for barrack in user.barracks:
+        barrack["troops"][troop_type] += BARRACKS_CAPACITY
     
     await user.update()  # Update the user's data in the database
     
