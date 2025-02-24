@@ -79,7 +79,13 @@ class User:
         self.crystals += amount
         await self.update()
 
- 
+    def __setstate__(self, state):
+        # Remove legacy attributes that no longer exist in the class
+        state.pop('barracks_manager', None)  # Handle removed BarracksManager
+        # Update the instance's __dict__ with the cleaned state
+        self.__dict__.update(state)
+        if not hasattr(self, 'new_attribute_added_after_pickling'):
+            self.new_attribute_added_after_pickling = default_value  # Set default if needed
             
 
     def is_blocked(self):
