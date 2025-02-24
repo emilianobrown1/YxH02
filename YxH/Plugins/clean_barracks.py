@@ -7,7 +7,7 @@ from config import OWNER_ID
 
 @Client.on_message(filters.command("cleanbarracks") & filters.user(OWNER_ID))
 @YxH()
-async def barracks_cleaner(client: Client, message: Message):
+async def barracks_cleaner(client: Client, message: Message, u):  # Now accepts 3 arguments
     try:
         msg = await message.reply("🧹 Starting barracks data cleanup...")
         
