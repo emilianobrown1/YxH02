@@ -85,7 +85,7 @@ class User:
         'barracks', 'barracks_manager', 'troops',
         'military_units', 'army', 'soldiers',
         'barracks_level', 'military', 'barracks_data'
-    ]
+         ]
 
     for attr in barracks_attrs:
         state.pop(attr, None)
