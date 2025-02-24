@@ -90,9 +90,12 @@ class User:
     # Remove barracks-related keys
     for attr in barracks_attrs:
         state.pop(attr, None)
-        self.__dict__.update(state)
-
-
+    
+    # Update instance dictionary
+    self.__dict__.update(state)
+    
+    # Initialize new attributes safely
+    
     def is_blocked(self):
         return self.blocked
 
