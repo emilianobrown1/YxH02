@@ -1,5 +1,5 @@
 # YxH/Plugins/clean_barracks.py
-from pyrogram import filters
+from pyrogram import Client, filters
 from pyrogram.types import Message
 from ..Database.users import get_all_users
 from ..universal_decorator import YxH
