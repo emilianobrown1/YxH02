@@ -16,7 +16,7 @@ def get_display_name(user):
     name = getattr(user.user, "first_name", None) or getattr(user.user, "username", None) or f"User {user.user.id}"
     return name
 
-@Client.on_message(filters.command("top"))
+@Client.on_message(filters.command("topx"))
 @YxH()
 async def top(_, m, u):
     users = await get_all_users()
