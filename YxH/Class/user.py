@@ -79,7 +79,6 @@ class User:
         self.crystals += amount
         await self.update()
 
-    
     def __setstate__(self, state):
     # Clean ALL potential barracks-related attributes
     barracks_attrs = [
@@ -100,7 +99,6 @@ class User:
         self.swap = {"count": 0}
     if not hasattr(self, 'scramble'):
         self.scramble = []
-
     
     def is_blocked(self):
         return self.blocked
