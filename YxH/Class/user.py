@@ -79,26 +79,17 @@ class User:
         self.crystals += amount
         await self.update()
 
-    def __setstate__(self, state):
-    # Clean ALL potential barracks-related attributes
-        barracks_attrs = [  # Properly defined inside the method
-        'barracks', 'barracks_manager', 'troops',
-        'military_units', 'army', 'soldiers',
-        'barracks_level', 'military', 'barracks_data'
+    def __getattr__(self, name):
+        """Handle missing attributes gracefully"""
+        barracks_attrs = [
+            'barracks', 'barracks_manager', 'troops',
+            'military_units', 'army', 'soldiers',
+            'barracks_level', 'military', 'barracks_data'
         ]
+        if name in barracks_attrs:
+            return None
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
     
-    # Remove barracks-related keys
-    for attr in barracks_attrs:
-        state.pop(attr, None)
-    
-    # Update instance dictionary
-    self.__dict__.update(state)
-    
-    # Initialize new attributes safely
-    if not hasattr(self, 'swap'):
-        self.swap = {"count": 0}
-    if not hasattr(self, 'scramble'):
-        self.scramble = []
     
     def is_blocked(self):
         return self.blocked
