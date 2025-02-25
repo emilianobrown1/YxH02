@@ -79,17 +79,20 @@ class User:
         self.crystals += amount
         await self.update()
 
-    def __getattr__(self, name):
-        """Handle missing attributes gracefully"""
+    def reduce(self):
+        # Custom reduction to exclude barracks attributes
+        return (self.class, (self.user,), self.dict)
+
+    def setstate(self, state):
+        # Clean barracks attributes
         barracks_attrs = [
             'barracks', 'barracks_manager', 'troops',
             'military_units', 'army', 'soldiers',
             'barracks_level', 'military', 'barracks_data'
         ]
-        if name in barracks_attrs:
-            return None
-        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
-    
+        for attr in barracks_attrs:
+            state.pop(attr, None)
+        self.dict.update(state)
     
     def is_blocked(self):
         return self.blocked
