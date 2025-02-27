@@ -79,19 +79,7 @@ class User:
         self.crystals += amount
         await self.update()
 
-    def __reduce__(self):
-        """Custom pickling reduction"""
-        return (self.__class__, (self.user,), self.__dict__)
 
-    def __setstate__(self, state):
-        barracks_attrs = [
-            'barracks', 'barracks_manager', 'troops',
-            'military_units', 'army', 'soldiers',
-            'barracks_level', 'military', 'barracks_data'
-        ]
-        for attr in barracks_attrs:
-            state.pop(attr, None)
-        self.__dict__.update(state)
     
     def is_blocked(self):
         return self.blocked
