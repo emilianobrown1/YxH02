@@ -40,7 +40,7 @@ async def build_barracks(_, m, user):
 async def view_barracks(_, m, user):
     if user.barracks_count == 0:
         await m.reply_photo(
-            "Images/Barracks.jpg",
+            "Images/barrack.jpg",
             caption="❌ No barracks found! Build one with /barracks"
         )
         return
