@@ -36,7 +36,7 @@ async def build_barracks(_, m, user):
     )
 
 @Client.on_message(filters.command("mybarracks"))
-@YxH(private=True, group=False)
+@YxH()
 async def view_barracks(_, m, user):
     if user.barracks_count == 0:
         await m.reply_photo(
