@@ -3,36 +3,52 @@ from ..Class.user import User
 from ..Database.users import get_user
 from ..universal_decorator import YxH
 # Use your universal decorator with appropriate parameters
+
 @Client.on_message(filters.command("barracks"))
 @YxH()
 async def build_barracks(_, m, user):
-    # Check max barracks limit
-    if user.barracks_count >= 3:
+    try:
+        # Get requested amount from command
+        amount = int(m.command[1]) if len(m.command) > 1 else 1
+    except ValueError:
+        amount = 1
+
+    # Validate amount
+    amount = max(1, min(amount, 3 - user.barracks_count))  # Ensure we don't exceed max limit
+    
+    if amount <= 0:
         await m.reply_photo(
             "Images/barrack.jpg",
-            caption="❌ You've reached the maximum of 3 Barracks!"
+            caption=f"❌ You can build maximum {3 - user.barracks_count} more barracks!"
         )
         return
 
-    # Check crystal balance
-    if user.crystals < 100:
-        await m.reply_photo(
-            "Images/Barracks.jpg",
-            caption=f"💎 Need 100 Crystals! You have: {user.crystals}"
-        )
-        return
-
-    # Deduct crystals and build
-    user.crystals -= 100
-    user.barracks_count += 1
-    await user.update()
+    total_cost = 100 * amount
     
-    await m.reply_photo(
-        "Images/barrack.jpg",
+    # Check crystal balance
+    if user.crystals < total_cost:  
+        await m.reply_photo(  
+            "Images/barrack.jpg",  
+            caption=f"💎 Need {total_cost} Crystals! You have: {user.crystals}"  
+        )  
+        return  
+
+    # Update user data
+    user.crystals -= total_cost  
+    user.barracks_count += amount  
+    await user.update()  
+
+    # Build success message
+    await m.reply_photo(  
+        "Images/barrack.jpg",  
         caption=(
-            f"🏰 Barrack {user.barracks_count} constructed!\n"
-            f"Remaining Crystals: {user.crystals}"
-        )
+            "🎉 Congratulations, Commander!\n\n"
+            f"🏰 You successfully built {amount} barrack{'s' if amount > 1 else ''} 🛡️ "
+            "to train your troops!\n\n"
+            f"💎 Crystals Spent: {total_cost}\n"
+            f"🏰 Total Barracks Now: {user.barracks_count}\n"
+            "💪 Prepare Your Army and Lead to Glory!"
+        )  
     )
 
 @Client.on_message(filters.command("mybarracks"))
