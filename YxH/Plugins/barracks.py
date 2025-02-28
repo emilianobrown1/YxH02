@@ -42,12 +42,12 @@ async def build_barracks(_, m, user):
     await m.reply_photo(  
         "Images/barrack.jpg",  
         caption=(
-            "🎉 Congratulations, Commander!\n\n"
+            "🎉 **Congratulations, Commander!**\n\n"
             f"🏰 You successfully built {amount} barrack{'s' if amount > 1 else ''} 🛡️ "
             "to train your troops!\n\n"
             f"💎 Crystals Spent: {total_cost}\n"
             f"🏰 Total Barracks Now: {user.barracks_count}\n"
-            "💪 Prepare Your Army and Lead to Glory!"
+            "💪 **Prepare Your Army and Lead to Glory!**"
         )  
     )
 
