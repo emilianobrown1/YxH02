@@ -47,6 +47,31 @@ class User:
             "Magic Potion 🧪": 0,
             "Magic Stone 🪨": 0
         }
+        self.barracks_count = 0
+        self.troops = {
+            "shinobi": 0,
+            "sensei": 0,
+            "wizard": 0
+        }
+        self.powers = {
+            "Lightning": 0,
+            "Ice": 0,
+            "Fire": 0,
+            "Speed": 0,
+            "Nature": 0
+        }
+        self.protectors = {
+            "Titanus Aegisorn": 0,
+            "Glacelynx": 0,
+            "Voltiscar": 0,
+            "Cerberus": 0
+        }
+        self.attackers = {
+            "Ignirax": 0,
+            "Frostclaw": 0,
+            "Vilescale": 0,
+            "Pyraxion": 0
+        }
         self.magic_uses = 0  # Track magic command usage
         self.tictactoe_wins = 0  # Track Tic-Tac-Toe wins
         self.last_magic_use_time = 0
