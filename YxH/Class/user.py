@@ -53,6 +53,7 @@ class User:
             "sensei": 0,
             "wizard": 0
         }
+        self.trainings = []
         self.powers = {
             "⚡ Darkness Shadow": 0,
             "⚡ Frost Snow": 0,
