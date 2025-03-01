@@ -49,9 +49,9 @@ class User:
         }
         self.barracks_count = 0
         self.troops = {
-            "Shinobi": 0,
-            "Sensei": 0,
-            "Wizard": 0
+            "shinobi": 0,
+            "sensei": 0,
+            "wizard": 0
         }
         self.trainings = []
         self.powers = {
