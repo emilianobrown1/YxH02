@@ -12,19 +12,21 @@ async def train_troops(client, m, user):
         return
 
     try:
-        # Parse command
+        # Parse command with lowercase handling
         parts = m.command
         if len(parts) < 2:
             raise ValueError
 
-        troop = parts[1].capitalize()
-        valid_troops = ["Shinobi", "Wizard", "Sensei"]
-        
-        if troop not in valid_troops:
+        troop_key = parts[1].lower()  # Convert to lowercase
+        valid_troops = ["shinobi", "wizard", "sensei"]  # Lowercase keys
+
+        if troop_key not in valid_troops:
             raise ValueError
 
         amount = int(parts[2]) if len(parts) > 2 else 1
         amount = max(1, min(amount, 5))
+
+        display_troop = troop_key.capitalize()  # For user-facing messages
 
     except (ValueError, IndexError):
         await m.reply(
@@ -36,15 +38,15 @@ async def train_troops(client, m, user):
         )
         return
 
-    # Training costs and times
+    # Training costs and times (lowercase keys)
     training_data = {
-        "Shinobi": {"cost": 1_000_000, "time": 5},
-        "Wizard": {"cost": 2_000_000, "time": 10},
-        "Sensei": {"cost": 3_000_000, "time": 15}
+        "shinobi": {"cost": 1_000_000, "time": 5},
+        "wizard": {"cost": 2_000_000, "time": 10},
+        "sensei": {"cost": 3_000_000, "time": 15}
     }
 
-    total_cost = training_data[troop]["cost"] * amount
-    total_time = training_data[troop]["time"] * amount
+    total_cost = training_data[troop_key]["cost"] * amount
+    total_time = training_data[troop_key]["time"] * amount
 
     # Check gold balance
     if user.gold < total_cost:
@@ -56,13 +58,13 @@ async def train_troops(client, m, user):
         )
         return
 
-    # Check troop capacity
+    # Check troop capacity using lowercase key
     max_capacity = user.barracks_count * 5
-    if user.troops[troop] + amount > max_capacity:
+    if user.troops[troop_key] + amount > max_capacity:
         await m.reply(
             f"🚧 **Capacity Exceeded!**\n\n"
-            f"Max {max_capacity} {troop} allowed ({user.barracks_count} barracks)\n"
-            f"Current: {user.troops[troop]}\n"
+            f"Max {max_capacity} {display_troop} allowed ({user.barracks_count} barracks)\n"
+            f"Current: {user.troops[troop_key]}\n"
             f"Attempted to add: {amount}"
         )
         return
@@ -71,19 +73,19 @@ async def train_troops(client, m, user):
     user.gold -= total_cost
     completion_time = time.time() + (total_time * 60)
 
-    # Add to trainings (make sure User class has this attribute)
+    # Store with lowercase key
     user.trainings.append({
-        "troop": troop,
+        "troop": troop_key,  # Store lowercase key
         "amount": amount,
         "completion_time": completion_time,
         "chat_id": m.chat.id
     })
     await user.update()
 
-    # Send confirmation
+    # Send confirmation with display name
     await m.reply(
         "⚡ **Training Started!**\n\n"
-        f"🛡️ Troop Type: {troop}\n"
+        f"🛡️ Troop Type: {display_troop}\n"
         f"🔢 Quantity: {amount}\n"
         f"⏳ Duration: {total_time} minutes\n"
         f"💸 Gold Spent: {total_cost:,}\n\n"
@@ -94,15 +96,13 @@ async def train_troops(client, m, user):
     async def complete_training():
         await asyncio.sleep(total_time * 60)
 
-        # Refresh user data
         current_user = await get_user(user.user.id)
-        for training in list(current_user.trainings):  # Use list() to avoid iteration issues
-            if training["completion_time"] == completion_time:
-                # Check capacity again in case barracks changed
-                if current_user.troops[troop] + amount <= current_user.barracks_count * 5:
-                    current_user.troops[troop] += amount
+        for training in list(current_user.trainings):
+            if training["troop"] == troop_key and training["completion_time"] == completion_time:
+                # Check capacity again
+                if current_user.troops[troop_key] + amount <= current_user.barracks_count * 5:
+                    current_user.troops[troop_key] += amount
                 else:
-                    # Refund if capacity reduced during training
                     current_user.gold += total_cost
                 
                 current_user.trainings.remove(training)
@@ -112,8 +112,8 @@ async def train_troops(client, m, user):
                     chat_id=m.chat.id,
                     text=(
                         f"🎉 **Training Complete!**\n\n"
-                        f"🏆 {amount} {troop} added to your army!\n"
-                        f"Total {troop}: {current_user.troops[troop]}\n\n"
+                        f"🏆 {amount} {display_troop} added to your army!\n"
+                        f"Total {display_troop}: {current_user.troops[troop_key]}\n\n"
                         "Ready for battle commander!"
                     )
                 )
