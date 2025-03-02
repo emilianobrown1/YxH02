@@ -55,14 +55,14 @@ class User:
         }
         self.trainings = []
         self.powers = {
-            "⚡ Darkness Shadow": 0,
-            "⚡ Frost Snow": 0,
-            "⚡ Thunder Storm": 0,
-            "⚡ Nature Ground": 0,
-            "⚡ Flame Heat Inferno": 0,
-            "⚡ Aqua Jet": 0,
-            "⚡️ Strength": 0,
-            "⚡️ Speed": 0
+            "Darkness Shadow": 0,
+            "Frost Snow": 0,
+            "Thunder Storm": 0,
+            "Nature Ground": 0,
+            "Flame Heat Inferno": 0,
+            "Aqua Jet": 0,
+            "Strength": 0,
+            "Speed": 0
         }
         self.protectors = {
             "Titanus Aegisorn": 0,
