@@ -54,7 +54,7 @@ class User:
             "wizard": 0
         }
         self.trainings = []
-        self.powers = {
+        self.power = {
             "Darkness Shadow": 0,
             "Frost Snow": 0,
             "Thunder Storm": 0,
