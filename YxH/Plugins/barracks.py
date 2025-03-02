@@ -66,7 +66,7 @@ async def view_barracks(_, m, user):
         "🏰 **Your Barracks Overview**",
         f"📦 Total Barracks: {user.barracks_count}/3\n",
         "👥 **Troops**",
-        f"🔹 Shinobi: {user.troops['shinobi']}/5 per barrack",
+        f"🔹 Shinobi: {user.troops['shinobi']}/5",
         f"🔹 Sensei: {user.troops['sensei']}/5",
         f"🔹 Wizard: {user.troops['wizard']}/5\n",
         "⚡ **Powers**"
