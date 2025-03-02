@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from ..Database.users import get_user
-from universal_decorator import YxH
+from ..universal_decorator import YxH
 import random
 
 @Client.on_message(filters.command("getpower"))
