@@ -73,7 +73,7 @@ async def view_barracks(_, m, user):
     ]
     
     # Add powers
-    for power, count in user.powers.items():
+    for power, count in user.power.items():
         caption_lines.append(f"• {power}: {count}/3")
     
     caption_lines.extend([
