@@ -84,7 +84,7 @@ async def acquire_power(client, message, user):
     )
 
 
-@Client.on_message(filters.all & filters.command("getpower"))  # Added message handler
+@Client.on_message(filters.all & ~filters.command("getpower"))  # Added message handler
 async def track_activity(client, message):
     """Track messages for power acquisition"""
     if not message.from_user:
