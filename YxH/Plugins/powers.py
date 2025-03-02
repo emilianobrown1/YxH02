@@ -7,7 +7,7 @@ import random
 @YxH()
 async def acquire_power(client, message, user):
     # Configuration
-    REQUIRED_MESSAGES = 250
+    REQUIRED_MESSAGES = 2
     POWER_COST = 35000
     MAX_PER_BARRACK = 3
     
@@ -59,7 +59,7 @@ async def acquire_power(client, message, user):
     await message.reply(
         f"⚡ **Power Acquired!**\n\n"
         f"✨ {selected_power}\n"
-        f"🏰 Total Powers: {current_powers + 1}/{max_powers}\n"
+        f"🏰 Total Powers: {current_power + 1}/{max_powers}\n"
         f"💎 Cost: {POWER_COST:,} gems\n"
         f"📬 Messages used: {REQUIRED_MESSAGES}"
     )
