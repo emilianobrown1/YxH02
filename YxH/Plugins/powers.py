@@ -1,51 +1,65 @@
-import random
 from pyrogram import Client, filters
+from Database.users import get_user
+from universal_decorator import YxH
+import random
 
-# Sample powers with local image paths
-powers = [
-    {"Hammer": "Power Hammer", "image": "./Powers/Hammer.jpg"},
-    {"name": "Power B", "image": "./images/power_b.jpg"},
-    {"name": "Power C", "image": "./images/power_c.jpg"},
-    {"name": "Power D", "image": "./images/power_d.jpg"},
-]
-
-# User message tracking
-user_message_count = {}
-
-@Client.on_message(filters.text &  filters.private)
-async def track_messages(client, message):
-    user_id = message.from_user.id
-    user_message_count[user_id] = user_message_count.get(user_id, 0) + 1
-
-    if user_message_count[user_id] == 150:
-        # Assign a random power
-        power = random.choice(powers)
-        user_message_count[user_id] = 0  # Reset message count
-
-        # Send the power details to the user
-        await message.reply_photo(
-            photo=power["image"],  # Use the local file path
-            caption=f"🎉 Congratulations! You've unlocked **{power['name']}**!"
+@Client.on_message(filters.command("getpower"))
+@YxH()
+async def acquire_power(client, message, user):
+    # Configuration
+    REQUIRED_MESSAGES = 250
+    POWER_COST = 35000
+    MAX_PER_BARRACK = 3
+    
+    # Check message requirement
+    if user.messages_for_power < REQUIRED_MESSAGES:
+        needed = REQUIRED_MESSAGES - user.messages_for_power
+        await message.reply(
+            f"📭 Need {needed} more messages!\n"
+            f"Progress: {user.messages_for_power}/{REQUIRED_MESSAGES}"
         )
+        return
 
-@Client.on_message(filters.command("power"))
-async def show_powers(client, message):
-    user_id = message.from_user.id
-    user = await get_user(user_id)  # Retrieve user from the database
+    # Check gem balance
+    if user.gems < POWER_COST:
+        await message.reply(
+            f"💎 Insufficient gems!\n"
+            f"Required: {POWER_COST:,}\n"
+            f"Your balance: {user.gems:,}"
+        )
+        return
 
-    if not user or not user.powers:
-        return await message.reply("You haven't unlocked any powers yet. Keep chatting to unlock one!")
-
-    # Fetch the first power
-    first_power = user.powers[0]
-    power_info = next((p for p in powers if p["name"] == first_power), None)
+    # Calculate power capacity
+    max_powers = user.barracks_count * MAX_PER_BARRACK
+    current_powers = sum(user.power.values())
     
-    if not power_info:
-        return await message.reply("Error fetching your powers. Please try again later.")
+    if current_powers >= max_powers:
+        await message.reply(
+            f"🚧 Maximum capacity reached!\n"
+            f"Powers: {current_powers}/{max_powers}\n"
+            "Build more barracks with /barracks"
+        )
+        return
+
+    # Select random available power
+    power_options = [power for power, count in user.power.items() if count < MAX_PER_BARRACK]
+    if not power_options:
+        await message.reply("🎉 All powers at maximum capacity!")
+        return
+
+    selected_power = random.choice(power_options)
     
-    # Send the first power with a "Next" button
-    await message.reply_photo(
-        photo=power_info["image_path"],  # Use the local file path
-        caption=f"🌟 **{power_info['name']}**\n\nDescription: {power_info.get('description', 'No description available.')}",
-        reply_markup=power_navigation_markup(user_id, 0)
+    # Update user data
+    user.gems -= POWER_COST
+    user.power[selected_power] += 1
+    user.messages_for_power = 0  # Reset counter
+    await user.update()
+
+    # Send success message
+    await message.reply(
+        f"⚡ **Power Acquired!**\n\n"
+        f"✨ {selected_power}\n"
+        f"🏰 Total Powers: {current_powers + 1}/{max_powers}\n"
+        f"💎 Cost: {POWER_COST:,} gems\n"
+        f"📬 Messages used: {REQUIRED_MESSAGES}"
     )
