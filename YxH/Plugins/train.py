@@ -111,11 +111,12 @@ async def train_troops(client, m, user):
                 await client.send_message(
                     chat_id=m.chat.id,
                     text=(
-                        f"🎉 **Training Complete!**\n\n"
-                        f"🏆 {amount} {display_troop} added to your army!\n"
-                        f"Total {display_troop}: {current_user.troops[troop_key]}\n\n"
-                        "Ready for battle commander!"
-                    )
+                        f"🎉 Training Complete!\n\n"  
+        f"🏆 {amount} {display_troop} added to {current_user.user.first_name}'s army!\n"  
+        f"Total {display_troop}: {current_user.troops[troop_key]}\n\n"  
+        "Ready for battle commander!"  
+    ),  
+    parse_mode="Markdown"  
                 )
                 break
 
