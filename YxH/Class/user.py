@@ -77,6 +77,7 @@ class User:
             "Pyraxion": 0
         }
         self.magic_uses = 0  # Track magic command usage
+        self.messages_for_power = 0
         self.tictactoe_wins = 0  # Track Tic-Tac-Toe wins
         self.last_magic_use_time = 0
         # Dev Requirements.
