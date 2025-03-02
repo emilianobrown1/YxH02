@@ -116,7 +116,7 @@ async def train_troops(client, m, user):
         f"Total {display_troop}: {current_user.troops[troop_key]}\n\n"  
         "Ready for battle commander!"  
     ),  
-    parse_mode="Markdown"  
+    parse_mode="markdown"  
                 )
                 break
 
