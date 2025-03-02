@@ -31,12 +31,12 @@ async def acquire_power(client, message, user):
 
     # Calculate power capacity
     max_powers = user.barracks_count * MAX_PER_BARRACK
-    current_powers = sum(user.power.values())
+    current_power = sum(user.power.values())
     
-    if current_powers >= max_powers:
+    if current_power >= max_powers:
         await message.reply(
             f"🚧 Maximum capacity reached!\n"
-            f"Powers: {current_powers}/{max_powers}\n"
+            f"Powers: {current_power}/{max_powers}\n"
             "Build more barracks with /barracks"
         )
         return
