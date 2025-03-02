@@ -7,7 +7,7 @@ import random
 @YxH()
 async def acquire_power(client, message, user):
     # Configuration
-    REQUIRED_MESSAGES = 250
+    REQUIRED_MESSAGES = 20
     POWER_COST = 35000
     MAX_PER_BARRACK = 3
     EMOJI_MAP = {
