@@ -57,7 +57,7 @@ async def acquire_power(client, message, user):
         (power, count) for power, count in user.power.items() 
         if count < MAX_PER_BARRACK
     ]
-    
+
     if not power_options:
         return await message.reply("🎉 **All powers at maximum level!**")
 
@@ -83,11 +83,12 @@ async def acquire_power(client, message, user):
     )
 
 
+@Client.on_message(filters.all & filters.command("getpower"))  # Added message handler
 async def track_activity(client, message):
     """Track messages for power acquisition"""
     if not message.from_user:
         return
-    
+
     user = await get_user(message.from_user)
     user.messages_for_power += 1  # Increment counter
     await user.update()
