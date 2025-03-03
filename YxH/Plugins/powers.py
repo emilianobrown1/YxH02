@@ -80,7 +80,7 @@ async def acquire_power(client, message, user):
         f"• **Total Powers:** `{current_power + 1}/{max_powers}`\n\n"
         f"__Resources Spent:__\n"
         f"💎 Gems: `{POWER_COST:,}`\n"
-        f"📩 Messages: `250`"
+        f"📩 Messages: `20`"
     )
 
 
