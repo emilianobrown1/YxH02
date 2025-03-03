@@ -83,7 +83,7 @@ async def acquire_power(client, message, user):
         f"📩 Messages: `250`"
     )
 
-# Added message handler
+@Client.on_message(filters.all) # Added message handler
 async def track_activity(client, message):
     """Track messages for power acquisition"""
     if not message.from_user:
