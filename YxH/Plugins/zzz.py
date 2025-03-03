@@ -7,13 +7,15 @@ from .info_watcher import cwf as info_cwf
 from .copx import cwf as copx_cwf
 from .scramble import catch_scramble_response  
 from .couple_messages import handle_couple_messages
+from .power import track_activity
 
 from .watchers import (
     info_watcher,
     fw_watcher,
     copx_watcher,
     scramble_watcher,
-    couple_message_watcher
+    couple_message_watcher,
+    track_activity_watcher
 )
 
 @Client.on_message(filters.group, group=fw_watcher)
@@ -40,6 +42,10 @@ async def couple_messages(_, m):
 @Client.on_message(filters.group, group=info_watcher)
 async def info(_, m):
     await info_cwf(_, m)
+
+@Client.on_message(filters.group, group=tracker_activity_watcher)
+async def track_activity_watcher(_, m):
+    await track_activity(_, m)
 
 
     
