@@ -44,7 +44,7 @@ async def info(_, m):
     await info_cwf(_, m)
 
 @Client.on_message(filters.group, group=track_activity_watcher)
-async def track_activity_watcher(_, m):
+async def track_activity(_, m):
     await track_activity(_, m)
 
 
