@@ -28,7 +28,7 @@ async def acquire_power(client, message, user):
         return await message.reply(
             f"**🔥 Power Acquisition Requirements 🔥**\n\n"
             f"📩 Messages Needed: `{needed}` more\n"
-            f"📊 Your Progress: `{user.messages_for_power}/250`\n"
+            f"📊 Your Progress: `{user.messages_for_power}/20`\n"
             f"💎 Gem Requirement: `35,000`\n\n"
             "_Send more messages in this chat to qualify!_"
         )
