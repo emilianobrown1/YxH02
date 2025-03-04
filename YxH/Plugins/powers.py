@@ -7,7 +7,7 @@ from ..universal_decorator import YxH
 user_message_counts = {}
 
 # Constants for the reward trigger and cost.
-MESSAGE_THRESHOLD = 100
+MESSAGE_THRESHOLD = 10
 GEMS_COST = 35000
 
 # List of all possible powers to randomly choose from.
