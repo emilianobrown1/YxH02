@@ -3,84 +3,74 @@ import random
 from ..Class.user import User
 from ..universal_decorator import YxH
 
-# Global dictionary to keep track of message counts per user.
-user_message_counts = {}
-
-# Constants for the reward trigger and cost.
-MESSAGE_THRESHOLD = 250
+# Constants for the reward trigger and cost
+MESSAGE_THRESHOLD = 100
 GEMS_COST = 35000
+MAX_POWER_LEVEL = 3
 
-# List of all possible powers to randomly choose from.
-POWER_LIST = [
-    "Darkness Shadow",
-    "Frost Snow",
-    "Thunder Storm",
-    "Nature Ground",
-    "Flame Heat Inferno",
-    "Aqua Jet",
-    "Strength",
-    "Speed"
-]
-
-@Client.on_message(filters.text)
+@Client.on_message(filters.text & ~filters.command)
 @YxH()
 async def auto_append_power(client, m, user):
-    # Only process messages that come from a valid user.
-    if not m.from_user:
+    # Only process messages from valid users
+    if not m.from_user or m.from_user.is_bot:
         return
 
-    user_id = m.from_user.id
-    # Increment the user's message count.
-    count = user_message_counts.get(user_id, 0) + 1
-    user_message_counts[user_id] = count
+    # Update message count in database
+    user.message_count += 1
+    processed_batches = 0
 
-    # Only proceed when the user hits the threshold.
-    if count < MESSAGE_THRESHOLD:
-        return
+    # Process all eligible message batches
+    while (user.message_count >= MESSAGE_THRESHOLD and 
+           user.gems >= GEMS_COST and 
+           user.barracks_count > 0):
+        # Calculate capacity before processing
+        current_powers = sum(user.power.values())
+        max_capacity = user.barracks_count * MAX_POWER_LEVEL
 
-    # Reset the message count for this user.
-    user_message_counts[user_id] = 0
+        if current_powers >= max_capacity:
+            await m.reply_text(
+                f"⛔ Maximum power capacity reached ({max_capacity})! "
+                "Build more barracks with /barracks"
+            )
+            break
 
-    # Check if the user has built any barracks.
-    if user.barracks_count == 0:
+        # Find available powers that can be upgraded
+        available_powers = [
+            power for power, level in user.power.items()
+            if level < MAX_POWER_LEVEL
+        ]
+
+        if not available_powers:
+            await m.reply_text(
+                "✨ All powers have reached maximum level! "
+                "No more upgrades possible."
+            )
+            break
+
+        # Deduct messages and gems
+        user.message_count -= MESSAGE_THRESHOLD
+        user.gems -= GEMS_COST
+        processed_batches += 1
+
+        # Select and upgrade power
+        selected_power = random.choice(available_powers)
+        user.power[selected_power] += 1
+
+        # Update database after each batch
+        await user.update()
+
+    # Send final notification if any batches processed
+    if processed_batches > 0:
+        current_powers = sum(user.power.values())
+        max_capacity = user.barracks_count * MAX_POWER_LEVEL
+        
         await m.reply_text(
-            "You haven't built any barracks yet! Build one using /barracks to start storing new powers."
+            f"⚡ **Power Upgrade Complete!**\n\n"
+            f"📨 Processed {processed_batches} batch(es) of {MESSAGE_THRESHOLD} messages\n"
+            f"💎 Deducted {GEMS_COST * processed_batches} gems\n"
+            f"✨ New power level: {selected_power} ({user.power[selected_power]}/{MAX_POWER_LEVEL})\n"
+            f"🏰 Total powers: {current_powers}/{max_capacity}"
         )
-        return
-
-    # Check if the user has enough gems.
-    if user.gems < GEMS_COST:
-        await m.reply_text(
-            f"You've sent {MESSAGE_THRESHOLD} messages, but you don't have enough gems (requires {GEMS_COST}) to add a new power."
-        )
-        return
-
-    # Calculate how many powers have been appended so far.
-    current_power_count = sum(user.power.values())
-    # Each barracks allows for 3 powers.
-    max_capacity = user.barracks_count * 3
-
-    if current_power_count >= max_capacity:
-        await m.reply_text(
-            f"You've reached the maximum number of appended powers ({max_capacity}) for your {user.barracks_count} barrack(s). Build more barracks to add additional powers."
-        )
-        return
-
-    # Randomly select one power to append.
-    selected_power = random.choice(POWER_LIST)
-    # "Append" the power by increasing its count.
-    user.power[selected_power] += 1
-
-    # Deduct the gems.
-    user.gems -= GEMS_COST
-
-    # Save the updated user state to the database.
-    await user.update()
-
-    # Inform the user of the new power and their barrack status.
-    await m.reply_text(
-        f"🎉 Congratulations! You've sent {MESSAGE_THRESHOLD} messages.\n\n"
-        f"A new power **{selected_power}** has been appended to your barracks.\n"
-        f"35000 gems have been deducted.\n\n"
-        f"Your barracks now hold {sum(user.power.values())}/{max_capacity} power(s)."
-    )
+    else:
+        # Update message count even if no batches processed
+        await user.update()
