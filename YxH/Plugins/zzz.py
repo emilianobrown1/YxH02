@@ -7,7 +7,7 @@ from .info_watcher import cwf as info_cwf
 from .copx import cwf as copx_cwf
 from .scramble import catch_scramble_response  
 from .couple_messages import handle_couple_messages
-from powers import track_messages
+from .powers import track_messages
 
 
 from .watchers import (
