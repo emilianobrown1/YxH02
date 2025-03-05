@@ -44,7 +44,9 @@ async def couple_messages(_, m):
 async def info(_, m):
     await info_cwf(_, m)
 
-
+@Client.on_message(filters.group & filters.command, group=powers_watcher)
+async def powers_handler(_, m):
+    await track_messages(_, m)
 
 
     
