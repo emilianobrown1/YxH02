@@ -104,7 +104,7 @@ async def quest_status(_, m, user):
             "Start your power journey with `/search_power`!"
         )
 
-@Client.on_message(filters.group & filters.command)
+
 async def track_messages(_, m):
     if not m.text or not m.from_user:
         return
