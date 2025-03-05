@@ -29,7 +29,7 @@ async def start_tracking(_, m, user):
         message_tracker[user.user.id] = 0
     await m.reply_text("✅ Power tracking started! Send 100 messages to unlock a new power.")
 
-@Client.on_message(filters.text & filters.group & filters.command)
+@Client.on_message(filters.text & filters.group & ~filters.command)  # Fixed filter
 @YxH()
 async def count_messages(_, m, user):
     if user.user.id not in message_tracker:
@@ -37,8 +37,9 @@ async def count_messages(_, m, user):
 
     async with message_lock:
         message_tracker[user.user.id] += 1
-        if message_tracker[user.user.id] == 100:
+        if message_tracker[user.user.id] >= 100:  # Use >= to handle potential overshooting
             await m.reply_text("🎉 You've sent 100 messages! Use /getpower to claim your power.")
+            del message_tracker[user.user.id]  # Prevent further counting after reaching 100
     
 @Client.on_message(filters.command("getpower"))
 @YxH()
