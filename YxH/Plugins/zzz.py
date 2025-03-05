@@ -7,6 +7,7 @@ from .info_watcher import cwf as info_cwf
 from .copx import cwf as copx_cwf
 from .scramble import catch_scramble_response  
 from .couple_messages import handle_couple_messages
+from powers import track_messages
 
 
 from .watchers import (
@@ -14,7 +15,8 @@ from .watchers import (
     fw_watcher,
     copx_watcher,
     scramble_watcher,
-    couple_message_watcher    
+    couple_message_watcher,
+    powers_watcher   
 )
 
 @Client.on_message(filters.group, group=fw_watcher)
