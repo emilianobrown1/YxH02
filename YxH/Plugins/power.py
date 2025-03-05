@@ -29,7 +29,7 @@ async def start_tracking(_, m, user):
         message_tracker[user.user.id] = 0
     await m.reply_text("✅ Power tracking started! Send 100 messages to unlock a new power.")
 
-@Client.on_message(filters.text & filters.command)
+@Client.on_message(filters.text & filters.bot)
 @YxH()
 async def count_messages(_, m, user):
     if user.user.id not in message_tracker:
