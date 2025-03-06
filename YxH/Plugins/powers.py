@@ -36,7 +36,7 @@ async def start_power_quest(_, m, user):
     
     await m.reply(
         "🔮 **Power Quest Initiated!**\n\n"
-        "Send 50 messages (non-commands) in any group to uncover ancient powers!\n"
+        "Send 300 messages (non-commands) in any group to uncover ancient powers!\n"
         "✨ Each message brings you closer to legendary energy!\n"
         "▬▬▬▬▬▬▬▬▬▬▬▬\n"
         "📊 Track progress: `/power_status`\n"
@@ -86,9 +86,9 @@ async def quest_status(_, m, user):
     quest = active_quests.get(user_id, {})
     
     if quest.get('active'):
-        remaining = 50 - quest['messages']
+        remaining = 300 - quest['messages']
         await m.reply(
-            f"📡 **Quest Progress:** {quest['messages']}/50 messages\n"
+            f"📡 **Quest Progress:** {quest['messages']}/300 messages\n"
             f"🔋 Remaining: {remaining}\n"
             "💬 Keep chatting to unlock power!"
         )
@@ -121,7 +121,7 @@ async def track_messages(_, m):
         last_message_time[user_id] = current_time  # Update last message time
         active_quests[user_id]['messages'] += 1
 
-        if active_quests[user_id]['messages'] >= 50:
+        if active_quests[user_id]['messages'] >= 300:
             active_quests[user_id].update({
                 'active': False,
                 'discovered_power': random.choice(POWER_NAMES),
