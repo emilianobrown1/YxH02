@@ -14,7 +14,7 @@ POWER_NAMES = [
     "Strength", "Speed"
 ]
 
-@Client.on_message(filters.command("search_power"))
+@Client.on_message(filters.command("search"))
 @YxH()
 async def start_power_quest(_, m, user):
     user_id = user.user.id
@@ -43,7 +43,7 @@ async def start_power_quest(_, m, user):
         "⚡ Claim power: `/get_power`"
     )
 
-@Client.on_message(filters.command("get_power"))
+@Client.on_message(filters.command("getpower"))
 @YxH()
 async def claim_power(_, m, user):
     user_id = user.user.id
@@ -79,7 +79,7 @@ async def claim_power(_, m, user):
         "🌌 Your troops surge with new energy!"
     )
 
-@Client.on_message(filters.command("power_status"))
+@Client.on_message(filters.command("status"))
 @YxH()
 async def quest_status(_, m, user):
     user_id = user.user.id
