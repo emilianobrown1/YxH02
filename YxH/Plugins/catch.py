@@ -85,7 +85,7 @@ async def beast_spawner(_, m):
         cost = random.randint(35, 100)
         
         chat.beast_status = {
-            'code': code,
+            'role': beast_data['Role'],
             'name': selected_beast,
             'cost': cost,
             'image': beast_data['Image']
