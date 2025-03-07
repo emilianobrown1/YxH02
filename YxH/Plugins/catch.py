@@ -66,6 +66,7 @@ async def beast_spawner(_, m):
         user, chat = await asyncio.gather(
             get_user(user_id),
             get_chat(chat_id)
+        )    
     except:
         return
     if not user or user.blocked:
