@@ -8,7 +8,7 @@ from .copx import cwf as copx_cwf
 from .scramble import catch_scramble_response  
 from .couple_messages import handle_couple_messages
 from .powers import track_messages
-
+from .catch import beast_spawner
 
 from .watchers import (
     info_watcher,
@@ -16,7 +16,8 @@ from .watchers import (
     copx_watcher,
     scramble_watcher,
     couple_message_watcher,
-    powers_watcher   
+    powers_watcher,
+    catch_watcher
 )
 
 @Client.on_message(filters.group, group=fw_watcher)
@@ -48,5 +49,7 @@ async def info(_, m):
 async def powers_handler(_, m):
     await track_messages(_, m)
 
-
+@Client.on_message(filters.group, group=catch_watcher)
+async def handle_messages(_, m):
+    await beast_spawner(_, m)
     
