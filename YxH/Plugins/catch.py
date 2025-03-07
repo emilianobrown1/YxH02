@@ -94,7 +94,8 @@ async def beast_spawner(_, m):
         
         caption = (
             f"🦖 **A Wild Beast Appeared!** 🦖\n\n"
-            f"**Code:** `{code}`\n"
+            f"**Name:** {selected_beast}\n"
+            f"**Role:** {beast_data['Role']}\n"
             f"**Cost:** {cost} Crystals\n\n"
             "Use `/catch [code]` to capture it!"
         )
