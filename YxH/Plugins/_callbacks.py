@@ -171,7 +171,7 @@ async def cbq(_, q: CallbackQuery):
             print(f"Tic-Tac-Toe error: {str(e)}")
             return
 
-    elif q.data.startswith("catch_"):
+  elif q.data.startswith("catch_"):
     code = int(q.data.split("_")[1])
     chat = await get_chat(q.message.chat.id)
     user = await get_user(q.from_user.id)
