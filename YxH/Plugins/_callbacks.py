@@ -26,6 +26,7 @@ from .gift import gifts_cbq
 from .propose import accept_proposal, reject_proposal
 from .tictactoe import game_manager, create_board, check_winner
 from ..Database.tictactoe import add_tictactoe_game
+from .catch import catch_commad
 from . extras import uncollected_characters, create_telegraph_page_for_uncollected
 from ..Database.characters import get_all as get_all_anime_characters
 
@@ -169,6 +170,20 @@ async def cbq(_, q: CallbackQuery):
             await q.answer("⚠️ Error processing move!", show_alert=True)
             print(f"Tic-Tac-Toe error: {str(e)}")
             return
+
+  elif q.data.startswith("catch_"):
+        try:
+            # Extract code from callback data
+            code = q.data.split("_")[1]
+            await q.answer(
+                f"⚡ Catch Code: {code}\n\n"
+                "Use this command to catch:\n"
+                f"/catch {code}",
+                show_alert=True
+            )
+        except Exception as e:
+            print(f"Beast code callback error: {e}")
+            await q.answer("⚠️ Failed to retrieve code!", show_alert=True)
 
   
 
