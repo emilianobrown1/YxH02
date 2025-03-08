@@ -67,8 +67,8 @@ async def comboattack(_, m, u):
         if u.crystals < 35:
             return await m.reply("You do not have enough crystals (35 required) to perform this attack.")
         
-        if u.troops.get("shinobi", 0) < 10 or u.troops.get("wizard", 0) < 20 or u.troops.get("sensei", 0) < 20:
-            return await m.reply("Not enough troops for crystal attack. Required: 10 Shinobis, 20 Wizards, 20 Sensei.")
+        if u.troops.get("shinobi", 0) < 10 or u.troops.get("wizard", 0) < 15 or u.troops.get("sensei", 0) < 15:
+            return await m.reply("Not enough troops for crystal attack. Required: 10 Shinobis, 15 Wizards, 15 Sensei.")
         
         if u.power.get("Strength", 0) <= 0 or u.power.get("Frost Snow", 0) <= 0:
             return await m.reply("You do not meet the power requirements for crystal attack (Strength & Frost Snow).")
@@ -97,8 +97,8 @@ async def comboattack(_, m, u):
         if t.protectors.get("Voltiscar", 0) > 0:
             return await m.reply("Target is protected by Collection Protector (Voltiscar).")
         
-        if u.troops.get("shinobi", 0) < 10 or u.troops.get("wizard", 0) < 20 or u.troops.get("sensei", 0) < 5:
-            return await m.reply("Not enough troops for collection attack. Required: 10 Shinobis, 20 Wizards, 5 Sensei.")
+        if u.troops.get("shinobi", 0) < 10 or u.troops.get("wizard", 0) < 15 or u.troops.get("sensei", 0) < 10:
+            return await m.reply("Not enough troops for collection attack. Required: 10 Shinobis, 15 Wizards, 10 Sensei.")
         
         # Corrected power check: Replaced "Venom" with "Thunder Storm"
         if u.power.get("Thunder Storm", 0) <= 0 or u.power.get("Nature Ground", 0) <= 0:
