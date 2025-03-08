@@ -27,7 +27,7 @@ from .gift import gifts_cbq
 from .propose import accept_proposal, reject_proposal
 from .tictactoe import game_manager, create_board, check_winner
 from ..Database.tictactoe import add_tictactoe_game
-from .catch import catch_command
+from .catch import catch_command, BEAST_INFO
 from . extras import uncollected_characters, create_telegraph_page_for_uncollected
 from ..Database.characters import get_all as get_all_anime_characters
 
