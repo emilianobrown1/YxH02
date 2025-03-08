@@ -26,6 +26,7 @@ from .gift import gifts_cbq
 from .propose import accept_proposal, reject_proposal
 from .tictactoe import game_manager, create_board, check_winner
 from ..Database.tictactoe import add_tictactoe_game
+from .catch import catch_command
 from . extras import uncollected_characters, create_telegraph_page_for_uncollected
 from ..Database.characters import get_all as get_all_anime_characters
 
@@ -169,6 +170,40 @@ async def cbq(_, q: CallbackQuery):
             await q.answer("⚠️ Error processing move!", show_alert=True)
             print(f"Tic-Tac-Toe error: {str(e)}")
             return
+
+    elif q.data.startswith("catch_"):
+    code = int(q.data.split("_")[1])
+    chat = await get_chat(q.message.chat.id)
+    user = await get_user(q.from_user.id)
+    
+    if not chat.beast_status or chat.beast_status['code'] != code:
+        await q.answer("❌ Beast already caught or invalid code!", show_alert=True)
+        return
+    
+    cost = chat.beast_status['cost']
+    if user.crystals < cost:
+        await q.answer(f"❌ You need {cost} crystals!", show_alert=True)
+        return
+    
+    beast_name = chat.beast_status['name']
+    role = BEAST_INFO[beast_name]['Role']
+    
+    if 'Protector' in role:
+        user.protectors[beast_name] = user.protectors.get(beast_name, 0) + 1
+    elif 'Attacker' in role:
+        user.attackers[beast_name] = user.attackers.get(beast_name, 0) + 1
+    
+    user.barracks_count += 1
+    user.crystals -= cost
+    chat.beast_status = None
+    
+    await asyncio.gather(
+        user.update(),
+        chat.update(),
+        q.answer(f"🎉 Caught {beast_name}!", show_alert=True),
+        q.message.reply(f"**{q.from_user.first_name}** captured **{beast_name}** using the code! 🔐")
+    )
+    await q.message.edit_reply_markup(reply_markup=None)
 
   data, actual = q.data.split("_")
   actual = int(actual)
