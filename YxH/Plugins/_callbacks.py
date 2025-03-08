@@ -5,6 +5,7 @@ import random
 from pyrogram import Client
 from pyrogram.types import CallbackQuery, InputMediaPhoto
 from ..Database.users import get_user
+from ..Database.chats import get_chat
 from ..Database.characters import get_anime_character
 from ..Utils.markups import (
     gender_markup,
