@@ -109,43 +109,48 @@ async def beast_spawner(_, m):
         )
         beast_count[chat_id] = 0
 
+
 @Client.on_message(filters.command("catch"))
 @YxH(private=False)
 async def catch_command(_, m, u):
     chat = await get_chat(m.chat.id)
     if not chat.beast_status:
         return await m.reply("No beast to catch here! 🏜")
-    
+
     args = m.text.split()
     if len(args) < 2:
         return await m.reply("❌ Please provide the beast's code. Example: `/catch 1234`")
-    
+
     try:
         provided_code = int(args[1])
     except ValueError:
         return await m.reply("❌ Invalid code. Must be a number.")
-    
+
     if provided_code != chat.beast_status['code']:
         return await m.reply("❌ Incorrect code! Try again.")
-    
+
     cost = chat.beast_status['cost']
     if u.crystals < cost:
         return await m.reply(f"❌ Not enough crystals. You need **{cost}** crystals.")
-    
+
     beast_name = chat.beast_status['name']
     role = BEAST_INFO[beast_name]['Role']
-    
+
+    # Add to PROTECTORS or ATTACKERS based on beast role
     if 'Protector' in role:
-        u.protectors[beast_name] = u.protectors.get(beast_name, 0) + 1
+        if beast_name not in u.protectors:  # Ensure beast is allowed
+            return await m.reply("❌ Invalid protector beast!")
+        u.protectors[beast_name] += 1
     elif 'Attacker' in role:
-        u.attackers[beast_name] = u.attackers.get(beast_name, 0) + 1
-    
-    u.barracks_count += 1
+        if beast_name not in u.attackers:  # Ensure beast is allowed
+            return await m.reply("❌ Invalid attacker beast!")
+        u.attackers[beast_name] += 1
+
     u.crystals -= cost
     chat.beast_status = None
-    
+
     await asyncio.gather(
         u.update(),
         chat.update(),
-        m.reply(f"🎉 **{m.from_user.first_name}** successfully caught **{beast_name}** for **{cost}** crystals! 🦖⚡")
+        m.reply(f"🎉 **{m.from_user.first_name}** caught **{beast_name}** for {cost} crystals! 🦖")
     )
