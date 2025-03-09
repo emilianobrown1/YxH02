@@ -136,15 +136,16 @@ async def catch_command(_, m, u):
     beast_name = chat.beast_status['name']
     role = BEAST_INFO[beast_name]['Role']
 
-    # Add to PROTECTORS or ATTACKERS based on beast role
+    # Append beast to user's barracks based on its role.
+    # If the beast isn't present, add it; if it's already there, prevent duplicate addition.
     if 'Protector' in role:
-        if beast_name not in u.protectors:  # Ensure beast is allowed
-            return await m.reply("❌ Invalid protector beast!")
-        u.protectors[beast_name] += 1
+        if u.protectors.get(beast_name, 0) >= 1:
+            return await m.reply("❌ You already have this protector beast!")
+        u.protectors[beast_name] = 1
     elif 'Attacker' in role:
-        if beast_name not in u.attackers:  # Ensure beast is allowed
-            return await m.reply("❌ Invalid attacker beast!")
-        u.attackers[beast_name] += 1
+        if u.attackers.get(beast_name, 0) >= 1:
+            return await m.reply("❌ You already have this attacker beast!")
+        u.attackers[beast_name] = 1
 
     u.crystals -= cost
     chat.beast_status = None
