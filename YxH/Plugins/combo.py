@@ -164,7 +164,9 @@ async def comboattack(_, m, u):
         await t.update()
 
         if loot_chars:
-            return await m.reply(f"Collection combo attack executed successfully.\nLooted characters: {', '.join(loot_chars)}")
+            return await m.reply(
+                  f"Collection combo attack executed successfully.\nLooted characters: {', '.join(map(str, loot_chars))}"
+            )
         else:
             return await m.reply("Collection combo attack executed, but target has no characters in their collection.")
 
