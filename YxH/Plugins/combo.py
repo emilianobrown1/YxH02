@@ -61,6 +61,13 @@ async def comboattack(_, m, u):
         # Use up the attacker's beast for a successful attack
         u.attackers["Ignirax"] = max(0, u.attackers.get("Ignirax", 0) - 1)
 
+        # Reset troops and power used for the shield attack to 0
+        u.troops["shinobi"] = 0
+        u.troops["wizard"] = 0
+        u.troops["sensei"] = 0
+        u.power["Flame Heat Inferno"] = 0
+        u.power["Nature Ground"] = 0
+
         t.latest_defend = time.time()
         await u.update()
         await t.update()
@@ -102,6 +109,13 @@ async def comboattack(_, m, u):
 
         u.attackers["Frostclaw"] = max(0, u.attackers.get("Frostclaw", 0) - 1)
 
+        # Reset troops and power used for the crystal attack to 0
+        u.troops["shinobi"] = 0
+        u.troops["wizard"] = 0
+        u.troops["sensei"] = 0
+        u.power["Strength"] = 0
+        u.power["Frost Snow"] = 0
+
         t.latest_defend = time.time()
         await u.update()
         await t.update()
@@ -137,6 +151,13 @@ async def comboattack(_, m, u):
             u.collection[char] = t.collection.pop(char)
 
         u.attackers["Vilescale"] = max(0, u.attackers.get("Vilescale", 0) - 1)
+
+        # Reset troops and power used for the collection attack to 0
+        u.troops["shinobi"] = 0
+        u.troops["wizard"] = 0
+        u.troops["sensei"] = 0
+        u.power["Thunder Storm"] = 0
+        u.power["Nature Ground"] = 0
 
         t.latest_defend = time.time()
         await u.update()
@@ -179,6 +200,13 @@ async def comboattack(_, m, u):
         u.crystals += loot_treasure_crystals
 
         u.attackers["Pyraxion"] = max(0, u.attackers.get("Pyraxion", 0) - 1)
+
+        # Reset troops and power used for the treasure attack to 0
+        u.troops["shinobi"] = 0
+        u.troops["wizard"] = 0
+        u.troops["sensei"] = 0
+        u.power["Darkness Shadow"] = 0
+        u.power["Flame Heat Inferno"] = 0
 
         t.latest_defend = time.time()
         await u.update()
