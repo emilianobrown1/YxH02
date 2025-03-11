@@ -72,8 +72,7 @@ async def beast_spawner(_, m):
     if not user or user.blocked:
         return
 
-    if not hasattr(chat, "beast_status"):
-       chat.beast_status = None  # ✅ Indented correctly
+    
     
     if chat.beast_status:
         return  # A beast is already active in this chat
