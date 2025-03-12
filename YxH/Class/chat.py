@@ -10,6 +10,7 @@ class Chat:
         self.copx_status: int = 0
         self.words = {} # {user_id: words}
         self.beast_status: int = 0
+        self.beast_status = None
 
     async def update(self):
         await db.chats.update_one({'chat_id': self.chat.id}, {'$set': {'info': pickle.dumps(self)}}, upsert=True)
