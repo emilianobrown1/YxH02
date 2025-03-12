@@ -1,8 +1,8 @@
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 import asyncio
-from Database.chats import get_all_chats
-from Database.users import get_all_users
+from ..Database.chats import get_all_chats
+from ..Database.users import get_all_users
 from config import SUDO_USERS
 
 @Client.on_message(filters.command("broadcast") & filters.user(SUDO_USERS))
