@@ -77,7 +77,7 @@ async def beast_spawner(_, m):
     if chat.beast_status:
         return  # A beast is already active in this chat
     
-    cooldown = 250  
+    cooldown = 5  
     if chat_id in beast_count:
         beast_count[chat_id] += 1
     else:
