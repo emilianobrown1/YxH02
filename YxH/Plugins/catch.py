@@ -59,6 +59,7 @@ BEAST_INFO = {
 }
 
 async def beast_spawner(_, m):
+    global beast_count
     try:
         user_id = m.from_user.id
         chat_id = m.chat.id
@@ -68,47 +69,47 @@ async def beast_spawner(_, m):
         )
     except:
         return
+
     if not user or user.blocked:
         return
 
-    if chat.beast_status:  
-        return  # A beast is already active in this chat  
+    cooldown = 25  # Fixed cooldown of 250 messages
 
-    cooldown = 5    
-    chat.beast_count += 1  # Increment the count stored in the chat
+    # Increment message count for the chat
+    beast_count[chat_id] = beast_count.get(chat_id, 0) + 1
 
-    if chat.beast_count >= cooldown:  
-        selected_beast = random.choice(list(BEAST_INFO.keys()))  
-        beast_data = BEAST_INFO[selected_beast]  
-        code = random.randint(2000, 5000)  
-        cost = random.randint(35, 100)  
+    if beast_count[chat_id] >= cooldown:
+        selected_beast = random.choice(list(BEAST_INFO.keys()))
+        beast_data = BEAST_INFO[selected_beast]
+        code = random.randint(2000, 5000)
+        cost = random.randint(35, 100)
 
-        chat.beast_status = {  
-            'code': code,  
-            'name': selected_beast,  
-            'cost': cost,  
-            'image': beast_data['Image']  
-        }  
-        chat.beast_count = 0  # Reset the count
-        await chat.update()  
+        chat.beast_status = {
+            'role': beast_data['Role'],
+            'code': code,
+            'name': selected_beast,
+            'cost': cost,
+            'image': beast_data['Image']
+        }
+        await chat.update()  # Save updated chat data
 
-        caption = (  
-            f"🦖 **A Wild Beast Appeared!** 🦖\n\n"  
-            f"**Name:** {selected_beast}\n"  
-            f"**Role:** {beast_data['Role']}\n"  
-            f"**Cost:** {cost} Crystals\n\n"  
-            "Use `/catch [code]` to capture it!"  
-        )  
-        markup = ikm([[ikb("✨ Catch Beast ✨", callback_data=f"catch_{code}")]])  
-
-        await _.send_photo(  
-            chat_id,  
-            beast_data['Image'],  
-            caption=caption,  
-            reply_markup=markup  
+        caption = (
+            f"🦖 A Wild Beast Appeared! 🦖\n\n"
+            f"**Code:** {code}\n"
+            f"**Cost:** {cost} Crystals\n\n"
+            "Use `/catch [code]` to capture it!"
         )
-    else:
-        await chat.update()  # Ensure the incremented count is saved even if not spawning
+        markup = ikm([[ikb("✨ Catch Beast ✨", callback_data=f"catch_{code}")]])
+
+        await _.send_photo(
+            chat_id,
+            beast_data['Image'],
+            caption=caption,
+            reply_markup=markup
+        )
+
+        beast_count[chat_id] = 0  # Reset the count after spawning
+
 
 @Client.on_message(filters.command("catch"))
 @YxH(private=False)
