@@ -35,7 +35,7 @@ BEAST_INFO = {
         "Weakness": "Speed, Thunder Storm, Darkness Shadow",
         "Image": "Beast/Frostclaw.jpg"
     },
-    "Phoenix": {
+    "Pyraxion": {
         "Role": "Treasury Attacker",
         "Powers": ["Darkness Shadow", "Flame Heat Inferno"],
         "Weakness": "Speed, Natural Ground",
