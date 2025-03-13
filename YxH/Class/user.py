@@ -67,7 +67,7 @@ class User:
         self.protectors = {
             "Titanus Aegisorn": 0,
             "Glacelynx": 0,
-            "Voltiscar": 0,
+            "Voltaryn": 0,
             "Cerberus": 0
         }
         self.attackers = {
