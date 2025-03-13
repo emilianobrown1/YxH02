@@ -40,9 +40,24 @@ async def broadcast_message(client, message):
             total_failed += 1
             print(f"Failed to send to chat {chat_id}: {e}")
 
+    for entry in chats:
+        chat_id = entry["id"]  # Get from the database document's chat_id
+        try:
+            if use_copy:
+                await client.copy_message(chat_id, message.chat.id, broadcast_msg.message_id)
+            else:
+                await client.send_message(chat_id, broadcast_text)
+            total_success += 1
+            await asyncio.sleep(0.1)
+        except FloodWait as e:
+            await asyncio.sleep(e.x)
+        except Exception as e:
+            total_failed += 1
+            print(f"Failed to send to chat {chat_id}: {e}")
+
     # Broadcast to users
-    for entry in user_entries:
-        user_id = entry["user_id"]  # Access user_id from the database document
+    for entry in users:
+        user_id = entry["id"]  # Get from the database document's user_id
         try:
             if use_copy:
                 await client.copy_message(user_id, message.chat.id, broadcast_msg.message_id)
