@@ -126,13 +126,13 @@ async def comboattack(_, m, u):
 
     # Collection Attack
     elif attack_type == "collection":
-        if t.protectors.get("Voltiscar", 0) > 0:
+        if t.protectors.get("Voltaryn", 0) > 0:
             if u.attackers.get("Vilescale", 0) > 0:
-                u.attackers["Vilescale"] -= 1
-            t.protectors["Voltiscar"] = max(0, t.protectors.get("Voltiscar", 0) - 1)
+                u.attackers["Voltaryn"] -= 1
+            t.protectors["Voltaryn"] = max(0, t.protectors.get("Voltaryn", 0) - 1)
             await u.update()
             await t.update()
-            return await m.reply("Attack blocked: Target is protected by Collection Protector (Voltiscar). Both the attacker's Vilescale and the protector have been reduced by 1.")
+            return await m.reply("Attack blocked: Target is protected by Collection Protector (Voltaryn). Both the attacker's Vilescale and the protector have been reduced by 1.")
 
         if u.troops.get("shinobi", 0) < 10 or u.troops.get("wizard", 0) < 15 or u.troops.get("sensei", 0) < 10:
             return await m.reply("Not enough troops for collection attack. Required: 10 Shinobis, 15 Wizards, 10 Sensei.")
