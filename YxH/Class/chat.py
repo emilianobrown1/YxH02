@@ -9,6 +9,7 @@ class Chat:
         self.copx_cooldown = 100
         self.copx_status: int = 0
         self.words = {} # {user_id: words}
+        self.beast_status = None
         
 
     async def update(self):
