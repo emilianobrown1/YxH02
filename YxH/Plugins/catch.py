@@ -73,10 +73,9 @@ async def beast_spawner(_, m):
     if not user or user.blocked:
         return
 
-    cooldown = 25  # Fixed cooldown of 250 messages
+    cooldown = 250  # Fixed cooldown of 250 messages
 
-    if chat.beast_status:
-        return  #
+    
     # Increment message count for the chat
     beast_count[chat_id] = beast_count.get(chat_id, 0) + 1
 
