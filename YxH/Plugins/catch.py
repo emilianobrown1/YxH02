@@ -38,7 +38,7 @@ BEAST_INFO = {
         "Weakness": "Speed, Thunder Storm, Darkness Shadow",
         "Image": "Beast/Frostclaw.jpg"
     },
-    "Phoenix": {
+    "Pyraxion": {
         "Role": "Treasury Attacker",
         "Powers": ["Darkness Shadow", "Flame Heat Inferno"],
         "Weakness": "Speed, Natural Ground",
@@ -96,7 +96,7 @@ async def beast_spawner(_, m):
 
         caption = (
             f"🦖 A Wild Beast Appeared! 🦖\n\n"
-            f"**Code:** {code}\n"
+            f"**name:** selected_beast\n"
             f"**Cost:** {cost} Crystals\n\n"
             "Use `/catch [code]` to capture it!"
         )
