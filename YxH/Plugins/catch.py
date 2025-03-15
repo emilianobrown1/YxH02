@@ -9,7 +9,7 @@ beast_count: dict[int, int] = {}
 
 BEAST_INFO = {
     "Titanus Aegisorn": {
-        "Role": "Shield Guardian",
+        "Role": "Shield Protector",
         "Powers": ["Aqua Jet", "Natural Ground"],
         "Weakness": "Flame Heat Inferno",
         "Image": "Beast/Titanus.jpg"
@@ -21,7 +21,7 @@ BEAST_INFO = {
         "Image": "Beast/Voltiscar.jpg"
     },
     "Cerberus": {
-        "Role": "Treasure Guardian",
+        "Role": "Treasure Protector",
         "Powers": ["Flame Heat Inferno", "Darkness Shadow"],
         "Weakness": "None specified",
         "Image": "Beast/Cerberus.jpg"
@@ -45,7 +45,7 @@ BEAST_INFO = {
         "Image": "Beast/Phoenix.jpg"
     },
     "Glacelynx": {
-        "Role": "Crystal Guardian",
+        "Role": "Crystal Protector",
         "Powers": ["Frost Snow", "Thunder Storm", "Speed"],
         "Weakness": "Strength",
         "Image": "Beast/Glacelynx.jpg"
