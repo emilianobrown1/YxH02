@@ -51,7 +51,7 @@ BEAST_INFO = {
         "Image": "Beast/Glacelynx.jpg"
     },
     "Ignirax": {
-        "Role": "The Shieldbreaker",
+        "Role": "Shield Attacker",
         "Powers": ["Fire", "Natural Ground"],
         "Weakness": "Aqua Jet, Strength",
         "Image": "Beast/Ignirax.jpg"
