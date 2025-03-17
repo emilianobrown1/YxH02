@@ -14,6 +14,9 @@ async def upload(m):
     # m = await cli.get_messages(ANIME_CHAR_CHANNEL_ID, msg_id)
     if not m.photo or not m.caption:
         return
+
+    if m.chat.id != ANIME_CHAR_CHANNEL_ID:
+        return
     spl = m.caption.split(";")
     try:
         image = envs_upload(await m.download())
