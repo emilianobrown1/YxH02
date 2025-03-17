@@ -128,7 +128,7 @@ async def comboattack(_, m, u):
     elif attack_type == "collection":
         if t.protectors.get("Voltaryn", 0) > 0:
             if u.attackers.get("Vilescale", 0) > 0:
-                u.attackers["Voltaryn"] -= 1
+                u.attackers["Vilescale"] -= 1
             t.protectors["Voltaryn"] = max(0, t.protectors.get("Voltaryn", 0) - 1)
             await u.update()
             await t.update()
