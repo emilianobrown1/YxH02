@@ -1,4 +1,4 @@
-from ..Database import db
+from . import db
 
 async def save_quest_data(user_id, quest_data):
     await db.quests.update_one(
