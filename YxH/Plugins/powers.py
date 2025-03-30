@@ -123,3 +123,40 @@ async def claim_power(_, m, user):
         f"💎 Energy Cost: {quest['cost']} gems\n"
         "🌌 Your troops surge with new energy!"
     )
+
+@Client.on_message(filters.command("status"))
+@YxH()
+async def quest_status(_, m, user):
+    user_id = user.user.id
+    # First try to get the quest from in-memory data
+    quest = active_quests.get(user_id)
+    # If not in memory, attempt to load from the database
+    if not quest:
+        quest = await get_quest_data(user_id)
+        if quest:
+            active_quests[user_id] = quest
+
+    if quest:
+        if quest.get('active'):
+            remaining = 200 - quest['messages']
+            await m.reply(
+                f"📡 **Quest Progress:** {quest['messages']}/200 messages\n"
+                f"🔋 Remaining: {remaining}\n"
+                "💬 Keep chatting to unlock power!"
+            )
+        elif quest.get('discovered_power'):
+            await m.reply(
+                f"🌟 **Discovered Power:** {quest['discovered_power']}\n"
+                f"💎 Claim Cost: {quest['cost']} gems\n"
+                "Use `/getpower` to harness this energy!"
+            )
+        else:
+            await m.reply(
+                "🌌 **No Active Quest**\n"
+                "Start your power journey with `/search`!"
+            )
+    else:
+        await m.reply(
+            "🌌 **No Active Quest**\n"
+            "Start your power journey with `/search`!"
+        )
