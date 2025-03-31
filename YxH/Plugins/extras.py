@@ -1,28 +1,34 @@
+import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
 from . import YxH, get_anime_character
 from pyrogram.types import CallbackQuery
 from telegraph import Telegraph
-import asyncio
 
 from YxH.Database.characters import get_all as get_all_anime_characters
 
 # Initialize the Telegraph object
 telegraph = Telegraph()
 
-async def create_telegraph_account(user):
+# Global cache for Telegraph accounts: maps user.id to account data
+telegraph_accounts = {}
+
+async def get_telegraph_account(user):
+    if user.id in telegraph_accounts:
+        return telegraph_accounts[user.id], None
     try:
-        result = telegraph.create_account(short_name=user.first_name)
-        if 'error' in result:
-            return None, result.get('error')
-        return result, None
+        # Run the blocking call in a thread
+        account = await asyncio.to_thread(telegraph.create_account, short_name=user.first_name)
+        if 'error' in account:
+            return None, account.get('error')
+        telegraph_accounts[user.id] = account
+        return account, None
     except Exception as e:
         return None, str(e)
 
 # Function to create a Telegraph page for duplicate characters
 async def create_telegraph_page_for_duplicates(user, duplicates):
-    # Create Telegraph account and check for errors
-    account, error = await create_telegraph_account(user)
+    account, error = await get_telegraph_account(user)
     if error:
         return None, f"Failed to create Telegraph account: {error}"
 
@@ -36,9 +42,9 @@ async def create_telegraph_page_for_duplicates(user, duplicates):
     content += "</ul>"
 
     try:
-        # Adding a slight delay to avoid hitting rate limits
-        await asyncio.sleep(1)
-        page = telegraph.create_page(
+        # Run the blocking create_page call in a thread
+        page = await asyncio.to_thread(
+            telegraph.create_page,
             title=f"{user.first_name}'s Duplicates",
             html_content=content
         )
@@ -50,8 +56,7 @@ async def create_telegraph_page_for_duplicates(user, duplicates):
 
 # Function to create a Telegraph page for uncollected characters
 async def create_telegraph_page_for_uncollected(user, uncollected):
-    # Create Telegraph account and check for errors
-    account, error = await create_telegraph_account(user)
+    account, error = await get_telegraph_account(user)
     if error:
         return None, f"Failed to create Telegraph account: {error}"
 
@@ -64,9 +69,9 @@ async def create_telegraph_page_for_uncollected(user, uncollected):
     content += "</ul>"
 
     try:
-        # Adding a slight delay to avoid hitting rate limits
-        await asyncio.sleep(1)
-        page = telegraph.create_page(
+        # Run the blocking create_page call in a thread
+        page = await asyncio.to_thread(
+            telegraph.create_page,
             title=f"{user.first_name}'s Uncollected Characters",
             html_content=content
         )
@@ -95,16 +100,13 @@ async def find_duplicates(_, m, u):
     if error:
         return await m.reply(f"Error: {error}")
 
-    # Send the Telegraph page link to the user
     await m.reply(f"Here are your duplicate characters: {telegraph_url}")
 
 # Uncollected Characters Command
 @Client.on_message(filters.command('uncollected'))
 @YxH()
 async def uncollected_characters(_, m, u):
-    markup = ikm(
-        [[ikb("Show Uncollected Characters", callback_data="uncollected")]]
-    )
+    markup = ikm([[ikb("Show Uncollected Characters", callback_data="uncollected")]])
     await m.reply(
         "Click the button below to view your uncollected characters.",
         reply_markup=markup
