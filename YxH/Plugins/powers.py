@@ -3,7 +3,7 @@ import random
 import time
 from ..Database.users import get_user
 from ..Database.quest import save_quest_data, get_quest_data, delete_quest_data
-from ..universal_decorator import YxH
+from . import YxH
 
 active_quests = {}
 last_message_time = {}  # Prevent spam tracking
