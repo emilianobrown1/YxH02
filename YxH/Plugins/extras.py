@@ -10,45 +10,71 @@ from YxH.Database.characters import get_all as get_all_anime_characters
 # Initialize the Telegraph object
 telegraph = Telegraph()
 
-# Function to create a Telegraph page for duplicates
-async def create_telegraph_page_for_duplicates(user, duplicates):
-    # Create a new Telegraph account (optional - use an existing one)
-    telegraph.create_account(short_name=user.first_name)
+async def create_telegraph_account(user):
+    try:
+        result = telegraph.create_account(short_name=user.first_name)
+        if 'error' in result:
+            return None, result.get('error')
+        return result, None
+    except Exception as e:
+        return None, str(e)
 
-    # Prepare the content for the page
+# Function to create a Telegraph page for duplicate characters
+async def create_telegraph_page_for_duplicates(user, duplicates):
+    # Create Telegraph account and check for errors
+    account, error = await create_telegraph_account(user)
+    if error:
+        return None, f"Failed to create Telegraph account: {error}"
+
+    # Prepare the HTML content for the page
     content = f"<strong>{user.first_name}'s Duplicate Characters:</strong><ul>"
-    for dup_id in duplicates.keys():
+    for dup_id, count in duplicates.items():
         char = await get_anime_character(dup_id)
+        if not char:
+            continue
         content += f"<li>{char.name} (ID: {char.id})</li>"
     content += "</ul>"
 
-    # Create the page with the content
-    page = telegraph.create_page(
-        title=f"{user.first_name}'s Duplicates",
-        html_content=content
-    )
-
-    return page['url']
+    try:
+        # Adding a slight delay to avoid hitting rate limits
+        await asyncio.sleep(1)
+        page = telegraph.create_page(
+            title=f"{user.first_name}'s Duplicates",
+            html_content=content
+        )
+        if 'error' in page:
+            return None, f"Telegraph page error: {page.get('error')}"
+        return page.get('url'), None
+    except Exception as e:
+        return None, f"Telegraph page creation failed: {e}"
 
 # Function to create a Telegraph page for uncollected characters
 async def create_telegraph_page_for_uncollected(user, uncollected):
-    # Create a new Telegraph account (optional - use an existing one)
-    telegraph.create_account(short_name=user.first_name)
+    # Create Telegraph account and check for errors
+    account, error = await create_telegraph_account(user)
+    if error:
+        return None, f"Failed to create Telegraph account: {error}"
 
-    # Prepare the content for the page
+    # Prepare the HTML content for the page
     content = f"<strong>{user.first_name}'s Uncollected Characters:</strong><ul>"
     for char in uncollected:
+        if not char:
+            continue
         content += f"<li>{char.name} (ID: {char.id})</li>"
     content += "</ul>"
 
-    # Create the page with the content
-    page = telegraph.create_page(
-        title=f"{user.first_name}'s Uncollected Characters",
-        html_content=content
-    )
-
-    return page['url']
-
+    try:
+        # Adding a slight delay to avoid hitting rate limits
+        await asyncio.sleep(1)
+        page = telegraph.create_page(
+            title=f"{user.first_name}'s Uncollected Characters",
+            html_content=content
+        )
+        if 'error' in page:
+            return None, f"Telegraph page error: {page.get('error')}"
+        return page.get('url'), None
+    except Exception as e:
+        return None, f"Telegraph page creation failed: {e}"
 
 # Extras (Duplicates) Command
 @Client.on_message(filters.command('extras'))
@@ -65,17 +91,17 @@ async def find_duplicates(_, m, u):
         return await m.reply('No extras 🆔 found in your collection.')
 
     # Generate Telegraph page URL for duplicates
-    telegraph_url = await create_telegraph_page_for_duplicates(user, duplicates)
+    telegraph_url, error = await create_telegraph_page_for_duplicates(user, duplicates)
+    if error:
+        return await m.reply(f"Error: {error}")
 
     # Send the Telegraph page link to the user
     await m.reply(f"Here are your duplicate characters: {telegraph_url}")
 
-
-
+# Uncollected Characters Command
 @Client.on_message(filters.command('uncollected'))
 @YxH()
 async def uncollected_characters(_, m, u):
-    # Use the imported aliases ikm and ikb
     markup = ikm(
         [[ikb("Show Uncollected Characters", callback_data="uncollected")]]
     )
