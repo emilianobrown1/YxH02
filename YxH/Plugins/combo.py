@@ -86,8 +86,8 @@ async def comboattack(_, m, u):
             await t.update()
             return await m.reply("Attack blocked: Target is protected by Crystal Guardian (Glacelynx). Both the attacker's Frostclaw and the protector have been reduced by 1.")
 
-        if u.crystals < 35:
-            return await m.reply("You do not have enough crystals (35 required) to perform this attack.")
+        if u.crystals < 3:
+            return await m.reply("You do not have enough crystals (3 required) to perform this attack.")
 
         if u.troops.get("shinobi", 0) < 10 or u.troops.get("wizard", 0) < 15 or u.troops.get("sensei", 0) < 15:
             return await m.reply("Not enough troops for crystal attack. Required: 10 Shinobis, 15 Wizards, 15 Sensei.")
@@ -98,7 +98,7 @@ async def comboattack(_, m, u):
         if u.attackers.get("Frostclaw", 0) <= 0:
             return await m.reply("You do not have the required beast (Frostclaw) for crystal attack.")
 
-        u.crystals -= 35
+        u.crystals -= 3
 
         loot_normal = int(t.crystals * 0.30)
         loot_treasure = int(t.treasure[2] * 0.30)
@@ -145,7 +145,7 @@ async def comboattack(_, m, u):
             return await m.reply("You do not have the required beast (Vilescale) for collection attack.")
 
         available_chars = list(t.collection.keys())
-        loot_chars = random.sample(available_chars, min(3, len(available_chars))) if available_chars else []
+        loot_chars = random.sample(available_chars, min(5, len(available_chars))) if available_chars else []
 
         for char in loot_chars:
             u.collection[char] = t.collection.pop(char)
