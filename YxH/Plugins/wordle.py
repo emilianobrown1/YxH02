@@ -5,7 +5,7 @@ from universal_decoractor import YxH
 from db import wordle as wordle_db
 from wordle_image import make_secured_image  # Module for updating game images
 import wordle_words                        
-from Database.users import get_user
+from ..Database.users import get_user
 
 
 # Crystal rewards mapping: crystals awarded based on attempt number
