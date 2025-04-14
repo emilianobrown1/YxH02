@@ -2,7 +2,7 @@ import random
 import asyncio
 from pyrogram import Client, filters
 from ..universal_decorator import YxH
-from ..Database.wordle as wordle_db
+from ..Database import wordle as wordle_db
 from wordle_image import make_secured_image  # Module for updating game images
 import wordle_words                        
 from ..Database.users import get_user
