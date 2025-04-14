@@ -13,7 +13,8 @@ def colourify(im, word: str, text: str, height):
                 clr = "yellow"
             else:
                 clr = "white"
-        w, h = d.textsize(text[i].upper(), f)
+        bbox = d.textbbox((0, 0), text[i].upper(), font=f)
+        w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
         d.text((width, height), text[i].upper(), fill=clr, font=f)
         d.line((0, height + 5, wi, height + 5))
         d.line((0, height + h + 5, wi, height + h + 5))
