@@ -127,3 +127,30 @@ async def cancel_wordle(client, m, user):
         await m.reply("Your active Wordle game has been cancelled.")
     else:
         await m.reply("You do not have any active Wordle game.")
+
+@Client.on_message(filters.command("wtop"))
+@YxH(group=True, private=True)
+async def wordle_leaderboard(client, m, user):
+    """
+    Displays the top 10 users based on games played, average guesses, and crystals earned.
+    """
+    from ..Database.wordle import get_wordle_dic, get_avg
+    from ..Database.users import get_user
+    data = await get_wordle_dic()
+
+    leaderboard = []
+    for uid, total_games in data.items():
+        uid_int = int(uid)
+        user_obj = await get_user(uid_int)
+        avg = await get_avg(uid_int)
+        crystals = user_obj.crystals if user_obj else 0
+        leaderboard.append((uid_int, int(total_games), round(avg, 2), crystals))
+
+    # Sort by total games played, then by average (lower is better), then crystals
+    leaderboard.sort(key=lambda x: (-x[1], x[2], -x[3]))
+
+    text = "**🏆 Wordle Leaderboard**\n\n"
+    for rank, (uid, total, avg, crystals) in enumerate(leaderboard[:10], start=1):
+        text += f"{rank}. [{uid}](tg://user?id={uid}) - Games: {total}, Avg: {avg}, Crystals: {crystals}\n"
+
+    await m.reply(text)
