@@ -22,7 +22,7 @@ active_wordle_games = {}
 
 
 @Client.on_message(filters.command("wordle"))
-@YxH(private=True, group=False)
+@YxH(private=True, group=True)
 async def start_wordle(client, m, user):
     """
     Handles the /wordle command to start a new game.
@@ -117,8 +117,8 @@ async def process_wordle_guess(client, m):
             await m.reply("Incorrect guess. Please try again!")
 
 
-@Client.on_message(filters.command("cancel_wordle"))
-@YxH(private=True, group=False)
+@Client.on_message(filters.command("cancel"))
+@YxH()
 async def cancel_wordle(client, m, user):
     """
     Allows the user to cancel their active Wordle game.
