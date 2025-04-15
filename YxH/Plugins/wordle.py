@@ -20,9 +20,8 @@ ATTEMPT_REWARDS = {
 # A global dictionary to maintain active Wordle game sessions for each user.
 active_wordle_games = {}
 
-
 @Client.on_message(filters.command("wordle"))
-@YxH(private=True, group=True)
+@YxH(private=True, group=True)  # Now works in both private and group chats.
 async def start_wordle(client, m, user):
     """
     Handles the /wordle command to start a new game.
@@ -58,12 +57,12 @@ async def start_wordle(client, m, user):
         "Send your guesses in this chat."
     )
 
-
-@Client.on_message(filters.text & filters.private)
+# Remove the 'private' filter so that group messages are also processed.
+@Client.on_message(filters.text)
 async def process_wordle_guess(client, m):
     """
-    Processes text messages in private chats as Wordle guesses.
-    If the user has an active game session, their message is treated as a guess.
+    Processes text messages as Wordle guesses. If the user has an active game session,
+    their message is treated as a guess regardless of whether it's in a private or group chat.
     After updating the image with the current state, if the guess is correct, 
     a crystal reward is given; otherwise, the game continues or ends after 5 attempts.
     """
@@ -116,9 +115,8 @@ async def process_wordle_guess(client, m):
             game["attempt"] = current_attempt
             await m.reply("Incorrect guess. Please try again!")
 
-
-@Client.on_message(filters.command("cancel"))
-@YxH()
+@Client.on_message(filters.command("cancel_wordle"))
+@YxH(private=True, group=True)  # Now works in group chats as well.
 async def cancel_wordle(client, m, user):
     """
     Allows the user to cancel their active Wordle game.
