@@ -128,7 +128,7 @@ async def cancel_wordle(client, m, user):
     else:
         await m.reply("You do not have any active Wordle game.")
 
-@Client.on_message(filters.command("wtop"))
+@Client.on_message(filters.command("wxtop"))
 @YxH(group=True, private=True)
 async def wordle_leaderboard(client, m, user):
     """
