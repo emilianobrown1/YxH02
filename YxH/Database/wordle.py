@@ -4,90 +4,63 @@ import time
 from datetime import datetime
 
 udb = db.users
-adb = db.wordle
-cdb = db.wordle_avg
-ldb = db.wordle_limit
+adb = db.wordle  # Stores total games per user
+cdb = db.wordle_avg  # Stores individual guess history for averages
+ldb = db.wordle_limit  # Tracks daily game limits
 
 def today():
     return datetime.now().strftime("%Y-%m-%d")
 
 async def add_game(user_id: int):
-    user_id = str(user_id)
-    x = await adb.find_one({"_": "_"})
-    if x:
-        dic = x['dic']
+    user_id_str = str(user_id)
+    # Find the document with _id "total_games" which holds all users' game counts
+    doc = await adb.find_one({"_id": "total_games"})
+    if doc:
+        user_games = doc.get("games", {})
+        current_count = int(user_games.get(user_id_str, 0))
+        user_games[user_id_str] = current_count + 1
     else:
-        dic = {}
-    if user_id in dic:
-        dic[user_id] = str(int(dic[user_id]) + 1)
-    else:
-        dic[user_id] = '1'
-    await adb.update_one({"_": "_"}, {"$set": {"dic": dic}}, upsert=True)
+        user_games = {user_id_str: 1}
+    # Update or insert the document with _id "total_games"
+    await adb.update_one(
+        {"_id": "total_games"},
+        {"$set": {"games": user_games}},
+        upsert=True
+    )
 
 async def get_wordle_dic():
-    x = await adb.find_one({"_": "_"})
-    if x:
-        return x['dic']
-    return {}
+    doc = await adb.find_one({"_id": "total_games"})
+    return doc.get("games", {}) if doc else {}
 
 async def add(user_id: int, guesses: int):
-    x = await cdb.find_one({"user_id": user_id})
-    if x:
-        lis = x['lis']
-    else:
-        lis = []
-    lis.append(guesses)
-    await cdb.update_one({"user_id": user_id}, {"$set": {"lis": lis}}, upsert=True)
+    # Append the guess count to the user's list in wordle_avg
+    await cdb.update_one(
+        {"user_id": user_id},
+        {"$push": {"lis": guesses}},
+        upsert=True
+    )
 
 async def get_avg(user_id: int):
-    x = await cdb.find_one({"user_id": user_id})
-    if x:
-        lis = x['lis']
-    else:
-        lis = []
-    sum = 0
-    a = 0
-    for y in lis:
-        sum += y
-        a += 1
-    if a == 0:
+    doc = await cdb.find_one({"user_id": user_id})
+    if not doc or not doc.get("lis"):
         return 0
-    return sum / a
+    guesses = doc["lis"]
+    return sum(guesses) / len(guesses)
 
 async def incr_game(user_id: int):
     td = today()
-    x = await ldb.find_one({"user_id": user_id})
-    if x:
-        dic = x["dic"]
-        if td in dic:
-            dic[td] += 1
-        else:
-            dic[td] = 1
-    else:
-        dic = {td: 1}
-    await ldb.update_one({"user_id": user_id}, {"$set": {"dic": dic}}, upsert=True)
+    # Increment daily game count for the user
+    await ldb.update_one(
+        {"user_id": user_id},
+        {"$inc": {f"daily.{td}": 1}},
+        upsert=True
+    )
 
 async def get_today_games(user_id: int):
     td = today()
-    x = await ldb.find_one({"user_id": user_id})
-    if x:
-        dic = x["dic"]
-        if td in dic:
-            return dic[td]
-        return 0
+    doc = await ldb.find_one({"user_id": user_id})
+    if doc:
+        return doc.get("daily", {}).get(td, 0)
     return 0
 
-async def get_all_games(user_id: int):
-    x = await ldb.find_one({"user_id": user_id})
-    if x:
-        return x["dic"]
-    return {}
-
-async def add_crystal(user_id: int, crystals: int):
-    user = await udb.find_one({"user_id": user_id})
-    if user:
-        current_crystals = user.get("crystals", 0)
-        new_crystals = current_crystals + crystals
-        await udb.update_one({"user_id": user_id}, {"$set": {"crystals": new_crystals}})
-    else:
-        await udb.update_one({"user_id": user_id}, {"$set": {"crystals": crystals}}, upsert=True)
+# Note: The add_crystal function might be redundant if handled by User class
