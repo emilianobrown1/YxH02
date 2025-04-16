@@ -129,17 +129,19 @@ async def cancel_wordle(client, m, user):
         await m.reply("You do not have any active Wordle game.")
 
 @Client.on_message(filters.command("wxtop"))
-@YxH(group=True, private=True)
+@YxH(private=True, group=True)
 async def wordle_leaderboard(client, m, user):
     """
-    Displays the top 10 users based on total games played, average guesses, and crystals earned.
+    Displays the top 10 users based on:
+      - Total games played (descending)
+      - Average attempts (ascending)
+      - Crystals earned (descending)
     """
     from ..Database.wordle import get_wordle_dic, get_avg
     from ..Database.users import get_user
 
-    # Retrieve the dictionary of Wordle games. Expected format: { "user_id": "games_played", ... }
+    # Retrieve game counts from the db.wordle document ("dic" field)
     data = await get_wordle_dic()
-
     if not data:
         await m.reply("No leaderboard data available yet. Start playing Wordle!")
         return
@@ -148,23 +150,22 @@ async def wordle_leaderboard(client, m, user):
     for uid_str, games_str in data.items():
         try:
             uid_int = int(uid_str)
+            total_games = int(games_str)
         except ValueError:
             continue
-        total_games = int(games_str)
-        avg = await get_avg(uid_int)
+
+        avg = await get_avg(uid_int)  # Average attempts
         if not avg:
             avg = 0
-        # Retrieve the user object to get current crystals count
         user_obj = await get_user(uid_int)
         crystals = user_obj.crystals if user_obj else 0
         leaderboard.append((uid_int, total_games, round(avg, 2), crystals))
 
-    # Sort by total games played (descending), then by average guesses (ascending), then by crystals (descending)
+    # Sort primarily by total games (descending), then by average attempts (ascending), then by crystals (descending)
     leaderboard.sort(key=lambda x: (-x[1], x[2], -x[3]))
 
     text = "**🏆 Wordle Leaderboard**\n\n"
     for rank, (uid, total, avg, crystals) in enumerate(leaderboard[:10], start=1):
-        # Attempt to get the user's name via Telegram
         try:
             user_info = await client.get_users(uid)
             name = user_info.first_name
