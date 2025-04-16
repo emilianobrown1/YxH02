@@ -129,39 +129,31 @@ async def cancel_wordle(client, m, user):
         await m.reply("You do not have any active Wordle game.")
 
 @Client.on_message(filters.command("wxtop"))
-@YxH(private=True, group=True)
+@YxH(group=True, private=True)
 async def wordle_leaderboard(client, m, user):
-    """
-    Displays the top 10 users based on:
-      - Total games played (descending)
-      - Average attempts (ascending)
-      - Crystals earned (descending)
-    """
+    """Displays the top 10 users based on games, average guesses, and crystals."""
     from ..Database.wordle import get_wordle_dic, get_avg
     from ..Database.users import get_user
 
-    # Retrieve game counts from the db.wordle document ("dic" field)
     data = await get_wordle_dic()
     if not data:
         await m.reply("No leaderboard data available yet. Start playing Wordle!")
         return
 
     leaderboard = []
-    for uid_str, games_str in data.items():
+    for uid_str, total_games in data.items():
         try:
-            uid_int = int(uid_str)
-            total_games = int(games_str)
+            uid = int(uid_str)
+            total = int(total_games)
         except ValueError:
-            continue
+            continue  # Skip invalid entries
 
-        avg = await get_avg(uid_int)  # Average attempts
-        if not avg:
-            avg = 0
-        user_obj = await get_user(uid_int)
+        avg = await get_avg(uid)
+        user_obj = await get_user(uid)
         crystals = user_obj.crystals if user_obj else 0
-        leaderboard.append((uid_int, total_games, round(avg, 2), crystals))
+        leaderboard.append((uid, total, avg, crystals))
 
-    # Sort primarily by total games (descending), then by average attempts (ascending), then by crystals (descending)
+    # Sort by: total games (desc), avg (asc), crystals (desc)
     leaderboard.sort(key=lambda x: (-x[1], x[2], -x[3]))
 
     text = "**🏆 Wordle Leaderboard**\n\n"
@@ -171,6 +163,9 @@ async def wordle_leaderboard(client, m, user):
             name = user_info.first_name
         except Exception:
             name = f"User {uid}"
-        text += f"{rank}. [{name}](tg://user?id={uid}) - Games: {total}, Avg: {avg}, Crystals: {crystals}\n"
+        text += (
+            f"{rank}. [{name}](tg://user?id={uid}) - "
+            f"Games: {total}, Avg: {avg:.2f}, Crystals: {crystals}\n"
+        )
 
-    await m.reply(text)
+    await m.reply(text, parse_mode="Markdown")
