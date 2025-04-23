@@ -17,7 +17,8 @@ from .watchers import (
     scramble_watcher,
     couple_message_watcher,
     powers_watcher,
-    catch_watcher
+    catch_watcher,
+    wordle_watcher
 )
 
 @Client.on_message(filters.group, group=fw_watcher)
