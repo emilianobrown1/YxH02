@@ -173,4 +173,4 @@ async def wordle_leaderboard(client, m, user):
             f"Games: {total}, Avg: {avg:.2f}, Crystals: {crystals}\n"
         )
 
-    await m.reply(text, parse_mode="MarkdownV2")
+    await m.reply(text)
