@@ -53,4 +53,19 @@ async def powers_handler(_, m):
 @Client.on_message(filters.group, group=catch_watcher)
 async def handle_messages(_, m):
     await beast_spawner(_, m)
+
+@Client.on_message(filters.command("wordle"), group=wordle_watcher)
+@YxH(private=True, group=True)
+async def start_wordle(client, m, user):
+
+@Client.on_message(filters.text & ~filters.command, group=wordle_watcher)
+async def process_wordle_guess(client, m):
+
+@Client.on_message(filters.command("cancel_wordle"), group=wordle_watcher)
+@YxH(private=True, group=True)
+async def cancel_wordle(client, m, user):
+
+@Client.on_message(filters.command("wxtop"), group=wordle_watcher)
+@YxH(group=True, private=True)
+async def wordle_leaderboard(client, m, user):
     
