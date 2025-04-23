@@ -136,8 +136,10 @@ async def wordle_leaderboard(client, m, user):
     from ..Database.users import get_user
 
     data = await get_wordle_dic()
-    if not data:
-        await m.reply("No leaderboard data available yet. Start playing Wordle!")
+
+    # Handle empty or invalid data
+    if not data or not isinstance(data, dict):
+        await m.reply("Leaderboard data is unavailable or corrupted.")
         return
 
     leaderboard = []
@@ -148,9 +150,10 @@ async def wordle_leaderboard(client, m, user):
         except ValueError:
             continue  # Skip invalid entries
 
-        avg = await get_avg(uid)
+        avg = await get_avg(uid) or 0  # Default value if no average
         user_obj = await get_user(uid)
         crystals = user_obj.crystals if user_obj else 0
+
         leaderboard.append((uid, total, avg, crystals))
 
     # Sort by: total games (desc), avg (asc), crystals (desc)
@@ -161,8 +164,10 @@ async def wordle_leaderboard(client, m, user):
         try:
             user_info = await client.get_users(uid)
             name = user_info.first_name
-        except Exception:
+        except Exception as e:
             name = f"User {uid}"
+            print(f"Error fetching user info: {e}")  # Debug user info fetch
+
         text += (
             f"{rank}. [{name}](tg://user?id={uid}) - "
             f"Games: {total}, Avg: {avg:.2f}, Crystals: {crystals}\n"
