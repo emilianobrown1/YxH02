@@ -58,7 +58,7 @@ async def start_wordle(client, m, user):
     )
 
 # Remove the 'private' filter so that group messages are also processed.
-@Client.on_message(filters.text & filters.command)
+@Client.on_message(filters.text)
 async def process_wordle_guess(client, m):
     """
     Processes text messages as Wordle guesses. If the user has an active game session,
