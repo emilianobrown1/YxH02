@@ -57,7 +57,6 @@ async def handle_messages(_, m):
 
 
 @Client.on_message(filters.text & filters.command, group=wordle_watcher)
-async def process_wordle_guess(client, m):
-    await 
-
+async def wordle_guess_handler(client, m):
+    await process_wordle_guess(client, m)
 
