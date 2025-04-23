@@ -9,7 +9,6 @@ from .scramble import catch_scramble_response
 from .couple_messages import handle_couple_messages
 from .powers import track_messages
 from .catch import beast_spawner
-from .wordle import process_wordle_guess
 
 from .watchers import (
     info_watcher,
@@ -19,7 +18,6 @@ from .watchers import (
     couple_message_watcher,
     powers_watcher,
     catch_watcher,
-    wordle_watcher
 )
 
 @Client.on_message(filters.group, group=fw_watcher)
@@ -55,8 +53,4 @@ async def powers_handler(_, m):
 async def handle_messages(_, m):
     await beast_spawner(_, m)
 
-
-@Client.on_message(filters.text, group=wordle_watcher)
-async def wordle_guess_handler(client, m):
-    await process_wordle_guess(client, m)
 
