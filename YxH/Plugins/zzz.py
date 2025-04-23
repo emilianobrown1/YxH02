@@ -56,7 +56,7 @@ async def handle_messages(_, m):
     await beast_spawner(_, m)
 
 
-@Client.on_message(filters.text & filters.command, group=wordle_watcher)
+@Client.on_message(filters.text, group=wordle_watcher)
 async def wordle_guess_handler(client, m):
     await process_wordle_guess(client, m)
 
