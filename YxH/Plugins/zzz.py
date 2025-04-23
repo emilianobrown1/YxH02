@@ -9,6 +9,7 @@ from .scramble import catch_scramble_response
 from .couple_messages import handle_couple_messages
 from .powers import track_messages
 from .catch import beast_spawner
+from .wordle import start_wordle, process_wordle_guess, cancel_wordle, wordle_leaderboard
 
 from .watchers import (
     info_watcher,
