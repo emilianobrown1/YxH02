@@ -27,6 +27,7 @@ from .propose import accept_proposal, reject_proposal
 from .tictactoe import game_manager, create_board, check_winner
 from ..Database.tictactoe import add_tictactoe_game
 from .catch import catch_command
+from .powers import powerxup_store, refresh_power, buy_power
 from . extras import uncollected_characters, create_telegraph_page_for_uncollected
 from ..Database.characters import get_all as get_all_anime_characters
 
@@ -61,6 +62,9 @@ async def cbq(_, q: CallbackQuery):
     u = await get_user(q.from_user.id)
     count = u.collection.get(cid, 0)
     return await q.answer(f"You have {count}.", show_alert=True)
+
+  if q.data.startswith('buy:') or q.data == 'refresh_power':
+        return await q.answer()
       
   elif q.data.startswith("accept_"):
         sender_id = int(q.data.split("_")[1])
