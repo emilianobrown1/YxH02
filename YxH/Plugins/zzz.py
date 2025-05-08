@@ -15,7 +15,6 @@ from .watchers import (
     copx_watcher,
     scramble_watcher,
     couple_message_watcher,
-    powers_watcher,
     catch_watcher,
 )
 
