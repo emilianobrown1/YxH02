@@ -90,7 +90,7 @@ async def fest_hour_task(app):
             )
             mess = await app.send_message(SUPPORT_GROUP, text)
             await mess.pin()
-            except Exception as e:
+                      except Exception as e:
                 print(f"[Fest Hour Error] {e}")
             await asyncio.sleep(3600)
         await asyncio.sleep(60)
