@@ -94,3 +94,6 @@ async def fest_hour_task(app):
                 print(f"[Fest Hour] Pin failed: {e}")
             await asyncio.sleep(3600)
         await asyncio.sleep(60)
+
+asyncio.create_task(fest_hour_task(app))
+
