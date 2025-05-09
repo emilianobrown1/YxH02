@@ -13,7 +13,7 @@ import pytz
 IST = pytz.timezone("Asia/Kolkata")
 
 async def get_percentage_and_is_profit() -> tuple[int, bool]:
-    current_hour = int(str(datetime.now()).split()[1].split(':')[0])
+    current_hour = datetime.now(IST).hour
     fest_hour = await get_fest_hour()
     if current_hour == fest_hour:
         percentage = random.randint(50, 100)
