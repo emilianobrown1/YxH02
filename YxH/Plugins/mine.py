@@ -4,10 +4,10 @@ from yxh import YxH as app
 from ..Database.fest_hour import get_fest_hour
 import random
 from .equipments import equipment_data as equipments_data, check_expiry
-from datetime import datetime, timedelta
-from ..Database.chats import get_all_chats  # Import chats database functions
+from datetime import datetime
+from ..Database.chats import get_all_chats
 from config import SUPPORT_GROUP
-import asyncio  # For scheduling tasks
+import asyncio
 import pytz
 
 IST = pytz.timezone("Asia/Kolkata")
@@ -39,20 +39,18 @@ async def mine(_, m, user):
 
     if inp > user.gold:
         return await m.reply(f'You only have `{user.gold}` gold.')
-
     if inp < min_gold_required:
         return await m.reply("You need at least `500` gold to start mining.")
 
-    now = str(datetime.now()).split(":")[0].replace(" ", "-")
-    val = user.mine.get(now, 0)
+    now_key = datetime.now(IST).strftime("%Y-%m-%d-%H")
+    val = user.mine.get(now_key, 0)
     if val >= 50:
-        min = int(str(datetime.now()).split(":")[1])
-        after = 60 - min
+        minute = datetime.now(IST).minute
+        after = 60 - minute
         return await m.reply(f"Mining limit reached, try again after `{after}` minutes.")
-    user.mine[now] = val + 1
 
+    user.mine[now_key] = val + 1
     percentage, success = await get_percentage_and_is_profit()
-
     gold = int((inp * percentage) / 100)
 
     if success:
@@ -76,12 +74,13 @@ async def mine(_, m, user):
             f"ʟᴏsᴛ: `{gold}` ɢᴏʟᴅ 📯 😞\n\n"
             f"ᴄᴜʀʀᴇɴᴛ ɢᴏʟᴅ: `{user.gold}` 📯"
         )
+
     await user.update()
     await m.reply(txt)
 
 async def fest_hour_task(app):
     while True:
-        current_hour = int(str(datetime.now()).split()[1].split(':')[0])
+        current_hour = datetime.now(IST).hour
         if current_hour == await get_fest_hour():
             text = (
                 "🎉 **Fest Hour is live!** 🎉\n\n"
@@ -89,10 +88,12 @@ async def fest_hour_task(app):
                 "Don't miss your chance to strike big!"
             )
             mess = await app.send_message(SUPPORT_GROUP, text)
+            try:
                 await mess.pin()
             except Exception as e:
-                print(f"[Fest Hour Error] {e}")
+                print(f"[Fest Hour] Pin failed: {e}")
             await asyncio.sleep(3600)
         await asyncio.sleep(60)
 
+# Start background task
 asyncio.create_task(fest_hour_task(app))
