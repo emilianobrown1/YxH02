@@ -8,6 +8,9 @@ from datetime import datetime, timedelta
 from ..Database.chats import get_all_chats  # Import chats database functions
 from config import SUPPORT_GROUP
 import asyncio  # For scheduling tasks
+import pytz
+
+IST = pytz.timezone("Asia/Kolkata")
 
 async def get_percentage_and_is_profit() -> tuple[int, bool]:
     current_hour = int(str(datetime.now()).split()[1].split(':')[0])
