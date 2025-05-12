@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from . import get_user, YxH
-from ..Database.attackes import attack_col
+from ..Database.attackes import attackes_db
 import time
 import random
 
