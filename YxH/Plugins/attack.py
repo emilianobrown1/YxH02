@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from . import get_user, YxH, db
+from YxH import get_user, YxH, db
 import time
 import random
 
