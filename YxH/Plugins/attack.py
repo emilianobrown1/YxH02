@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from . import get_user, YxH
+from . import YxH, db
 import time
 import random
 
@@ -75,3 +76,23 @@ async def attack(_, m, u):
         f'You got attacked by **{u.user.first_name}**\n\n'
         f'Lost `{gold_val}` Gold and `{gems_val}` Gems.'
     )
+
+
+
+@Client.on_message(filters.command("attack"))
+@YxH()
+async def attack_handler(_, m, u):
+    user_id = m.from_user.id
+    name = m.from_user.first_name
+
+    # Save or update attack data
+    await db.attacks.update_one(
+        {"user_id": user_id},
+        {
+            "$set": {"name": name},
+            "$inc": {"attack": 1}
+        },
+        upsert=True
+    )
+
+    await m.reply("Attack executed! Your attack count has increased.")
