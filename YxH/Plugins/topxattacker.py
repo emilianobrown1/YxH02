@@ -1,5 +1,6 @@
+from pyrogram import Client, filters
 from database.attacks import get_top_attackers
-from . import YxH, db  # Make sure `db` is imported
+from . import YxH
 
 @Client.on_message(filters.command("topxattack"))
 @YxH()
@@ -10,14 +11,9 @@ async def attack_leaderboard(_, m, u):
 
     text = "**Top Attackers Leaderboard**\n\n"
     for i, entry in enumerate(leaderboard, 1):
-        user_id = entry["user_id"]
+        name = entry.get("name", f"ID {entry['user_id']}")
         attack = entry.get("attack", 0)
         combo = entry.get("comboattack", 0)
-
-        # Try fetching username from users collection
-        user_data = await db.users.find_one({"user_id": user_id})
-        name = user_data.get("name") if user_data else f"ID {user_id}"
-
         text += f"{i}. {name} — 🗡️ {attack} | ⚔️ {combo}\n"
 
     await m.reply(text)
