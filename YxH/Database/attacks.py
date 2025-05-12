@@ -1,18 +1,18 @@
 from . import db
 
-attack_col = db.attacks  # This will create/use a collection called "attacks"
+attack_col = db.attacks  # Collection: "attacks"
 
-async def increment_attack(user_id: int):
+async def increment_attack(user_id: int, name: str):
     await attack_col.update_one(
         {"user_id": user_id},
-        {"$inc": {"attack": 1}},
+        {"$set": {"name": name}, "$inc": {"attack": 1}},
         upsert=True
     )
 
-async def increment_comboattack(user_id: int):
+async def increment_comboattack(user_id: int, name: str):
     await attack_col.update_one(
         {"user_id": user_id},
-        {"$inc": {"comboattack": 1}},
+        {"$set": {"name": name}, "$inc": {"comboattack": 1}},
         upsert=True
     )
 
