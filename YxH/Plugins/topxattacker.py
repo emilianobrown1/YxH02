@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from database.attacks import get_top_attackers
+from ..Database.attacks import get_top_attackers
 from . import YxH
 
 @Client.on_message(filters.command("topxattack"))
