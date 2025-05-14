@@ -3,54 +3,55 @@ from . import YxH, get_anime_character
 from ..Class.character import AnimeCharacter
 import requests
 import traceback
+import requests
+import pickle
+import os
+from ..Database import db
 
 def envs_upload(file_path) -> str:
-    # Uploads the image and returns its URL
     with open(file_path, 'rb') as file:
         return requests.post("https://envs.sh", files={"file": file}).text.strip()
 
 @Client.on_message(filters.command("replace") & filters.reply)
 @YxH(sudo=True)
 async def replace_character(_, m, u):
-    # Ensure proper command usage: /replace <character_id>
-    args = m.text.split()
-    if len(args) != 2:
-        return await m.reply("Usage: `/replace <character_id>`", quote=True)
+    reply = m.reply_to_message
+
+    if not reply or not reply.photo:
+        return await m.reply("❌ Please reply to the **new image**.")
 
     try:
-        char_id = int(args[1])
-    except ValueError:
-        return await m.reply("Invalid character ID.", quote=True)
-    
-    # Load existing character from the database using your helper function
-    character = await get_anime_character(char_id)
-    if not character:
-        return await m.reply(f"No character with ID `{char_id}` found.", quote=True)
-    
-    # Make sure the reply message contains a new image
-    if not m.reply_to_message or not m.reply_to_message.photo:
-        return await m.reply("Please reply to the new image you want to use for replacement.", quote=True)
-    
-    status = await m.reply("Uploading new image and updating character...", quote=True)
-    
+        # Get character ID from the command: /replace <id>
+        _, char_id = m.text.strip().split()
+        char_id = int(char_id)
+    except:
+        return await m.reply("❌ Usage: `/replace <character_id>`\n\n(Reply to the new image)")
+
+    # Fetch character from DB
+    char = await get_anime_character(char_id)
+    if not char:
+        return await m.reply("❌ Character not found in database.")
+
+    status = await m.reply("⏳ Uploading new image...")
+
     try:
-        # Upload the new image
-        new_image = envs_upload(await m.reply_to_message.download())
-        
-        # Create a new instance with the new image, while keeping the other fields the same.
-        updated_char = AnimeCharacter(
-            id=character.id,
-            image=new_image,
-            name=character.name,
-            anime=character.anime,
-            rarity=character.rarity,
-            price=character.price
+        # Upload new image to envs.sh
+        downloaded = await reply.download()
+        new_image = envs_upload(downloaded)
+        os.remove(downloaded)
+
+        # Update character image manually
+        char.image = new_image
+
+        # Re-save with updated image
+        await db.anime_characters.update_one(
+            {'id': char_id},
+            {'$set': {'info': pickle.dumps(char)}}
         )
-        
-        # The .add() method in your AnimeCharacter class uses update_one with upsert=True,
-        # so it will update the document if it already exists.
-        await updated_char.add()
-        
-        await status.edit(f"Successfully updated character `{character.name}` (ID: {character.id}) with the new image.")
+
+        # Update local cache
+        chars[char_id] = char
+
+        await status.edit(f"✅ Character `{char.name}` (ID: `{char.id}`) image replaced successfully.")
     except Exception as e:
-        await status.edit(f"Failed to update character image:\n{traceback.format_exc()}")
+        await status.edit(f"❌ Failed to replace image:\n`{e}`")
