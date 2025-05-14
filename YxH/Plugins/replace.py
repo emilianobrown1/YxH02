@@ -1,4 +1,5 @@
 from pyrogram import Client, filters
+from . import YxH
 from ..Class.character import AnimeCharacter
 from config import ANIME_CHAR_CHANNEL_ID
 import requests
