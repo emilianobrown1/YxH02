@@ -21,37 +21,33 @@ async def replace_character(_, m, u):
         return await m.reply("❌ Please reply to the **new image**.")
 
     try:
-        # Get character ID from the command: /replace <id>
+        # /replace <character_id>
         _, char_id = m.text.strip().split()
         char_id = int(char_id)
     except:
-        return await m.reply("❌ Usage: `/replace <character_id>`\n\n(Reply to the new image)")
+        return await m.reply("❌ Usage: `/replace <character_id>` (reply to the new image)")
 
-    # Fetch character from DB
-    char = await get_anime_character(char_id)
-    if not char:
-        return await m.reply("❌ Character not found in database.")
-
-    status = await m.reply("⏳ Uploading new image...")
+    status = await m.reply("⏳ Fetching character...")
 
     try:
-        # Upload new image to envs.sh
-        downloaded = await reply.download()
-        new_image = envs_upload(downloaded)
-        os.remove(downloaded)
+        char = await get_anime_character(char_id)
+        if not char:
+            return await status.edit("❌ Character not found in database.")
 
-        # Update character image manually
-        char.image = new_image
+        # Upload new image
+        file = await reply.download()
+        new_image_url = envs_upload(file)
+        os.remove(file)
 
-        # Re-save with updated image
+        # Update only the image
+        char.image = new_image_url
+
+        # Save updated character back
         await db.anime_characters.update_one(
             {'id': char_id},
             {'$set': {'info': pickle.dumps(char)}}
         )
 
-        # Update local cache
-        chars[char_id] = char
-
-        await status.edit(f"✅ Character `{char.name}` (ID: `{char.id}`) image replaced successfully.")
+        await status.edit(f"✅ Updated image for `{char.name}` (ID: `{char.id}`) successfully.")
     except Exception as e:
         await status.edit(f"❌ Failed to replace image:\n`{e}`")
