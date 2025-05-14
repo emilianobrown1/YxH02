@@ -7,36 +7,34 @@ def envs_upload(file_path) -> str:
     with open(file_path, 'rb') as file:
         return requests.post("https://envs.sh", files={"file": file}).text.strip()
 
-@Client.on_message(filters.command("replace") & filters.reply)
+@Client.on_message(filters.command("replace") & filters.reply & filters.photo)
 @YxH(sudo=True)
 async def replace_character(_, m, u):
-    old_msg = m.reply_to_message
-    if not old_msg or not old_msg.caption or not old_msg.photo:
-        return await m.reply("Please reply to a valid character image message with caption.")
+    args = m.text.split()
+    if len(args) != 2:
+        return await m.reply("Usage: `/replace <character_id>` (as a reply to new image)", quote=True)
 
     try:
-        spl = old_msg.caption.split(";")
-        name = spl[0].strip()
-        anime = spl[1].strip()
-        rarity = spl[2].strip()
-        char_id = int(spl[3].strip())
-    except Exception as e:
-        return await m.reply(f"Caption format error: {e}")
+        char_id = int(args[1])
+    except:
+        return await m.reply("Invalid character ID.", quote=True)
 
-    if not m.photo:
-        return await m.reply("Send the new image and then reply to the old one with `/replace`.")
+    # Get character from DB
+    existing = await AnimeCharacter.get(char_id)
+    if not existing:
+        return await m.reply(f"No character found with ID `{char_id}`.", quote=True)
 
-    status = await m.reply("Replacing image in database...")
+    msg = await m.reply("Uploading new image and replacing character...", quote=True)
 
     try:
         # Upload new image
-        new_img = envs_upload(await m.download())
+        new_image = envs_upload(await m.download())
 
-        # Replace character in database
+        # Replace entry in DB
         await AnimeCharacter.delete(char_id)
-        c = AnimeCharacter(char_id, new_img, name, anime, rarity)
-        await c.add()
+        updated = AnimeCharacter(char_id, new_image, existing.name, existing.anime, existing.rarity)
+        await updated.add()
 
-        await status.edit(f"Character `{name}` image replaced successfully in the database.")
+        await msg.edit(f"Image for `{existing.name}` (ID: {char_id}) replaced successfully.")
     except Exception as e:
-        await status.edit(f"Failed to replace character image:\n{e}")
+        await msg.edit(f"Replacement failed:\n{e}")
