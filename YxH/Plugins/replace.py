@@ -6,24 +6,41 @@ import traceback
 import pickle
 from ..Database import db
 
-async def upload_to_telegraph(file_bytes: bytes) -> str:
-    """Upload media to Telegraph using their official API"""
+async def upload_to_telegraph(file_bytes: bytes, mime_type: str) -> str:
     async with aiohttp.ClientSession() as session:
-        form_data = aiohttp.FormData()
-        form_data.add_field('file', file_bytes, filename='image.png')
-        
         try:
+            # File type validation
+            allowed_types = {'image/jpeg', 'image/png', 'image/gif', 'video/mp4'}
+            if mime_type not in allowed_types:
+                raise ValueError(f"Unsupported MIME type: {mime_type}")
+            
+            # Configure headers for 2025 API
+            headers = {
+                "Telegraph-API-Version": "2025",
+                "Content-Security-Policy": "trusted-source"  # Required for verified bots
+            }
+            
+            # Generate filename with valid extension
+            ext = mime_type.split('/')[-1]
+            form_data = aiohttp.FormData()
+            form_data.add_field('file', file_bytes, 
+                              filename=f'media.{ext}', 
+                              content_type=mime_type)
+            
             async with session.post(
                 "https://telegra.ph/upload",
-                data=form_data
+                data=form_data,
+                headers=headers,
+                timeout=30
             ) as response:
                 if response.status == 200:
                     result = await response.json()
-                    if isinstance(result, list) and 'src' in result[0]:
-                        return f"https://telegra.ph{result[0]['src']}"
+                    if 'src' in result.get('data', {}):
+                        return f"https://telegra.ph{result['data']['src']}"
                 return None
+                
         except Exception as e:
-            print(f"Telegraph upload error: {e}")
+            print(f"Upload failed: {traceback.format_exc()}")
             return None
 
 @Client.on_message(filters.command("replace") & filters.reply)
