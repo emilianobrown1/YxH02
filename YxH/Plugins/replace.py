@@ -6,14 +6,25 @@ import traceback
 import pickle
 from ..Database import db
 
+def detect_mime_type(file_bytes: bytes) -> str:
+    """Detect MIME type from file bytes"""
+    # Check common image signatures
+    if file_bytes.startswith(b'\xFF\xD8\xFF'):
+        return 'image/jpeg'
+    elif file_bytes.startswith(b'\x89PNG\r\n\x1a\n'):
+        return 'image/png'
+    elif file_bytes[0:3] == b'GIF':
+        return 'image/gif'
+    elif file_bytes.startswith(b'RIFF') and file_bytes[8:12] == b'WEBP':
+        return 'image/webp'
+    # Add more formats as needed
+    return 'image/jpeg'  # Default fallback
+
 async def upload_to_telegraph(file_bytes: bytes, mime_type: str) -> str:
     async with aiohttp.ClientSession() as session:
         try:
-            # File type validation (updated with modern formats)
-            allowed_types = {
-                'image/jpeg', 'image/png', 'image/gif', 
-                'image/webp', 'video/mp4', 'video/quicktime'
-            }
+            # File type validation
+            allowed_types = {'image/jpeg', 'image/png', 'image/gif', 'image/webp'}
             if mime_type not in allowed_types:
                 raise ValueError(f"Unsupported MIME type: {mime_type}")
 
@@ -29,13 +40,8 @@ async def upload_to_telegraph(file_bytes: bytes, mime_type: str) -> str:
                 data=form_data,
                 timeout=30
             ) as response:
-                # Debugging response
-                raw_response = await response.text()
-                print(f"Telegraph Response: {raw_response}")  # For troubleshooting
-                
                 if response.status == 200:
                     result = await response.json()
-                    # Correct response structure handling
                     if isinstance(result, list) and len(result) > 0:
                         return f"https://telegra.ph{result[0].get('src', '')}"
                 return None
@@ -63,26 +69,20 @@ async def replace_character_image(client, message, user):
         if not character:
             return await status.edit("❌ Character not found.")
 
-        # Get MIME type from the photo message
-        mime_type = photo_msg.photo.mime_type or 'image/jpeg'
-        
-        # Download image with size check
+        # Download image directly to memory
         file_bytes = await photo_msg.download(in_memory=True)
         if not file_bytes:
             return await status.edit("❌ Failed to download image")
 
-        # Telegraph file size limit check (5MB)
-        if len(file_bytes.getvalue()) > 5 * 1024 * 1024:
-            return await status.edit("❌ File too large (Max 5MB allowed)")
+        # Detect MIME type from file content
+        file_content = file_bytes.getvalue()
+        mime_type = detect_mime_type(file_content)
 
         await status.edit("🔼 Uploading to Telegraph...")
-        new_image_url = await upload_to_telegraph(
-            file_bytes.getvalue(),
-            mime_type=mime_type  # Fixed: Added MIME type parameter
-        )
+        new_image_url = await upload_to_telegraph(file_content, mime_type)
 
         if not new_image_url:
-            return await status.edit("❌ Failed to upload image to Telegraph\nCheck logs for details")
+            return await status.edit("❌ Failed to upload image to Telegraph")
 
         # Update character image and re-save
         character.image = new_image_url
@@ -96,6 +96,4 @@ async def replace_character_image(client, message, user):
     except ValueError:
         await message.reply("❗Invalid character ID format")
     except Exception as e:
-        error_trace = traceback.format_exc()
-        print(f"Error: {error_trace}")
-        await message.reply(f"❌ Error: {str(e)}")
+        error
