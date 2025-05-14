@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from . import YxH
+from . import YxH, get_anime_character
 from ..Class.character import AnimeCharacter
 import requests
 import traceback
