@@ -1,14 +1,16 @@
 from pyrogram import Client, filters
 from . import YxH
-from ..Class.character import AnimeCharacter, YaoiYuriCharacter
+from ..Class.character import AnimeCharacter
 from config import ANIME_CHAR_CHANNEL_ID
 import asyncio
 import os
-from telegraph import upload_file
+
+# Correct import for telegraph upload
+from telegraph.upload import upload_file
 
 def telegraph_upload(file_path) -> str:
     try:
-        response = upload_file(file_path)
+        response = upload_file(file_path)  # Returns list like ['/file/abc123.jpg']
         return f"https://telegra.ph{response[0]}"
     except Exception as e:
         raise Exception(f"Telegraph upload failed: {e}")
@@ -60,9 +62,7 @@ async def aupl(_, m, u):
     for x in batches:
         await ok.edit(f"Processing batch: {batches.index(x)+1}/{len(batches)}.")
         messages = await _.get_messages(ANIME_CHAR_CHANNEL_ID, x)
-        tasks = []
-        for i in messages:
-            tasks.append(asyncio.create_task(upload(i)))
+        tasks = [asyncio.create_task(upload(i)) for i in messages]
         await asyncio.gather(*tasks)
 
     await ok.edit("Processed.")
