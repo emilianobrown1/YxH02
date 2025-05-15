@@ -1,18 +1,17 @@
 from pyrogram import Client, filters
 from . import YxH
-from ..Class.character import AnimeCharacter, YaoiYuriCharacter
+from ..Class.character import AnimeCharacter
 from config import ANIME_CHAR_CHANNEL_ID
 import asyncio
 import os
-import requests
 
-# Upload file to envs.sh and return the link
-def envs_upload(file_path) -> str:
-    with open(file_path, 'rb') as file:
-        return requests.post("https://envs.sh", files={"file": file}).text.strip()
+# Upload file to ANIME_CHAR_CHANNEL_ID and return the file_id
+async def upload_to_telegram(client, file_path):
+    msg = await client.send_photo(ANIME_CHAR_CHANNEL_ID, photo=file_path)
+    return msg.photo.file_id
 
 # Process a single message and upload its image and metadata
-async def upload(m):
+async def upload(client, m):
     if not m.photo or not m.caption:
         return
 
@@ -23,7 +22,7 @@ async def upload(m):
     try:
         # Download image with a unique name
         file_path = await m.download(file_name=f"temp_{m.id}.jpg")
-        image = envs_upload(file_path)
+        file_id = await upload_to_telegram(client, file_path)
         os.remove(file_path)  # Cleanup after uploading
 
         # Parse caption
@@ -32,8 +31,8 @@ async def upload(m):
         rarity = spl[2].strip()
         char_id = int(spl[3].strip())
 
-        # Add character
-        c = AnimeCharacter(char_id, image, name, anime, rarity)
+        # Add character with file_id instead of URL
+        c = AnimeCharacter(char_id, file_id, name, anime, rarity)
         await c.add()
 
     except Exception as e:
@@ -42,7 +41,7 @@ async def upload(m):
 # Upload command handler
 @Client.on_message(filters.command("upload"))
 @YxH(sudo=True)
-async def aupl(_, m, u):
+async def aupl(client, m, u):
     ok = await m.reply("Processing...")
 
     spl = m.text.split()
@@ -53,7 +52,7 @@ async def aupl(_, m, u):
         start = int(spl[1])
         end = start + 1
     else:
-        return await m.reply("**Invalid Usage.** Use `/aupl <start> <end>`")
+        return await m.reply("**Invalid Usage.** Use `/upload <start> <end>`")
 
     # Batch in chunks of 200
     batches = []
@@ -66,8 +65,8 @@ async def aupl(_, m, u):
     # Process batches
     for i, batch in enumerate(batches):
         await ok.edit(f"Processing batch {i + 1}/{len(batches)}...")
-        messages = await _.get_messages(ANIME_CHAR_CHANNEL_ID, batch)
-        tasks = [asyncio.create_task(upload(msg)) for msg in messages if msg]
+        messages = await client.get_messages(ANIME_CHAR_CHANNEL_ID, batch)
+        tasks = [asyncio.create_task(upload(client, msg)) for msg in messages if msg]
         await asyncio.gather(*tasks)
 
     await ok.edit("All characters processed successfully.")
