@@ -9,3 +9,5 @@ beautifulsoup4
 requests>=2.25.1
 aiohttp
 pytz
+pymongo
+cloudinary
