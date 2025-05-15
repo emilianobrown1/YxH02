@@ -35,7 +35,7 @@ async def upload(m):
     c = AnimeCharacter(id, image, name, anime, rarity)
     await c.add()
 
-@Client.on_message(filters.command("aupl"))
+@Client.on_message(filters.command("upload"))
 @YxH(sudo=True)
 async def aupl(_, m, u):
     ok = await m.reply("Processing...")
