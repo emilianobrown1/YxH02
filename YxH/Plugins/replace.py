@@ -7,42 +7,53 @@ import requests
 import pickle
 import os
 
+# Upload function
 def envs_upload(file_path) -> str:
-    with open(file_path, 'rb') as f:
-        return requests.post("https://envs.sh", files={"file": f}).text.strip()
+    with open(file_path, 'rb') as file:
+        return requests.post("https://envs.sh", files={"file": file}).text.strip()
 
+# Replace command
 @Client.on_message(filters.command("replace") & filters.reply)
 @YxH(sudo=True)
 async def replace_character_image(client, message, user):
+    if len(message.command) != 2:
+        return await message.reply("❗Usage: `/replace <character_id>`\n(Reply to new image to update)")
+
     try:
-        if len(message.command) != 2:
-            return await message.reply("❗Usage: `/replace <character_id>`\n\nReply to the new image you want to set.", quote=True)
-
         char_id = int(message.command[1])
-        photo_msg = message.reply_to_message
+    except ValueError:
+        return await message.reply("❗ Character ID must be a number.")
 
-        if not photo_msg or not photo_msg.photo:
-            return await message.reply("❗Please reply to a new image message.", quote=True)
+    reply_msg = message.reply_to_message
+    if not reply_msg or not reply_msg.photo:
+        return await message.reply("❗You must reply to the new image.")
 
-        status = await message.reply("Fetching character info...")
+    status = await message.reply("⏳ Processing replacement...")
 
-        character = await get_anime_character(char_id)
-        if not character:
-            return await status.edit("❌ Character not found.")
+    character = await get_anime_character(char_id)
+    if not character:
+        return await status.edit("❌ Character not found.")
 
-        # Download and upload new image
-        path = await photo_msg.download()
-        new_image_url = envs_upload(path)
-        os.remove(path)
+    try:
+        # Upload new image
+        photo_path = await reply_msg.download()
+        new_image_url = envs_upload(photo_path)
+        os.remove(photo_path)
 
-        # Update character image and re-save
-        character.image = new_image_url
-        await db.anime_characters.update_one(
-            {'id': character.id},
-            {'$set': {'info': pickle.dumps(character)}}
+        # Delete old character from DB
+        await db.anime_characters.delete_one({"id": char_id})
+
+        # Recreate character with same info, new image
+        updated = AnimeCharacter(
+            id=character.id,
+            image=new_image_url,
+            name=character.name,
+            anime=character.anime,
+            rarity=character.rarity,
+            price=character.price
         )
+        await updated.add()
 
-        await status.edit(f"✅ Image for `{character.name}` (ID: {character.id}) replaced successfully.")
-
+        await status.edit(f"✅ `{character.name}` image updated successfully.")
     except Exception as e:
-        await message.reply(f"❌ Error: {e}")
+        await status.edit(f"❌ Failed to update:\n`{e}`")
