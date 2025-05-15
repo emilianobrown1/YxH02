@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
-from . import YxH
+from . import YxH, get_anime_character
 from config import ANIME_CHAR_CHANNEL_ID
-from ..Database.characters import get_anime_character
+from ..Database db
 from ..Class.character import AnimeCharacter
 import requests
 import pickle
