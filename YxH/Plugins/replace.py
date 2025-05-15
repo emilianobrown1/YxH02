@@ -35,15 +35,15 @@ async def replace_character_image(client, message, user):
         return await status.edit("❌ Character not found.")
 
     try:
-        # Upload new image
-        photo_path = await reply_msg.download()
+        # Upload new image with unique filename
+        photo_path = await reply_msg.download(file_name=f"replace_temp_{message.id}.jpg")
         new_image_url = envs_upload(photo_path)
         os.remove(photo_path)
 
         # Delete old character from DB
         await db.anime_characters.delete_one({"id": char_id})
 
-        # Recreate character with same info, new image
+        # Recreate character with updated image
         updated = AnimeCharacter(
             id=character.id,
             image=new_image_url,
