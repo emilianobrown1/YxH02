@@ -9,7 +9,7 @@ from telegraph import upload_file
 def telegraph_upload(file_path) -> str:
     try:
         response = upload_file(file_path)
-        return f"https://telegra.ph{response[0]['src']}"
+        return f"https://telegra.ph{response[0]}"
     except Exception as e:
         raise Exception(f"Telegraph upload failed: {e}")
 
@@ -35,7 +35,7 @@ async def upload(m):
     c = AnimeCharacter(id, image, name, anime, rarity)
     await c.add()
 
-@Client.on_message(filters.command("upload"))
+@Client.on_message(filters.command("aupl"))
 @YxH(sudo=True)
 async def aupl(_, m, u):
     ok = await m.reply("Processing...")
