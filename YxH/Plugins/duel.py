@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from ..Class.duel import Duel
-import YxH.duel_callback as duel_callback
+import .duel_callback as duel_callback
 from ..Database.users import get_user
 
 # In-memory duel storage for demo; replace with DB or Redis for persistence
