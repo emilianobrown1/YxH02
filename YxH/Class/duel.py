@@ -26,35 +26,6 @@ CHARACTERS = {
     "Gojo": {"hp": 100, "attack": 30, "defense": 22, "speed": 23, "special": 40},
 }
 
-class Duel:
-    def __init__(self, user1_id, user2_id):
-        self.user1 = User(user1_id)
-        self.user2 = User(user2_id)
-
-        self.players = {
-            user1_id: self.random_character(),
-            user2_id: self.random_character()
-        }
-
-        self.health = {
-            user1_id: self.players[user1_id]['hp'],
-            user2_id: self.players[user2_id]['hp']
-        }
-
-        self.turn = user1_id
-        self.log = []
-
-    def random_character(self):
-        name = random.choice(list(CHARACTERS.keys()))
-        stats = CHARACTERS[name].copy()
-        stats['name'] = name
-        return stats
-
-    def opponent(self, user_id):
-        return self.user2.id if user_id == self.user1.id else self.user1.id
-
-    def is_finished(self):
-        return any(hp <= 0 for hp in self.health.values())
 
     def attack(self, user_id):
         attacker = self.players[user_id]
@@ -64,6 +35,30 @@ class Duel:
         base_damage = attacker["attack"] - (defender["defense"] * 0.5)
         damage = max(5, int(base_damage + random.randint(-3, 3)))
         self.health[defender_id] -= damage
+
+class Duel:
+    def __init__(self, user1_id, user2_id):
+        self.player_ids = [user1_id, user2_id]
+        self.players = {
+            user1_id: self.random_character(),
+            user2_id: self.random_character()
+        }
+        self.health = {
+            user1_id: self.players[user1_id]['hp'],
+            user2_id: self.players[user2_id]['hp']
+        }
+        self.turn = user1_id
+        self.log = []
+
+    def random_character(self):
+        name = random.choice(list(CHARACTERS.keys()))
+        return {**CHARACTERS[name], 'name': name}
+
+    def opponent(self, user_id):
+        return self.player_ids[1] if user_id == self.player_ids[0] else self.player_ids[0]
+
+    def is_finished(self):
+        return any(hp <= 0 for hp in self.health.values())
 
         self.log.append(f"{attacker['name']} attacked {defender['name']} for {damage} damage!")
         self.turn = defender_id
@@ -106,23 +101,24 @@ class Duel:
     def get_log(self):
         return "\n".join(self.log[-5:])  # last 5 entries
 
-    def reward_winner(self, winner_id):
+    async def reward_winner(self, winner_id):
         loser_id = self.opponent(winner_id)
-        winner = self.user1 if winner_id == self.user1.id else self.user2
-        loser = self.user1 if winner_id != self.user1.id else self.user2
+        winner = await get_user(winner_id)
+        loser = await get_user(loser_id)
 
-        if not loser.characters:
-            self.log.append("Loser had no characters to steal.")
-            return None
+        transfer_msg = ""
+        if loser.collection:
+            stolen_char_id = random.choice(list(loser.collection.keys()))
+            loser.collection[stolen_char_id] -= 1
+            if loser.collection[stolen_char_id] <= 0:
+                del loser.collection[stolen_char_id]
+            
+            winner.collection[stolen_char_id] = winner.collection.get(stolen_char_id, 0) + 1
+            
+            await winner.update()
+            await loser.update()
+            
+            char = await get_anime_character(stolen_char_id)
+            transfer_msg = f"\n\n🏆 Won {char.name} from opponent!"
 
-        stolen_char = random.choice(loser.characters)
-        loser.characters.remove(stolen_char)
-        winner.characters.append(stolen_char)
-
-        self.log.append(f"{winner.name} won the duel and stole character ID {stolen_char} from {loser.name}.")
-
-        # Save changes to DB
-        winner.update()
-        loser.update()
-
-        return stolen_char
+        return transfer_msg
