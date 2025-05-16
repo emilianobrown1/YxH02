@@ -1,7 +1,9 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup
-from ..Class.duel import Duel
+from ..Database.users import get_user
 from ..Class.user import User
+from ..Class.duel import Duel
+from .duel_callback import get_duel_keyboard
 import random
 
 active_duels = {}
@@ -16,39 +18,40 @@ async def start_duel(client, message):
         return
 
     if from_user.id in active_duels or to_user.id in active_duels:
-        await message.reply("Either you or the opponent is already in a duel!")
+        await message.reply("Either you or your opponent is already in a duel!")
         return
 
-    # Initialize User objects (assuming `User` class takes a user object)
-    u1 = User(from_user)
-    u2 = User(to_user)
+    # Fetch both users from database
+    u1_data = await get_user(from_user.id)
+    u2_data = await get_user(to_user.id)
+
+    u1 = User(u1_data)
+    u2 = User(u2_data)
 
     cost = 100_000
     if u1.gold < cost:
         await message.reply("You don’t have enough gold to duel! (Need 100,000 gold)")
         return
+
     if u2.gold < cost:
         await message.reply("Your opponent doesn’t have enough gold to duel! (Need 100,000 gold)")
         return
 
-    # Deduct gold (since `User` class doesn't have `add_gold`, manually subtract and update)
+    # Deduct gold and update both users
     u1.gold -= cost
     u2.gold -= cost
-    await u1.update()  # Save changes to the database
+    await u1.update()
     await u2.update()
 
+    # Start the duel
     duel = Duel(from_user.id, to_user.id)
     active_duels[from_user.id] = duel
     active_duels[to_user.id] = duel
 
     text = (
-        f"Duel started between {duel.players[from_user.id]['name']} (you) "
+        f"⚔️ Duel started between {duel.players[from_user.id]['name']} (you) "
         f"and {duel.players[to_user.id]['name']} (opponent)!\n\n"
-        f"Turn: {duel.players[duel.turn]['name']}"
+        f"🎮 Turn: {duel.players[duel.turn]['name']}"
     )
     keyboard = get_duel_keyboard(from_user.id)
     await message.reply(text, reply_markup=keyboard)
-
-def get_duel_keyboard(user_id):
-    from .duel_callback import get_duel_keyboard
-    return get_duel_keyboard(user_id)
