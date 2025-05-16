@@ -3,17 +3,18 @@ from pyrogram.types import CallbackQuery
 from ..Class.duel import Duel
 from ..Class.user import User
 from ..Class.duel_state import active_duels
-from ._callbacks import cbq
 from ..Utils.duel_utils import get_duel_keyboard
 from ..Database.users import get_user
 import random
 
-@Client.on_callback_query(filters.regex(r"^duel_(attack|special|heal|exit):"))
+@Client.on_callback_query(filters.regex(r"^duel_(attack|special|heal|exit):(\d+)$"))
 async def handle_duel_actions(client: Client, callback: CallbackQuery):
     try:
-        # Extract action and user ID from callback data
-        action_part, user_id_str = callback.data.split(":")
-        user_id = int(user_id_str)
+        # Extract action and user ID using regex groups
+        match = callback.matches[0]
+        action_part = match.group(1)  # attack/special/heal/exit
+        user_id = int(match.group(2))
+        
         from_user = callback.from_user.id
 
         # Verify user ownership
@@ -28,7 +29,7 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
             return
 
         # Handle exit action
-        if action_part == "duel_exit":
+        if action_part == "exit":
             for uid in list(duel.players.keys()):
                 active_duels.pop(uid, None)
             await callback.message.edit("⚔️ Duel cancelled!")
@@ -41,13 +42,13 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
             return
 
         # Process combat actions
-        if action_part == "duel_attack":
+        if action_part == "attack":
             damage = duel.attack(user_id)
             result_text = f"⚔️ Attacked for {damage} damage!"
-        elif action_part == "duel_special":
+        elif action_part == "special":
             damage = duel.special(user_id)
             result_text = f"🌀 Special move dealt {damage} damage!"
-        elif action_part == "duel_heal":
+        elif action_part == "heal":
             heal_amount = duel.heal(user_id)
             result_text = f"❤️ Healed for {heal_amount} HP!"
         else:
@@ -73,7 +74,7 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
                     del loser.collection[stolen_char]
                 winner.collection[stolen_char] = winner.collection.get(stolen_char, 0) + 1
                 transfer_msg = f"\n\n🏆 Won {stolen_char} from opponent!"
-                
+
                 # Update both users
                 await winner.update()
                 await loser.update()
