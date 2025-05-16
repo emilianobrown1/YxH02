@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from ..Class.duel import Duel
-from YxH.Plugins import duel
+from .duel import as duel
 import asyncio
 
 active_duels = duel.active_duels  # share duel dict
