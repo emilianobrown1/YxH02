@@ -1,0 +1,14 @@
+# Utils/duel_utils.py
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+def get_duel_keyboard(user_id):
+    return InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("Attack", callback_data=f"duel_attack:{user_id}"),
+            InlineKeyboardButton("Special", callback_data=f"duel_special:{user_id}")
+        ],
+        [
+            InlineKeyboardButton("Heal", callback_data=f"duel_heal:{user_id}"),
+            InlineKeyboardButton("Exit Duel", callback_data=f"duel_exit:{user_id}")
+        ]
+    ])
