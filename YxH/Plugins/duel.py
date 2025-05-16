@@ -8,17 +8,18 @@ active_duels = {}
 
 @Client.on_message(filters.command("duel") & filters.reply)
 async def start_duel(client, message):
-    from_user = message.from_user.id
-    to_user = message.reply_to_message.from_user.id
+    from_user = message.from_user
+    to_user = message.reply_to_message.from_user
 
-    if from_user == to_user:
+    if from_user.id == to_user.id:
         await message.reply("You cannot duel yourself!")
         return
 
-    if from_user in active_duels or to_user in active_duels:
+    if from_user.id in active_duels or to_user.id in active_duels:
         await message.reply("Either you or the opponent is already in a duel!")
         return
 
+    # Initialize User objects (assuming `User` class takes a user object)
     u1 = User(from_user)
     u2 = User(to_user)
 
@@ -30,22 +31,22 @@ async def start_duel(client, message):
         await message.reply("Your opponent doesn’t have enough gold to duel! (Need 100,000 gold)")
         return
 
-    # Deduct gold using User class methods
-    u1.add_gold(-cost)
-    u2.add_gold(-cost)
-    u1.save()
-    u2.save()
+    # Deduct gold (since `User` class doesn't have `add_gold`, manually subtract and update)
+    u1.gold -= cost
+    u2.gold -= cost
+    await u1.update()  # Save changes to the database
+    await u2.update()
 
-    duel = Duel(from_user, to_user)
-    active_duels[from_user] = duel
-    active_duels[to_user] = duel
+    duel = Duel(from_user.id, to_user.id)
+    active_duels[from_user.id] = duel
+    active_duels[to_user.id] = duel
 
     text = (
-        f"Duel started between {duel.players[from_user]['name']} (you) "
-        f"and {duel.players[to_user]['name']} (opponent)!\n\n"
+        f"Duel started between {duel.players[from_user.id]['name']} (you) "
+        f"and {duel.players[to_user.id]['name']} (opponent)!\n\n"
         f"Turn: {duel.players[duel.turn]['name']}"
     )
-    keyboard = get_duel_keyboard(from_user)
+    keyboard = get_duel_keyboard(from_user.id)
     await message.reply(text, reply_markup=keyboard)
 
 def get_duel_keyboard(user_id):
