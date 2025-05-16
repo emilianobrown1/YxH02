@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup
 from ..Class.duel import Duel
-from ..Class.user import User  # Make sure the path matches your actual file system
+from ..Class.user import User
 import random
 
 active_duels = {}
@@ -30,9 +30,9 @@ async def start_duel(client, message):
         await message.reply("Your opponent doesn’t have enough gold to duel! (Need 100,000 gold)")
         return
 
-    # Deduct gold
-    u1.gold -= cost
-    u2.gold -= cost
+    # Deduct gold using User class methods
+    u1.add_gold(-cost)
+    u2.add_gold(-cost)
     u1.save()
     u2.save()
 
