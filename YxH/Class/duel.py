@@ -1,4 +1,4 @@
-from ..Database.wordle import db
+from ..Database import db 
 import pickle
 import random
 
