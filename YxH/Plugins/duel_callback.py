@@ -1,10 +1,9 @@
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from ..Class.duel import Duel
-from ..Database.users import get_user, update_user
+from ..Class.user import User
 from .duel import active_duels
 import random
-import pickle
 
 def get_duel_keyboard(user_id):
     return InlineKeyboardMarkup([
@@ -64,28 +63,30 @@ async def duel_callback(client: Client, callback: CallbackQuery):
         winner_id = players[0] if hp1 > hp2 else players[1]
         loser_id = players[1] if hp1 > hp2 else players[0]
 
-        winner_user = await get_user(winner_id)
-        loser_user = await get_user(loser_id)
+        # Use User class instead of direct DB updates
+        winner_user = User(winner_id)
+        loser_user = User(loser_id)
 
         transfer_msg = ""
-        if winner_user and loser_user:
-            loser_collection = loser_user.get("collection", {})
+        if hasattr(winner_user, "collection") and hasattr(loser_user, "collection"):
+            loser_collection = loser_user.collection
             if loser_collection:
                 char_to_transfer = random.choice(list(loser_collection.keys()))
-                
+
                 # Update winner's collection
-                winner_user.setdefault("collection", {})
-                winner_user["collection"][char_to_transfer] = winner_user["collection"].get(char_to_transfer, 0) + 1
-                
+                if not hasattr(winner_user, "collection"):
+                    winner_user.collection = {}
+                winner_user.collection[char_to_transfer] = winner_user.collection.get(char_to_transfer, 0) + 1
+
                 # Update loser's collection
-                loser_user["collection"][char_to_transfer] -= 1
-                if loser_user["collection"][char_to_transfer] <= 0:
-                    del loser_user["collection"][char_to_transfer]
-                
-                # Save changes
-                await update_user(winner_id, pickle.dumps(winner_user))
-                await update_user(loser_id, pickle.dumps(loser_user))
-                
+                loser_user.collection[char_to_transfer] -= 1
+                if loser_user.collection[char_to_transfer] <= 0:
+                    del loser_user.collection[char_to_transfer]
+
+                # Save changes using User.update()
+                await winner_user.update()
+                await loser_user.update()
+
                 transfer_msg = f"\n\nYou won! You received character **{char_to_transfer}** from your opponent."
             else:
                 transfer_msg = "\n\nYou won! But your opponent has no characters to transfer."
