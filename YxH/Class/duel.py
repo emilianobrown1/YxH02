@@ -1,3 +1,5 @@
+from ..Database.wordle import db
+import pickle
 import random
 
 # Anime characters with balanced and distinct stats
