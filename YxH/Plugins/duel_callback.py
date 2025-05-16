@@ -1,9 +1,10 @@
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from ..Class.duel import Duel
-from . import get_user, YxH
+from ..Database.users import get_user, update_user
 from .duel import active_duels
 import random
+import pickle
 
 def get_duel_keyboard(user_id):
     return InlineKeyboardMarkup([
@@ -19,82 +20,77 @@ def get_duel_keyboard(user_id):
 
 @Client.on_callback_query(filters.regex(r"^duel_(attack|special|heal|exit):(\d+)$"))
 async def duel_callback(client: Client, callback: CallbackQuery):
-    action, user_id_str = callback.data.split(":")
+    action_part, user_id_str = callback.data.split(":")
     user_id = int(user_id_str)
     from_user = callback.from_user.id
 
-    # Only allow the user whose turn it is or in the duel to proceed
     if user_id != from_user:
         await callback.answer("It's not your turn!", show_alert=True)
         return
 
-    if user_id not in active_duels:
+    duel = active_duels.get(user_id)
+    if not duel:
         await callback.answer("You are not in an active duel.", show_alert=True)
         return
 
-    duel = active_duels[user_id]
-
-    if duel.turn != user_id and action != "exit":
+    if duel.turn != user_id and action_part != "exit":
         await callback.answer("Wait for your turn!", show_alert=True)
         return
 
-    if action == "exit":
-        # End duel and clean up
-        for uid in duel.players.keys():
+    if action_part == "exit":
+        for uid in list(duel.players.keys()):
             active_duels.pop(uid, None)
         await callback.message.edit("Duel ended prematurely.")
         await callback.answer()
         return
 
-    # Perform action
-    if action == "duel_attack":
+    if action_part == "attack":
         damage = duel.attack(user_id)
         result_text = f"You attacked and dealt {damage} damage."
-    elif action == "duel_special":
+    elif action_part == "special":
         damage = duel.special(user_id)
         result_text = f"You used special and dealt {damage} damage."
-    elif action == "duel_heal":
+    elif action_part == "heal":
         heal_amount = duel.heal(user_id)
         result_text = f"You healed yourself for {heal_amount} HP."
     else:
         await callback.answer("Invalid action.", show_alert=True)
         return
 
-    # Check if duel finished
     if duel.is_finished():
-        # Determine winner and loser
         players = list(duel.players.keys())
         hp1 = duel.health[players[0]]
         hp2 = duel.health[players[1]]
+        winner_id = players[0] if hp1 > hp2 else players[1]
+        loser_id = players[1] if hp1 > hp2 else players[0]
 
-        if hp1 > hp2:
-            winner_id = players[0]
-            loser_id = players[1]
-        else:
-            winner_id = players[1]
-            loser_id = players[0]
-
-        # Transfer one random character from loser to winner
         winner_user = await get_user(winner_id)
         loser_user = await get_user(loser_id)
 
-        loser_collection = loser_user.get("collection", {})
-        if loser_collection:
-            char_to_transfer = random.choice(list(loser_collection.keys()))
-            # Transfer character
-            winner_user.setdefault("collection", {})
-            winner_user["collection"][char_to_transfer] = loser_collection.pop(char_to_transfer)
+        transfer_msg = ""
+        if winner_user and loser_user:
+            loser_collection = loser_user.get("collection", {})
+            if loser_collection:
+                char_to_transfer = random.choice(list(loser_collection.keys()))
+                
+                # Update winner's collection
+                winner_user.setdefault("collection", {})
+                winner_user["collection"][char_to_transfer] = winner_user["collection"].get(char_to_transfer, 0) + 1
+                
+                # Update loser's collection
+                loser_user["collection"][char_to_transfer] -= 1
+                if loser_user["collection"][char_to_transfer] <= 0:
+                    del loser_user["collection"][char_to_transfer]
+                
+                # Save changes
+                await update_user(winner_id, pickle.dumps(winner_user))
+                await update_user(loser_id, pickle.dumps(loser_user))
+                
+                transfer_msg = f"\n\nYou won! You received character **{char_to_transfer}** from your opponent."
+            else:
+                transfer_msg = "\n\nYou won! But your opponent has no characters to transfer."
 
-            # Save updates
-            await update_user(winner_id, winner_user)
-            await update_user(loser_id, loser_user)
-
-            transfer_msg = f"\n\nYou won! You received character **{char_to_transfer}** from your opponent."
-        else:
-            transfer_msg = "\n\nYou won! But your opponent has no characters to transfer."
-
-        # Remove duel from active list
-        for uid in duel.players.keys():
+        for uid in list(duel.players.keys()):
             active_duels.pop(uid, None)
 
         await callback.message.edit(
@@ -105,7 +101,6 @@ async def duel_callback(client: Client, callback: CallbackQuery):
         await callback.answer()
         return
 
-    # Duel continues - update status and buttons
     status_text = (
         f"{result_text}\n\n"
         f"{duel.get_status(duel.turn)}\n"
