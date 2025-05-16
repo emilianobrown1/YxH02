@@ -1,12 +1,10 @@
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup
 from ..Database.users import get_user
 from ..Class.user import User
 from ..Class.duel import Duel
-from .duel_callback import get_duel_keyboard
+from ..Class.duel_state import active_duels
+from ..Utils.duel_utils import get_duel_keyboard
 import random
-
-active_duels = {}
 
 @Client.on_message(filters.command("duel") & filters.reply)
 async def start_duel(client, message):
@@ -21,10 +19,8 @@ async def start_duel(client, message):
         await message.reply("Either you or your opponent is already in a duel!")
         return
 
-    # Fetch both users from database
     u1_data = await get_user(from_user.id)
     u2_data = await get_user(to_user.id)
-
     u1 = User(u1_data)
     u2 = User(u2_data)
 
@@ -37,13 +33,11 @@ async def start_duel(client, message):
         await message.reply("Your opponent doesn’t have enough gold to duel! (Need 100,000 gold)")
         return
 
-    # Deduct gold and update both users
     u1.gold -= cost
     u2.gold -= cost
     await u1.update()
     await u2.update()
 
-    # Start the duel
     duel = Duel(from_user.id, to_user.id)
     active_duels[from_user.id] = duel
     active_duels[to_user.id] = duel
