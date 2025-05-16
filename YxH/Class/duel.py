@@ -1,5 +1,5 @@
 from ..Database import db
-from ..Class.user import User  # Ensure this import path is correct
+from ..Class.user import User
 import pickle
 import random
 
@@ -27,15 +27,6 @@ CHARACTERS = {
 }
 
 
-    def attack(self, user_id):
-        attacker = self.players[user_id]
-        defender_id = self.opponent(user_id)
-        defender = self.players[defender_id]
-
-        base_damage = attacker["attack"] - (defender["defense"] * 0.5)
-        damage = max(5, int(base_damage + random.randint(-3, 3)))
-        self.health[defender_id] -= damage
-
 class Duel:
     def __init__(self, user1_id, user2_id):
         self.player_ids = [user1_id, user2_id]
@@ -59,6 +50,15 @@ class Duel:
 
     def is_finished(self):
         return any(hp <= 0 for hp in self.health.values())
+
+    def attack(self, user_id):
+        attacker = self.players[user_id]
+        defender_id = self.opponent(user_id)
+        defender = self.players[defender_id]
+
+        base_damage = attacker["attack"] - (defender["defense"] * 0.5)
+        damage = max(5, int(base_damage + random.randint(-3, 3)))
+        self.health[defender_id] -= damage
 
         self.log.append(f"{attacker['name']} attacked {defender['name']} for {damage} damage!")
         self.turn = defender_id
@@ -102,6 +102,9 @@ class Duel:
         return "\n".join(self.log[-5:])  # last 5 entries
 
     async def reward_winner(self, winner_id):
+        from ..Database.users import get_user
+        from ..Database.characters import get_anime_character
+
         loser_id = self.opponent(winner_id)
         winner = await get_user(winner_id)
         loser = await get_user(loser_id)
@@ -112,12 +115,12 @@ class Duel:
             loser.collection[stolen_char_id] -= 1
             if loser.collection[stolen_char_id] <= 0:
                 del loser.collection[stolen_char_id]
-            
+
             winner.collection[stolen_char_id] = winner.collection.get(stolen_char_id, 0) + 1
-            
+
             await winner.update()
             await loser.update()
-            
+
             char = await get_anime_character(stolen_char_id)
             transfer_msg = f"\n\n🏆 Won {char.name} from opponent!"
 
