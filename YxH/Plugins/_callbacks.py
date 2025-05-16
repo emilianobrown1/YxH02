@@ -28,6 +28,9 @@ from .tictactoe import game_manager, create_board, check_winner
 from ..Database.tictactoe import add_tictactoe_game
 from .catch import catch_command
 from .powers import powerxup_store, refresh_power, buy_power
+from .duel_callback import handle_duel_actions
+
+# Then register other handlers
 from . extras import uncollected_characters, create_telegraph_page_for_uncollected
 from ..Database.characters import get_all as get_all_anime_characters
 
@@ -114,6 +117,9 @@ async def cbq(_, q: CallbackQuery):
     telegraph_url = await create_telegraph_page_for_uncollected(q.from_user, uncollected)
     await q.message.reply(f"Here are your uncollected characters: {telegraph_url}")
     await q.answer()  # Acknowledge the button press
+
+  if q.data.startswith('duel_'):
+        return  # Let duel_callback.py handle it
     
   if q.data.startswith("ttt_"):
         try:
