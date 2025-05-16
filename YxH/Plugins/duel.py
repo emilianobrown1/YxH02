@@ -25,10 +25,10 @@ async def start_duel(client, message):
 
     cost = 100_000
     if u1.gold < cost:
-        await message.reply("You don’t have enough gold to duel! (Need 100,000 gold)")
+        await message.reply("You don't have enough gold to duel! (Need 100,000 gold)")
         return
     if u2.gold < cost:
-        await message.reply("Your opponent doesn’t have enough gold to duel! (Need 100,000 gold)")
+        await message.reply("Your opponent doesn't have enough gold to duel! (Need 100,000 gold)")
         return
 
     try:
@@ -38,19 +38,22 @@ async def start_duel(client, message):
         await u1.update()
         await u2.update()
 
-        # Initialize duel WITH PROPER ARGUMENTS (user1_id, user2_id)
-        duel = Duel(u1.user.id, u2.user.id)  # Removed bet_amount parameter
-        await duel.initialize()
+        # Create duel instance (no initialize needed)
+        duel = Duel(u1.user.id, u2.user.id)
 
         # Store duel state
         active_duels[u1.user.id] = duel
         active_duels[u2.user.id] = duel
 
-        # Get character names from duel instance
+        # Get character names directly from duel instance
+        player1_char = duel.players[u1.user.id]['name']
+        player2_char = duel.players[u2.user.id]['name']
+        current_turn_char = duel.players[duel.turn]['name']
+
         text = (
-            f"⚔️ Duel started between {duel.players[u1.user.id]['name']} (you) "
-            f"and {duel.players[u2.user.id]['name']} (opponent)!\n\n"
-            f"🎮 Turn: {duel.players[duel.turn]['name']}"
+            f"⚔️ Duel started between {player1_char} (you) "
+            f"and {player2_char} (opponent)!\n\n"
+            f"🎮 Turn: {current_turn_char}"
         )
         keyboard = get_duel_keyboard(u1.user.id)
         await message.reply(text, reply_markup=keyboard)
