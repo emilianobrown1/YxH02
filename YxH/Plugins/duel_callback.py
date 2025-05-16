@@ -1,21 +1,10 @@
 from pyrogram import Client, filters
-from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import CallbackQuery
 from ..Class.duel import Duel
 from ..Class.user import User
-from .duel import active_duels
+from ..Class.duel_state import active_duels
+from ..Utils.duel_utils import get_duel_keyboard
 import random
-
-def get_duel_keyboard(user_id):
-    return InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton("Attack", callback_data=f"duel_attack:{user_id}"),
-            InlineKeyboardButton("Special", callback_data=f"duel_special:{user_id}")
-        ],
-        [
-            InlineKeyboardButton("Heal", callback_data=f"duel_heal:{user_id}"),
-            InlineKeyboardButton("Exit Duel", callback_data=f"duel_exit:{user_id}")
-        ]
-    ])
 
 @Client.on_callback_query(filters.regex(r"^duel_(attack|special|heal|exit):(\d+)$"))
 async def duel_callback(client: Client, callback: CallbackQuery):
@@ -63,7 +52,6 @@ async def duel_callback(client: Client, callback: CallbackQuery):
         winner_id = players[0] if hp1 > hp2 else players[1]
         loser_id = players[1] if hp1 > hp2 else players[0]
 
-        # Use User class instead of direct DB updates
         winner_user = User(winner_id)
         loser_user = User(loser_id)
 
@@ -72,18 +60,11 @@ async def duel_callback(client: Client, callback: CallbackQuery):
             loser_collection = loser_user.collection
             if loser_collection:
                 char_to_transfer = random.choice(list(loser_collection.keys()))
-
-                # Update winner's collection
-                if not hasattr(winner_user, "collection"):
-                    winner_user.collection = {}
                 winner_user.collection[char_to_transfer] = winner_user.collection.get(char_to_transfer, 0) + 1
-
-                # Update loser's collection
                 loser_user.collection[char_to_transfer] -= 1
                 if loser_user.collection[char_to_transfer] <= 0:
                     del loser_user.collection[char_to_transfer]
 
-                # Save changes using User.update()
                 await winner_user.update()
                 await loser_user.update()
 
