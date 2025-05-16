@@ -3,6 +3,7 @@ from pyrogram.types import CallbackQuery
 from ..Class.duel import Duel
 from ..Class.user import User
 from ..Class.duel_state import active_duels
+from ._callbacks import cbq
 from ..Utils.duel_utils import get_duel_keyboard
 from ..Database.users import get_user
 import random
