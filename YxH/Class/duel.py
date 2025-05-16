@@ -1,5 +1,5 @@
 from ..Database import db
-from ..class.user import User  # Ensure this import path is correct
+from ..Class.user import User  # Ensure this import path is correct
 import pickle
 import random
 
