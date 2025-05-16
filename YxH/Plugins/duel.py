@@ -3,6 +3,7 @@ from pyrogram.types import InlineKeyboardMarkup
 from ..Class.duel import Duel
 from ..Database.users import get_user, update_user
 import random
+import pickle
 
 active_duels = {}
 
@@ -19,23 +20,23 @@ async def start_duel(client, message):
         await message.reply("Either you or the opponent is already in a duel!")
         return
 
-    user1 = await get_user(from_user)
-    user2 = await get_user(to_user)
-    if not user1 or not user2:
+    user1_data = await get_user(from_user)
+    user2_data = await get_user(to_user)
+    if not user1_data or not user2_data:
         await message.reply("One of the users is not registered in the game.")
         return
 
     # Check gold cost
     cost = 100_000
-    if user1.get("gold", 0) < cost or user2.get("gold", 0) < cost:
+    if user1_data.get("gold", 0) < cost or user2_data.get("gold", 0) < cost:
         await message.reply("Both players must have at least 100,000 gold to start a duel.")
         return
 
     # Deduct gold cost
-    user1["gold"] -= cost
-    user2["gold"] -= cost
-    await update_user(from_user, user1)
-    await update_user(to_user, user2)
+    user1_data["gold"] -= cost
+    user2_data["gold"] -= cost
+    await update_user(from_user, pickle.dumps(user1_data))
+    await update_user(to_user, pickle.dumps(user2_data))
 
     duel = Duel(from_user, to_user)
     active_duels[from_user] = duel
