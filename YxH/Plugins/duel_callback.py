@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from ..Class.duel import Duel
-from ..Database.users import get_user, update_user
+from . import get_user, YxH
 from .duel import active_duels
 import random
 
