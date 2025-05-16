@@ -1,65 +1,117 @@
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from ..Class.duel import Duel
-from .duel import as duel
-import asyncio
-
-active_duels = duel.active_duels  # share duel dict
+from ..Database.users import get_user, update_user
+from .duel import active_duels
+import random
 
 def get_duel_keyboard(user_id):
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("Attack", callback_data=f"duel_attack:{user_id}"),
-         InlineKeyboardButton("Special", callback_data=f"duel_special:{user_id}")],
-        [InlineKeyboardButton("Heal", callback_data=f"duel_heal:{user_id}")]
+        [
+            InlineKeyboardButton("Attack", callback_data=f"duel_attack:{user_id}"),
+            InlineKeyboardButton("Special", callback_data=f"duel_special:{user_id}")
+        ],
+        [
+            InlineKeyboardButton("Heal", callback_data=f"duel_heal:{user_id}"),
+            InlineKeyboardButton("Exit Duel", callback_data=f"duel_exit:{user_id}")
+        ]
     ])
 
-@Client.on_callback_query(filters.regex(r"^duel_(attack|special|heal):(\d+)$"))
-async def duel_handler(client: Client, callback_query: CallbackQuery):
-    action, user_id_str = callback_query.data.split(":")
+@Client.on_callback_query(filters.regex(r"^duel_(attack|special|heal|exit):(\d+)$"))
+async def duel_callback(client: Client, callback: CallbackQuery):
+    action, user_id_str = callback.data.split(":")
     user_id = int(user_id_str)
+    from_user = callback.from_user.id
 
-    duel_instance = active_duels.get(user_id)
-    if not duel_instance:
-        await callback_query.answer("No active duel found.", show_alert=True)
+    # Only allow the user whose turn it is or in the duel to proceed
+    if user_id != from_user:
+        await callback.answer("It's not your turn!", show_alert=True)
         return
 
-    if duel_instance.turn != callback_query.from_user.id:
-        await callback_query.answer("It's not your turn!", show_alert=True)
+    if user_id not in active_duels:
+        await callback.answer("You are not in an active duel.", show_alert=True)
         return
 
-    if duel_instance.is_finished():
-        winner_id = None
-        for uid, hp in duel_instance.health.items():
-            if hp > 0:
-                winner_id = uid
-        await callback_query.message.edit(f"Duel over! Winner: {duel_instance.players[winner_id]['name']}")
-        # Cleanup duel
-        for uid in duel_instance.players:
+    duel = active_duels[user_id]
+
+    if duel.turn != user_id and action != "exit":
+        await callback.answer("Wait for your turn!", show_alert=True)
+        return
+
+    if action == "exit":
+        # End duel and clean up
+        for uid in duel.players.keys():
             active_duels.pop(uid, None)
+        await callback.message.edit("Duel ended prematurely.")
+        await callback.answer()
         return
 
-    result_text = ""
+    # Perform action
     if action == "duel_attack":
-        damage = duel_instance.attack(user_id)
-        result_text = f"Attack dealt {damage} damage."
+        damage = duel.attack(user_id)
+        result_text = f"You attacked and dealt {damage} damage."
     elif action == "duel_special":
-        damage = duel_instance.special(user_id)
-        result_text = f"Special attack dealt {damage} damage."
+        damage = duel.special(user_id)
+        result_text = f"You used special and dealt {damage} damage."
     elif action == "duel_heal":
-        heal = duel_instance.heal(user_id)
-        result_text = f"Healed {heal} HP."
+        heal_amount = duel.heal(user_id)
+        result_text = f"You healed yourself for {heal_amount} HP."
+    else:
+        await callback.answer("Invalid action.", show_alert=True)
+        return
 
-    status_1 = duel_instance.get_health_bar(list(duel_instance.players.keys())[0])
-    status_2 = duel_instance.get_health_bar(list(duel_instance.players.keys())[1])
-    log = duel_instance.get_log()
+    # Check if duel finished
+    if duel.is_finished():
+        # Determine winner and loser
+        players = list(duel.players.keys())
+        hp1 = duel.health[players[0]]
+        hp2 = duel.health[players[1]]
 
-    new_text = (
-        f"{log}\n\n"
-        f"{status_1}\n"
-        f"{status_2}\n\n"
-        f"Turn: {duel_instance.players[duel_instance.turn]['name']}\n"
-        f"{result_text}"
+        if hp1 > hp2:
+            winner_id = players[0]
+            loser_id = players[1]
+        else:
+            winner_id = players[1]
+            loser_id = players[0]
+
+        # Transfer one random character from loser to winner
+        winner_user = await get_user(winner_id)
+        loser_user = await get_user(loser_id)
+
+        loser_collection = loser_user.get("collection", {})
+        if loser_collection:
+            char_to_transfer = random.choice(list(loser_collection.keys()))
+            # Transfer character
+            winner_user.setdefault("collection", {})
+            winner_user["collection"][char_to_transfer] = loser_collection.pop(char_to_transfer)
+
+            # Save updates
+            await update_user(winner_id, winner_user)
+            await update_user(loser_id, loser_user)
+
+            transfer_msg = f"\n\nYou won! You received character **{char_to_transfer}** from your opponent."
+        else:
+            transfer_msg = "\n\nYou won! But your opponent has no characters to transfer."
+
+        # Remove duel from active list
+        for uid in duel.players.keys():
+            active_duels.pop(uid, None)
+
+        await callback.message.edit(
+            f"{result_text}\n\nDuel finished!\nWinner: <a href='tg://user?id={winner_id}'>Player</a>{transfer_msg}",
+            disable_web_page_preview=True,
+            parse_mode="html"
+        )
+        await callback.answer()
+        return
+
+    # Duel continues - update status and buttons
+    status_text = (
+        f"{result_text}\n\n"
+        f"{duel.get_status(duel.turn)}\n"
+        f"{duel.get_health_bar(duel.turn)}\n\n"
+        f"Last moves:\n{duel.get_log()}"
     )
-    keyboard = get_duel_keyboard(duel_instance.turn)
-    await callback_query.message.edit(new_text, reply_markup=keyboard)
-    await callback_query.answer()
+    keyboard = get_duel_keyboard(duel.turn)
+    await callback.message.edit(status_text, reply_markup=keyboard)
+    await callback.answer()
