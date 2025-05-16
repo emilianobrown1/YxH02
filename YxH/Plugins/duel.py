@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup
 from ..Class.duel import Duel
-from ..class.user import User  # Make sure the path matches your actual file system
+from ..Class.user import User  # Make sure the path matches your actual file system
 import random
 
 active_duels = {}
