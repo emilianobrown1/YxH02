@@ -19,7 +19,7 @@ async def start_duel(client, message):
         await message.reply("Either you or your opponent is already in a duel!")
         return
 
-    # Get User instances directly from database
+    # Get User instances
     u1 = await get_user(from_user.id)
     u2 = await get_user(to_user.id)
 
@@ -38,19 +38,19 @@ async def start_duel(client, message):
         await u1.update()
         await u2.update()
 
-        # Initialize duel with bet amount
-        duel = Duel(u1.user.id, u2.user.id, cost)
-        await duel.initialize()  # Added await for async initialization
-        
+        # Initialize duel WITH PROPER ARGUMENTS (user1_id, user2_id)
+        duel = Duel(u1.user.id, u2.user.id)  # Removed bet_amount parameter
+        await duel.initialize()
+
         # Store duel state
         active_duels[u1.user.id] = duel
         active_duels[u2.user.id] = duel
 
         # Get character names from duel instance
         text = (
-            f"⚔️ Duel started between {duel.characters[0]} (you) "
-            f"and {duel.characters[1]} (opponent)!\n\n"
-            f"🎮 Turn: {duel.characters[duel.turn]}"
+            f"⚔️ Duel started between {duel.players[u1.user.id]['name']} (you) "
+            f"and {duel.players[u2.user.id]['name']} (opponent)!\n\n"
+            f"🎮 Turn: {duel.players[duel.turn]['name']}"
         )
         keyboard = get_duel_keyboard(u1.user.id)
         await message.reply(text, reply_markup=keyboard)
