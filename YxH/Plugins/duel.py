@@ -19,33 +19,49 @@ async def start_duel(client, message):
         await message.reply("Either you or your opponent is already in a duel!")
         return
 
-    u1_data = await get_user(from_user.id)
-    u2_data = await get_user(to_user.id)
-    u1 = User(u1_data)
-    u2 = User(u2_data)
+    # Get User instances directly from database
+    u1 = await get_user(from_user.id)
+    u2 = await get_user(to_user.id)
 
     cost = 100_000
     if u1.gold < cost:
         await message.reply("You don’t have enough gold to duel! (Need 100,000 gold)")
         return
-
     if u2.gold < cost:
         await message.reply("Your opponent doesn’t have enough gold to duel! (Need 100,000 gold)")
         return
 
-    u1.gold -= cost
-    u2.gold -= cost
-    await u1.update()
-    await u2.update()
+    try:
+        # Deduct gold first
+        u1.gold -= cost
+        u2.gold -= cost
+        await u1.update()
+        await u2.update()
 
-    duel = Duel(from_user.id, to_user.id)
-    active_duels[from_user.id] = duel
-    active_duels[to_user.id] = duel
+        # Initialize duel with bet amount
+        duel = Duel(u1.user.id, u2.user.id, cost)
+        await duel.initialize()  # Added await for async initialization
+        
+        # Store duel state
+        active_duels[u1.user.id] = duel
+        active_duels[u2.user.id] = duel
 
-    text = (
-        f"⚔️ Duel started between {duel.players[from_user.id]['name']} (you) "
-        f"and {duel.players[to_user.id]['name']} (opponent)!\n\n"
-        f"🎮 Turn: {duel.players[duel.turn]['name']}"
-    )
-    keyboard = get_duel_keyboard(from_user.id)
-    await message.reply(text, reply_markup=keyboard)
+        # Get character names from duel instance
+        text = (
+            f"⚔️ Duel started between {duel.characters[0]} (you) "
+            f"and {duel.characters[1]} (opponent)!\n\n"
+            f"🎮 Turn: {duel.characters[duel.turn]}"
+        )
+        keyboard = get_duel_keyboard(u1.user.id)
+        await message.reply(text, reply_markup=keyboard)
+
+    except Exception as e:
+        # Rollback gold deduction if duel creation fails
+        u1.gold += cost
+        u2.gold += cost
+        await u1.update()
+        await u2.update()
+        await message.reply(f"❌ Failed to start duel: {str(e)}")
+        # Cleanup active duels if any
+        active_duels.pop(u1.user.id, None)
+        active_duels.pop(u2.user.id, None)
