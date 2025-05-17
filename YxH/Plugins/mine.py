@@ -78,22 +78,44 @@ async def mine(_, m, user):
     await user.update()
     await m.reply(txt)
 
+
+@app.on_start()
+async def on_start(client):
+    asyncio.create_task(fest_hour_task(client))
+
 async def fest_hour_task(app):
     while True:
-        current_hour = datetime.now(IST).hour
-        if current_hour == await get_fest_hour():
-            text = (
-                "🎉 **Fest Hour is live!** 🎉\n\n"
-                "💰 Higher success rates for mining are now active for the next hour. "
-                "Don't miss your chance to strike big!"
-            )
-            mess = await app.send_message(SUPPORT_GROUP, text)
-            try:
-                await mess.pin()
-            except Exception as e:
-                print(f"[Fest Hour] Pin failed: {e}")
-            await asyncio.sleep(3600)
-        await asyncio.sleep(60)
-
-asyncio.create_task(fest_hour_task(app))
-
+        try:
+            current_hour = datetime.now(IST).hour
+            fest_hour = await get_fest_hour()
+            
+            if current_hour == fest_hour:
+                # Send fest hour message once per hour
+                text = (
+                    "🎉 Fest Hour is live! 🎉\n\n"
+                    "💰 Higher success rates for mining are now active for the next hour. "
+                    "Don't miss your chance to strike big!"
+                )
+                try:
+                    mess = await app.send_message(SUPPORT_GROUP, text)
+                    try:
+                        await mess.pin()
+                    except Exception as e:
+                        print(f"Failed to pin message: {e}")
+                except Exception as e:
+                    print(f"Failed to send fest hour message: {e}")
+                
+                # Calculate sleep time until next hour
+                now = datetime.now(IST)
+                next_hour = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
+                sleep_time = (next_hour - now).total_seconds()
+                await asyncio.sleep(sleep_time)
+            else:
+                # Sleep until the next hour check
+                now = datetime.now(IST)
+                next_check = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+                sleep_time = (next_check - now).total_seconds()
+                await asyncio.sleep(sleep_time)
+        except Exception as e:
+            print(f"Error in fest_hour_task: {e}")
+            await asyncio.sleep(60)  # Retry after a minute if something goes wrong
