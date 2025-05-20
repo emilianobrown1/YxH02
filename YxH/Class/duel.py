@@ -295,26 +295,26 @@ class Duel:
         return "\n".join(self.log[-5:])
 
     async def reward_winner(self, winner_id):
-        from ..Database.users import get_user  
-        from ..Database.characters import get_anime_character  
+    from ..Database.users import get_user  
+    from ..Database.characters import get_anime_character  
 
-        loser_id = self.opponent(winner_id)
-        winner = await get_user(winner_id)
-        loser = await get_user(loser_id)
+    loser_id = self.opponent(winner_id)
+    winner = await get_user(winner_id)
+    loser = await get_user(loser_id)
 
-        transfer_msg = ""  
-        if loser.collection:  
-            stolen_char_id = random.choice(list(loser.collection.keys()))
-            loser.collection[stolen_char_id] -= 1  
-            if loser.collection[stolen_char_id] <= 0:  
-                del loser.collection[stolen_char_id]  
+    transfer_msg = ""  
+    if loser.collection:  
+        stolen_char_id = random.choice(list(loser.collection.keys()))
+        loser.collection[stolen_char_id] -= 1  
+        if loser.collection[stolen_char_id] <= 0:  
+            del loser.collection[stolen_char_id]  
 
-            winner.collection[stolen_char_id] = winner.collection.get(stolen_char_id, 0) + 1  
+        winner.collection[stolen_char_id] = winner.collection.get(stolen_char_id, 0) + 1  
 
-            await winner.update()  
-            await loser.update()  
+        await winner.update()  
+        await loser.update()  
 
-            char = await get_anime_character(stolen_char_id)  
-            transfer_msg = f"\n\n🏆 Won {char.name} from opponent!"  
+        char = await get_anime_character(stolen_char_id)  
+        transfer_msg = f"\n\n🏆 Won {char.name} (ID: {stolen_char_id}) from opponent!"  
 
-        return transfer_msg
+    return transfer_msg
