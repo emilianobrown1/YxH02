@@ -44,9 +44,10 @@ async def start_duel(client, message):
         current_turn_char = duel.players[duel.turn]['name']  
 
         text = (  
-            f"⚔️ Duel started between {player1_char} (you) "  
-            f"and {player2_char} (opponent)!\n\n"  
-            f"🎮 Turn: {current_turn_char}"  
+            f"⚔️ Duel started between:\n"
+            f"• {player1_char} ({from_user.first_name})\n"  
+            f"• {player2_char} ({to_user.first_name})\n\n"  
+            f"🎮 Current turn: {current_turn_char} ({duel.turn == from_user.id and from_user.first_name or to_user.first_name})"
         )  
         keyboard = get_duel_keyboard(u1.user.id, duel.players[u1.user.id]['abilities'])
         await message.reply(text, reply_markup=keyboard)  
