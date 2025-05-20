@@ -3,29 +3,197 @@ from ..Class.user import User
 import pickle
 import random
 
-# Anime characters with stats
 CHARACTERS = {
-    "Naruto": {"hp": 100, "attack": 25, "defense": 15, "speed": 20, "special": 35},
-    "Kakashi": {"hp": 90, "attack": 22, "defense": 20, "speed": 25, "special": 30},
-    "Hinata": {"hp": 85, "attack": 20, "defense": 18, "speed": 28, "special": 32},
-    "Sasuke": {"hp": 95, "attack": 28, "defense": 16, "speed": 22, "special": 33},
-    "Sakura": {"hp": 90, "attack": 23, "defense": 22, "speed": 18, "special": 30},
-    "Luffy": {"hp": 110, "attack": 30, "defense": 17, "speed": 19, "special": 29},
-    "Nami": {"hp": 80, "attack": 18, "defense": 15, "speed": 30, "special": 25},
-    "Zoro": {"hp": 105, "attack": 32, "defense": 19, "speed": 15, "special": 28},
-    "Light": {"hp": 85, "attack": 24, "defense": 17, "speed": 25, "special": 35},
-    "Sung Jin-Woo": {"hp": 95, "attack": 28, "defense": 20, "speed": 20, "special": 40},
-    "Boa Hancock": {"hp": 90, "attack": 26, "defense": 18, "speed": 22, "special": 33},
-    "Rengoku": {"hp": 100, "attack": 29, "defense": 21, "speed": 17, "special": 31},
-    "Zenitsu": {"hp": 80, "attack": 20, "defense": 15, "speed": 35, "special": 27},
-    "Levi": {"hp": 85, "attack": 27, "defense": 20, "speed": 30, "special": 28},
-    "Sanji": {"hp": 95, "attack": 28, "defense": 18, "speed": 25, "special": 29},
-    "Mitsuri": {"hp": 90, "attack": 22, "defense": 17, "speed": 28, "special": 31},
-    "Nezuko": {"hp": 100, "attack": 26, "defense": 19, "speed": 20, "special": 30},
-    "Tanjiro": {"hp": 95, "attack": 27, "defense": 20, "speed": 22, "special": 32},
-    "Gojo": {"hp": 100, "attack": 30, "defense": 22, "speed": 23, "special": 40},
+    "Boa Hancock": {
+        "name": "Boa Hancock",
+        "hp": 90,
+        "abilities": ["Love Beam", "Slave Arrow", "Pistol Kiss", "Charm Strike"],
+        "defense": 18,
+        "speed": 22,
+        "power": 24,
+        "ability_modifiers": [1.2, 1.5, 1.8, 2.2]
+    },
+    "Gojo": {
+        "name": "Gojo",
+        "hp": 100,
+        "abilities": ["Limitless", "Hollow Purple", "Reversal Red", "Infinity Hold"],
+        "defense": 22,
+        "speed": 23,
+        "power": 28,
+        "ability_modifiers": [1.3, 1.6, 1.9, 2.4]
+    },
+    "Hinata": {
+        "name": "Hinata",
+        "hp": 85,
+        "abilities": ["Gentle Fist", "Twin Lion Fists", "Byakugan Strike", "Palm Rotation"],
+        "defense": 17,
+        "speed": 21,
+        "power": 20,
+        "ability_modifiers": [1.1, 1.4, 1.7, 2.0]
+    },
+    "Kakashi": {
+        "name": "Kakashi",
+        "hp": 90,
+        "abilities": ["Chidori", "Lightning Blade", "Sharingan Strike", "Kunai Barrage"],
+        "defense": 20,
+        "speed": 25,
+        "power": 26,
+        "ability_modifiers": [1.3, 1.5, 1.8, 2.1]
+    },
+    "Levi": {
+        "name": "Levi",
+        "hp": 95,
+        "abilities": ["Spin Slash", "Thunder Spears", "3D Maneuver", "Precision Cut"],
+        "defense": 20,
+        "speed": 27,
+        "power": 25,
+        "ability_modifiers": [1.4, 1.7, 2.0, 2.3]
+    },
+    "Light": {
+        "name": "Light",
+        "hp": 80,
+        "abilities": ["Death Note", "Judgment", "Mind Trap", "Deceit"],
+        "defense": 12,
+        "speed": 18,
+        "power": 30,
+        "ability_modifiers": [1.0, 1.8, 1.5, 2.5]
+    },
+    "Luffy": {
+        "name": "Luffy",
+        "hp": 100,
+        "abilities": ["Gum-Gum Pistol", "Gear Second", "Red Hawk", "Jet Gatling"],
+        "defense": 19,
+        "speed": 23,
+        "power": 30,
+        "ability_modifiers": [1.2, 1.6, 2.0, 2.5]
+    },
+    "Mitsuri": {
+        "name": "Mitsuri",
+        "hp": 90,
+        "abilities": ["Whip Slash", "Love Spiral", "Serpent Strike", "Agile Dance"],
+        "defense": 16,
+        "speed": 24,
+        "power": 22,
+        "ability_modifiers": [1.3, 1.5, 1.9, 2.2]
+    },
+    "Nami": {
+        "name": "Nami",
+        "hp": 85,
+        "abilities": ["Thunder Tempo", "Cyclone Burst", "Weather Trap", "Cloud Shock"],
+        "defense": 14,
+        "speed": 20,
+        "power": 18,
+        "ability_modifiers": [1.1, 1.4, 1.8, 2.0]
+    },
+    "Naruto": {
+        "name": "Naruto",
+        "hp": 100,
+        "abilities": ["Rasengan", "Shadow Clones", "Wind Slash", "Chakra Punch"],
+        "defense": 15,
+        "speed": 20,
+        "power": 28,
+        "ability_modifiers": [1.2, 1.6, 2.0, 2.4]
+    },
+    "Nezuko": {
+        "name": "Nezuko",
+        "hp": 90,
+        "abilities": ["Blood Burst", "Claw Swipe", "Flame Kick", "Resilient Rush"],
+        "defense": 18,
+        "speed": 22,
+        "power": 23,
+        "ability_modifiers": [1.2, 1.5, 1.9, 2.1]
+    },
+    "Rengoku": {
+        "name": "Rengoku",
+        "hp": 95,
+        "abilities": ["Flame Breathing", "Blazing Slash", "Fire Tornado", "Burning Fury"],
+        "defense": 20,
+        "speed": 21,
+        "power": 27,
+        "ability_modifiers": [1.3, 1.7, 2.0, 2.3]
+    },
+    "Sakura": {
+        "name": "Sakura",
+        "hp": 95,
+        "abilities": ["Chakra Smash", "Medical Palm", "Roaring Punch", "Healing Surge"],
+        "defense": 19,
+        "speed": 20,
+        "power": 24,
+        "ability_modifiers": [1.1, 1.5, 1.8, 2.0]
+    },
+    "Sanji": {
+        "name": "Sanji",
+        "hp": 95,
+        "abilities": ["Diable Jambe", "Kick Barrage", "Sky Walk", "Fire Spin"],
+        "defense": 18,
+        "speed": 25,
+        "power": 26,
+        "ability_modifiers": [1.3, 1.6, 2.0, 2.2]
+    },
+    "Sasuke": {
+        "name": "Sasuke",
+        "hp": 95,
+        "abilities": ["Chidori Spear", "Amaterasu", "Inferno Slash", "Rinnegan Pull"],
+        "defense": 20,
+        "speed": 24,
+        "power": 28,
+        "ability_modifiers": [1.4, 1.7, 2.1, 2.5]
+    },
+    "Sung Jin-Woo": {
+        "name": "Sung Jin-Woo",
+        "hp": 100,
+        "abilities": ["Shadow Slash", "Monarch's Domain", "Stealth Step", "Summon Army"],
+        "defense": 22,
+        "speed": 24,
+        "power": 30,
+        "ability_modifiers": [1.5, 1.8, 2.2, 2.6]
+    },
+    "Tanjiro": {
+        "name": "Tanjiro",
+        "hp": 90,
+        "abilities": ["Water Wheel", "Sun Breathing", "Constant Flux", "Smell Sense"],
+        "defense": 17,
+        "speed": 21,
+        "power": 23,
+        "ability_modifiers": [1.2, 1.5, 1.9, 2.1]
+    },
+    "Zenitsu": {
+        "name": "Zenitsu",
+        "hp": 85,
+        "abilities": ["Thunderclap", "Sixfold Strike", "Lightning Dash", "Faint Counter"],
+        "defense": 14,
+        "speed": 28,
+        "power": 25,
+        "ability_modifiers": [1.4, 1.8, 2.2, 2.5]
+    },
+    "Zoro": {
+        "name": "Zoro",
+        "hp": 100,
+        "abilities": ["Three Sword Style", "Oni Giri", "Dragon Twister", "Asura Strike"],
+        "defense": 21,
+        "speed": 22,
+        "power": 30,
+        "ability_modifiers": [1.5, 1.8, 2.1, 2.5]
+    },
+    "Goku": {
+        "name": "Goku",
+        "hp": 110,
+        "abilities": ["Kamehameha", "Instant Transmission", "Spirit Bomb", "Ultra Instinct"],
+        "defense": 23,
+        "speed": 26,
+        "power": 35,
+        "ability_modifiers": [1.6, 2.0, 2.4, 3.0]
+    },
+    "Vegeta": {
+        "name": "Vegeta",
+        "hp": 105,
+        "abilities": ["Final Flash", "Galick Gun", "Big Bang Attack", "Saiyan Rage"],
+        "defense": 22,
+        "speed": 25,
+        "power": 33,
+        "ability_modifiers": [1.5, 1.9, 2.3, 2.8]
+    }
 }
-
 
 class Duel:
     def __init__(self, user1_id, user2_id):
@@ -40,6 +208,11 @@ class Duel:
         }
         self.turn = user1_id
         self.log = []
+        self.heal_cooldown = {user1_id: 0, user2_id: 0}
+        self.ability_cooldowns = {
+            user1_id: [0, 0, 0, 0],
+            user2_id: [0, 0, 0, 0]
+        }
 
     def random_character(self):
         name = random.choice(list(CHARACTERS.keys()))
@@ -51,45 +224,65 @@ class Duel:
     def is_finished(self):
         return any(hp <= 0 for hp in self.health.values())
 
-    def attack(self, user_id):
+    def calculate_damage(self, attacker, defender, ability_index):
+        base_damage = (attacker['power'] * attacker['ability_modifiers'][ability_index] + 
+                      attacker['speed'] * 0.5) - (defender['defense'] * 0.3)
+        
+        variance = random.randint(-3, 3 + ability_index * 2)
+        return max(5, int(base_damage + variance))
+
+    def use_ability(self, user_id, ability_index):
+        if self.ability_cooldowns[user_id][ability_index] > 0:
+            return 0
+            
         attacker = self.players[user_id]
         defender_id = self.opponent(user_id)
         defender = self.players[defender_id]
 
-        base_damage = attacker["attack"] - (defender["defense"] * 0.5)
-        damage = max(5, int(base_damage + random.randint(-3, 3)))
+        damage = self.calculate_damage(attacker, defender, ability_index)
         self.health[defender_id] -= damage
+        
+        # Set cooldown based on ability strength
+        self.ability_cooldowns[user_id][ability_index] = ability_index + 1
+        
+        # Special effects
+        if ability_index == 3:  # Ultimate ability
+            heal_amount = int(damage * 0.2)
+            self.health[user_id] = min(attacker['hp'], self.health[user_id] + heal_amount)
+            self.log.append(f"{attacker['name']}'s {attacker['abilities'][ability_index]} dealt {damage} damage and healed {heal_amount} HP!")
+        else:
+            self.log.append(f"{attacker['name']} used {attacker['abilities'][ability_index]} for {damage} damage!")
 
-        self.log.append(f"{attacker['name']} attacked {defender['name']} for {damage} damage!")
-        self.turn = defender_id
-        return damage
-
-    def special(self, user_id):
-        attacker = self.players[user_id]
-        defender_id = self.opponent(user_id)
-        defender = self.players[defender_id]
-
-        base_damage = attacker["special"] - (defender["defense"] * 0.3)
-        damage = max(8, int(base_damage + random.randint(-5, 5)))
-        self.health[defender_id] -= damage
-
-        self.log.append(f"{attacker['name']} used SPECIAL on {defender['name']} for {damage} damage!")
         self.turn = defender_id
         return damage
 
     def heal(self, user_id):
+        if self.heal_cooldown[user_id] > 0:
+            return 0
+            
         player = self.players[user_id]
-        heal_amount = int(player["hp"] * 0.2)
-        self.health[user_id] = min(self.health[user_id] + heal_amount, player["hp"])
-
+        heal_amount = min(int(player['hp'] * 0.25), player['hp'] - self.health[user_id])
+        self.health[user_id] += heal_amount
+        self.heal_cooldown[user_id] = 3
         self.log.append(f"{player['name']} healed for {heal_amount} HP!")
         self.turn = self.opponent(user_id)
         return heal_amount
 
+    def update_cooldowns(self):
+        for player_id in self.player_ids:
+            if self.heal_cooldown[player_id] > 0:
+                self.heal_cooldown[player_id] -= 1
+            for i in range(4):
+                if self.ability_cooldowns[player_id][i] > 0:
+                    self.ability_cooldowns[player_id][i] -= 1
+
     def get_status(self, user_id):
         player = self.players[user_id]
         hp = self.health[user_id]
-        return f"{player['name']} HP: {hp}/{player['hp']}"
+        cooldown = self.heal_cooldown[user_id]
+        ability_cooldowns = ", ".join(str(cd) for cd in self.ability_cooldowns[user_id])
+        return (f"{player['name']} HP: {hp}/{player['hp']}\n"
+                f"Heal CD: {cooldown} turns | Ability CDs: [{ability_cooldowns}]")
 
     def get_health_bar(self, user_id, length=20):
         hp = self.health[user_id]
@@ -99,29 +292,29 @@ class Duel:
         return f"[{bar}] {hp}/{max_hp}"
 
     def get_log(self):
-        return "\n".join(self.log[-5:])  # last 5 entries
+        return "\n".join(self.log[-5:])
 
     async def reward_winner(self, winner_id):
-        from ..Database.users import get_user
-        from ..Database.characters import get_anime_character
+        from ..Database.users import get_user  
+        from ..Database.characters import get_anime_character  
 
         loser_id = self.opponent(winner_id)
         winner = await get_user(winner_id)
         loser = await get_user(loser_id)
 
-        transfer_msg = ""
-        if loser.collection:
+        transfer_msg = ""  
+        if loser.collection:  
             stolen_char_id = random.choice(list(loser.collection.keys()))
-            loser.collection[stolen_char_id] -= 1
-            if loser.collection[stolen_char_id] <= 0:
-                del loser.collection[stolen_char_id]
+            loser.collection[stolen_char_id] -= 1  
+            if loser.collection[stolen_char_id] <= 0:  
+                del loser.collection[stolen_char_id]  
 
-            winner.collection[stolen_char_id] = winner.collection.get(stolen_char_id, 0) + 1
+            winner.collection[stolen_char_id] = winner.collection.get(stolen_char_id, 0) + 1  
 
-            await winner.update()
-            await loser.update()
+            await winner.update()  
+            await loser.update()  
 
-            char = await get_anime_character(stolen_char_id)
-            transfer_msg = f"\n\n🏆 Won {char.name} from opponent!"
+            char = await get_anime_character(stolen_char_id)  
+            transfer_msg = f"\n\n🏆 Won {char.name} from opponent!"  
 
         return transfer_msg
