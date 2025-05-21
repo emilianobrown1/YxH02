@@ -33,3 +33,19 @@ async def get_time_until_fest() -> str:
     minutes = remainder // 60
 
     return f"{hours} hour(s) and {minutes} minute(s)"
+
+async def notify_users_in_dm(app):
+    text = (
+        "🎉 **Fest Hour is LIVE!** 🎉\n\n"
+        "⛏️ Increased mining success rates for the next hour!\n"
+        "Use `/mine` and strike it rich!"
+    )
+    users = await get_all_users()
+    for user in users:
+        try:
+            await app.send_message(user["_id"], text)
+            await asyncio.sleep(0.1)  # rate-limit safety
+        except (PeerIdInvalid, UserIsBlocked):
+            continue
+        except Exception as e:
+            print(f"[Fest Hour] DM failed for {user['_id']}: {e}")
