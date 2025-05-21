@@ -1,5 +1,7 @@
 from ..Database import db
 from ..Class.user import User
+rom ..Database.users import get_user
+from ..Database.characters import get_anime_character
 import pickle
 import random
 
@@ -294,10 +296,8 @@ class Duel:
     def get_log(self):
         return "\n".join(self.log[-5:])
 
-    async def reward_winner(self, winner_id):
-        from ..Database.users import get_user
-        from ..Database.characters import get_anime_character
 
+    async def reward_winner(self, winner_id):
         loser_id = self.opponent(winner_id)
         winner = await get_user(winner_id)
         loser = await get_user(loser_id)
