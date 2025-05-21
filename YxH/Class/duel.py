@@ -227,24 +227,24 @@ class Duel:
     def calculate_damage(self, attacker, defender, ability_index):
         base_damage = (attacker['power'] * attacker['ability_modifiers'][ability_index] + 
                       attacker['speed'] * 0.5) - (defender['defense'] * 0.3)
-        
+
         variance = random.randint(-3, 3 + ability_index * 2)
         return max(5, int(base_damage + variance))
 
     def use_ability(self, user_id, ability_index):
         if self.ability_cooldowns[user_id][ability_index] > 0:
             return 0
-            
+
         attacker = self.players[user_id]
         defender_id = self.opponent(user_id)
         defender = self.players[defender_id]
 
         damage = self.calculate_damage(attacker, defender, ability_index)
         self.health[defender_id] -= damage
-        
+
         # Set cooldown based on ability strength
         self.ability_cooldowns[user_id][ability_index] = ability_index + 1
-        
+
         # Special effects
         if ability_index == 3:  # Ultimate ability
             heal_amount = int(damage * 0.2)
@@ -259,7 +259,7 @@ class Duel:
     def heal(self, user_id):
         if self.heal_cooldown[user_id] > 0:
             return 0
-            
+
         player = self.players[user_id]
         heal_amount = min(int(player['hp'] * 0.25), player['hp'] - self.health[user_id])
         self.health[user_id] += heal_amount
@@ -295,26 +295,26 @@ class Duel:
         return "\n".join(self.log[-5:])
 
     async def reward_winner(self, winner_id):
-    from ..Database.users import get_user  
-    from ..Database.characters import get_anime_character  
+        from ..Database.users import get_user
+        from ..Database.characters import get_anime_character
 
-    loser_id = self.opponent(winner_id)
-    winner = await get_user(winner_id)
-    loser = await get_user(loser_id)
+        loser_id = self.opponent(winner_id)
+        winner = await get_user(winner_id)
+        loser = await get_user(loser_id)
 
-    transfer_msg = ""  
-    if loser.collection:  
-        stolen_char_id = random.choice(list(loser.collection.keys()))
-        loser.collection[stolen_char_id] -= 1  
-        if loser.collection[stolen_char_id] <= 0:  
-            del loser.collection[stolen_char_id]  
+        transfer_msg = ""
+        if loser.collection:
+            stolen_char_id = random.choice(list(loser.collection.keys()))
+            loser.collection[stolen_char_id] -= 1
+            if loser.collection[stolen_char_id] <= 0:
+                del loser.collection[stolen_char_id]
 
-        winner.collection[stolen_char_id] = winner.collection.get(stolen_char_id, 0) + 1  
+            winner.collection[stolen_char_id] = winner.collection.get(stolen_char_id, 0) + 1
 
-        await winner.update()  
-        await loser.update()  
+            await winner.update()
+            await loser.update()
 
-        char = await get_anime_character(stolen_char_id)  
-        transfer_msg = f"\n\n🏆 Won {char.name} (ID: {stolen_char_id}) from opponent!"  
+            char = await get_anime_character(stolen_char_id)
+            transfer_msg = f"\n\n🏆 Won {char.name} (ID: {stolen_char_id}) from opponent!"
 
-    return transfer_msg
+        return transfer_msg
