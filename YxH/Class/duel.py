@@ -1,6 +1,6 @@
 from ..Database import db
 from ..Class.user import User
-rom ..Database.users import get_user
+from ..Database.users import get_user
 from ..Database.characters import get_anime_character
 import pickle
 import random
