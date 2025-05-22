@@ -79,7 +79,7 @@ async def mine(_, m, user):
     await m.reply(txt)
 
 
-async def fest_hour_task(client):
+async def fest_hour_task(Client):
     while True:
         current_hour = datetime.now(IST).hour
         if current_hour == await get_fest_hour():
@@ -96,4 +96,4 @@ async def fest_hour_task(client):
             await asyncio.sleep(3600)
         await asyncio.sleep(60)
 
-asyncio.create_task(fest_hour_task(client))
+asyncio.create_task(fest_hour_task(Client))
