@@ -109,29 +109,53 @@ async def notify_users_in_dm(app):
             print(f"[Fest Hour] DM failed for {user['_id']}: {e}")
 
 
-# Background task for Fest Hour
-async def fest_hour_task(app):
-    notified = False
+async def notify_users_in_dm(client):
+    text = (
+        "🎉 Fest Hour is LIVE! 🎉\n\n"
+        "⛏️ Increased mining success for the next hour!\n"
+        "Use /mine and strike it rich!"
+    )
+    
+    users = await get_all_users()
+    chats = await get_all_chats()
+    
+    for user in users + chats:
+        try:
+            await client.send_message(user["_id"], text)
+            await asyncio.sleep(0.1)
+        except (PeerIdInvalid, UserIsBlocked):
+            continue
+        except Exception as e:
+            print(f"Failed to notify {user['_id']}: {e}")
+
+async def fest_hour_task(client):
+    last_notified_hour = None
     while True:
-        current_hour = datetime.now(IST).hour
-        if current_hour == await get_fest_hour():
-            if not notified:
-                text = (
-                    "🎉 Fest Hour is live! 🎉\n\n"
-                    "💰 Higher mining success rates are now active for the next hour!"
-                )
-                mess = await app.send_message(SUPPORT_GROUP, text)
+        try:
+            current_hour = datetime.now(IST).hour
+            fest_hour = await get_fest_hour()
+            
+            if current_hour == fest_hour and last_notified_hour != current_hour:
+                # Notify support group
                 try:
-                    await mess.pin()
+                    msg = await client.send_message(
+                        SUPPORT_GROUP,
+                        "🎉 Fest Hour is live! 🎉\n\n"
+                        "💰 Higher mining success rates are now active for the next hour!"
+                    )
+                    await msg.pin()
                 except Exception as e:
-                    print(f"[Fest Hour] Pin failed: {e}")
-                await notify_users_in_dm(app)
-                notified = True
-            await asyncio.sleep(60)
-        else:
-            notified = False
-            await asyncio.sleep(60)
+                    print(f"Support group notification failed: {e}")
+                
+                # Notify users
+                await notify_users_in_dm(client)
+                last_notified_hour = current_hour
+            
+            await asyncio.sleep(55)  # Check every 55 seconds
+        except Exception as e:
+            print(f"Fest hour task error: {e}")
+            await asyncio.sleep(10)
 
-
-# Start background task
-asyncio.create_task(fest_hour_task(app))
+@app.on_start()
+async def start_fest_task(client):
+    asyncio.create_task(fest_hour_task(client))
