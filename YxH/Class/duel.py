@@ -13,7 +13,7 @@ CHARACTERS = {
         "defense": 18,
         "speed": 22,
         "power": 24,
-        "ability_modifiers": [1.2, 1.5, 1.8, 2.2]
+        "ability_modifiers": [0.0, 0.0, 0.0, 0.0]
     },
     "Gojo": {
         "name": "Gojo",
@@ -22,7 +22,7 @@ CHARACTERS = {
         "defense": 22,
         "speed": 23,
         "power": 28,
-        "ability_modifiers": [1.3, 1.6, 1.9, 2.4]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Hinata": {
         "name": "Hinata",
@@ -31,7 +31,7 @@ CHARACTERS = {
         "defense": 17,
         "speed": 21,
         "power": 20,
-        "ability_modifiers": [1.1, 1.4, 1.7, 2.0]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Kakashi": {
         "name": "Kakashi",
@@ -40,7 +40,7 @@ CHARACTERS = {
         "defense": 20,
         "speed": 25,
         "power": 26,
-        "ability_modifiers": [1.3, 1.5, 1.8, 2.1]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Levi": {
         "name": "Levi",
@@ -49,7 +49,7 @@ CHARACTERS = {
         "defense": 20,
         "speed": 27,
         "power": 25,
-        "ability_modifiers": [1.4, 1.7, 2.0, 2.3]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.3]
     },
     "Light": {
         "name": "Light",
@@ -58,7 +58,7 @@ CHARACTERS = {
         "defense": 12,
         "speed": 18,
         "power": 30,
-        "ability_modifiers": [1.0, 1.8, 1.5, 2.5]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.5]
     },
     "Luffy": {
         "name": "Luffy",
