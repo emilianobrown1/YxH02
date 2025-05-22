@@ -13,7 +13,7 @@ CHARACTERS = {
         "defense": 18,
         "speed": 22,
         "power": 24,
-        "ability_modifiers": [0.0, 0.0, 0.0, 0.0]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Gojo": {
         "name": "Gojo",
@@ -67,7 +67,7 @@ CHARACTERS = {
         "defense": 19,
         "speed": 23,
         "power": 30,
-        "ability_modifiers": [1.2, 1.6, 2.0, 2.5]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Mitsuri": {
         "name": "Mitsuri",
@@ -76,7 +76,7 @@ CHARACTERS = {
         "defense": 16,
         "speed": 24,
         "power": 22,
-        "ability_modifiers": [1.3, 1.5, 1.9, 2.2]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Nami": {
         "name": "Nami",
@@ -85,7 +85,7 @@ CHARACTERS = {
         "defense": 14,
         "speed": 20,
         "power": 18,
-        "ability_modifiers": [1.1, 1.4, 1.8, 2.0]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Naruto": {
         "name": "Naruto",
@@ -94,7 +94,7 @@ CHARACTERS = {
         "defense": 15,
         "speed": 20,
         "power": 28,
-        "ability_modifiers": [1.2, 1.6, 2.0, 2.4]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Nezuko": {
         "name": "Nezuko",
@@ -103,7 +103,7 @@ CHARACTERS = {
         "defense": 18,
         "speed": 22,
         "power": 23,
-        "ability_modifiers": [1.2, 1.5, 1.9, 2.1]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Rengoku": {
         "name": "Rengoku",
@@ -112,7 +112,7 @@ CHARACTERS = {
         "defense": 20,
         "speed": 21,
         "power": 27,
-        "ability_modifiers": [1.3, 1.7, 2.0, 2.3]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Sakura": {
         "name": "Sakura",
@@ -121,7 +121,7 @@ CHARACTERS = {
         "defense": 19,
         "speed": 20,
         "power": 24,
-        "ability_modifiers": [1.1, 1.5, 1.8, 2.0]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Sanji": {
         "name": "Sanji",
@@ -130,7 +130,7 @@ CHARACTERS = {
         "defense": 18,
         "speed": 25,
         "power": 26,
-        "ability_modifiers": [1.3, 1.6, 2.0, 2.2]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Sasuke": {
         "name": "Sasuke",
@@ -139,7 +139,7 @@ CHARACTERS = {
         "defense": 20,
         "speed": 24,
         "power": 28,
-        "ability_modifiers": [1.4, 1.7, 2.1, 2.5]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Sung Jin-Woo": {
         "name": "Sung Jin-Woo",
@@ -148,7 +148,7 @@ CHARACTERS = {
         "defense": 22,
         "speed": 24,
         "power": 30,
-        "ability_modifiers": [1.5, 1.8, 2.2, 2.6]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Tanjiro": {
         "name": "Tanjiro",
@@ -157,7 +157,7 @@ CHARACTERS = {
         "defense": 17,
         "speed": 21,
         "power": 23,
-        "ability_modifiers": [1.2, 1.5, 1.9, 2.1]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Zenitsu": {
         "name": "Zenitsu",
@@ -166,7 +166,7 @@ CHARACTERS = {
         "defense": 14,
         "speed": 28,
         "power": 25,
-        "ability_modifiers": [1.4, 1.8, 2.2, 2.5]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Zoro": {
         "name": "Zoro",
@@ -175,7 +175,7 @@ CHARACTERS = {
         "defense": 21,
         "speed": 22,
         "power": 30,
-        "ability_modifiers": [1.5, 1.8, 2.1, 2.5]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Goku": {
         "name": "Goku",
@@ -184,7 +184,7 @@ CHARACTERS = {
         "defense": 23,
         "speed": 26,
         "power": 35,
-        "ability_modifiers": [1.6, 2.0, 2.4, 3.0]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     },
     "Vegeta": {
         "name": "Vegeta",
@@ -193,7 +193,7 @@ CHARACTERS = {
         "defense": 22,
         "speed": 25,
         "power": 33,
-        "ability_modifiers": [1.5, 1.9, 2.3, 2.8]
+        "ability_modifiers": [0.1, 0.2, 0.3, 0.4]
     }
 }
 
