@@ -156,6 +156,6 @@ async def fest_hour_task(client):
             print(f"Fest hour task error: {e}")
             await asyncio.sleep(10)
 
-@app.on_start()
+
 async def start_fest_task(client):
     asyncio.create_task(fest_hour_task(client))
