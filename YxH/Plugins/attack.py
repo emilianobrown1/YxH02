@@ -22,6 +22,9 @@ async def attack(_, m, u):
     # Fetch target
     t = await get_user(target_user_id)
 
+    if not t.clan_id:
+        return await m.reply("You can only attack users who are part of a clan.")
+
     if u.clan_id == t.clan_id:
         return await m.reply("You cannot attack your clan mates.")
 
