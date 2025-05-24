@@ -119,8 +119,10 @@ async def cbq(_, q: CallbackQuery):
     await q.answer()  # Acknowledge the button press
 
   if q.data.startswith('duel_'):
-        return  # Let duel_callback.py handle it
-    
+        return await handle_duel_actions(_, q)
+    elif q.data.startswith('arena_'):
+        return await handle_arena_actions(_, q)
+        
   if q.data.startswith("ttt_"):
         try:
             _, chat_id, row, col = q.data.split('_')
