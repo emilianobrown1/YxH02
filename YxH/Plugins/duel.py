@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from ..Database.users import get_user
 from ..Class.duel import Duel
-from ..Class.duel_state import active_duels
+from ..Class.duel_state import active_duels, active_arenas
 from ..Utils.duel_utils import get_duel_keyboard
 import random
 
