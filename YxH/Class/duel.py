@@ -198,7 +198,7 @@ CHARACTERS = {
 }
 
 class Duel:
-    def __init__(self, user1_id, user2_id):
+    def __init__(self, user1_id, user2_id, char1=None, char2=None):
         self.player_ids = [user1_id, user2_id]
         self.players = {
             user1_id: self.random_character(),
