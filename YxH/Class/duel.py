@@ -318,3 +318,68 @@ class Duel:
             transfer_msg = f"\n\n🏆 Won {char.name} (ID: {stolen_char_id}) from opponent!"
 
         return transfer_msg
+
+
+class Arena:
+    def __init__(self, user1_id, user2_id):
+        self.player_ids = [user1_id, user2_id]
+        self.players = {
+            user1_id: [self.random_character(), self.random_character()],
+            user2_id: [self.random_character(), self.random_character()]
+        }
+        self.scores = {user1_id: 0, user2_id: 0}
+        self.rounds = []
+        self.current_round = 0
+        self.active_duel = None
+        self.finished = False
+
+    def random_character(self):
+        name = random.choice(list(CHARACTERS.keys()))
+        return {**CHARACTERS[name], 'name': name}
+
+    def start_next_round(self):
+        self.current_round += 1
+        if self.current_round > 2:
+            return False
+
+        p1_char = self.players[self.player_ids[0]][self.current_round-1]
+        p2_char = self.players[self.player_ids[1]][self.current_round-1]
+        
+        self.active_duel = Duel(
+            self.player_ids[0],
+            self.player_ids[1],
+            char1=p1_char,
+            char2=p2_char
+        )
+        return True
+
+    def process_round_result(self):
+        if not self.active_duel.is_finished():
+            return False
+
+        winner = max(self.active_duel.health, key=lambda x: self.active_duel.health[x])
+        self.scores[winner] += 1
+        self.rounds.append(winner)
+        
+        if self.scores[self.player_ids[0]] >= 2 or self.scores[self.player_ids[1]] >= 2:
+            self.finished = True
+        return True
+
+    def get_round_characters(self):
+        return (
+            self.players[self.player_ids[0]][self.current_round-1]['name'],
+            self.players[self.player_ids[1]][self.current_round-1]['name']
+        )
+
+    async def reward_players(self):
+        winner_id = max(self.scores, key=lambda x: self.scores[x])
+        loser_id = min(self.scores, key=lambda x: self.scores[x])
+        
+        winner = await get_user(winner_id)
+        loser = await get_user(loser_id)
+        
+        winner.crystals += 3
+        loser.crystals += 1
+        await winner.update()
+        await loser.update()
+        return winner_id, loser_id
