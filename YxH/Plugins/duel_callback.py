@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery
-from ..Class.duel import Duel
-from ..Class.duel_state import active_duels
+from ..Class.duel import Duel, Arena
+from ..Class.duel_state import active_duels, active_arenas
 from ..Utils.duel_utils import get_duel_keyboard
 from ..Database.users import get_user
 import random
@@ -91,3 +91,37 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
     except Exception as e:  
         await callback.answer(f"⚠️ Error: {str(e)}", show_alert=True)  
         print(f"Duel callback error: {str(e)}")
+
+
+@Client.on_callback_query(filters.regex(r"^arena_"))
+async def handle_arena_actions(client, callback):
+    user_id = callback.from_user.id
+    arena = active_arenas.get(user_id)
+    
+    if not arena:
+        await callback.answer("Arena session expired!")
+        return
+    
+    # Handle duel actions through existing duel callback
+    if arena.active_duel.process_action(callback):
+        if arena.active_duel.is_finished():
+            arena.process_round_result()
+            
+            if arena.finished:
+                winner_id, loser_id = await arena.reward_players()
+                await callback.message.edit(
+                    f"🏆 Arena Final Results\n"
+                    f"• Score: {arena.scores[arena.player_ids[0]]} - {arena.scores[arena.player_ids[1]]}\n"
+                    f"🎁 Winner gets 3 crystals!\n"
+                    f"🎁 Loser gets 1 crystal!"
+                )
+                del active_arenas[arena.player_ids[0]]
+                del active_arenas[arena.player_ids[1]]
+            else:
+                arena.start_next_round()
+                # Update message with new round info
+                await callback.message.edit(
+                    f"⚔️ Round {arena.current_round} Started!\n"
+                    f"{arena.get_round_characters()[0]} vs {arena.get_round_characters()[1]}",
+                    reply_markup=get_duel_keyboard(...)
+                )
