@@ -120,7 +120,7 @@ async def cbq(_, q: CallbackQuery):
 
   if q.data.startswith('duel_'):
         return await handle_duel_actions(_, q)
-    elif q.data.startswith('arena_'):
+  elif q.data.startswith('arena_'):
         return await handle_arena_actions(_, q)
         
   if q.data.startswith("ttt_"):
