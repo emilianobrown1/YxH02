@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery
-from ..Class.duel import Duel
-from ..Class.arena import Arena
+from ..Class.duel import Duel, Arena
 from ..Class.duel_state import active_duels, active_arenas
 from ..Utils.duel_utils import get_duel_keyboard, format_arena_progress
 from ..Database.users import get_user
