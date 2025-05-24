@@ -24,3 +24,20 @@ def get_duel_keyboard(user_id, abilities, heal_cooldown=0):
     ])
     
     return InlineKeyboardMarkup(buttons)
+
+
+def get_arena_keyboard(arena, user_id):
+    buttons = []
+    # Keep existing duel keyboard logic
+    # Add arena-specific buttons if needed
+    return InlineKeyboardMarkup(buttons)
+
+def format_arena_progress(arena):
+    p1_score = arena.scores[arena.player_ids[0]]
+    p2_score = arena.scores[arena.player_ids[1]]
+    
+    text = f"🏟 Arena Progress ({arena.current_round}/2)\n"
+    text += f"• Round 1: {arena.players[arena.player_ids[0]][0]['name']} vs {arena.players[arena.player_ids[1]][0]['name']}\n"
+    text += f"• Round 2: {arena.players[arena.player_ids[0]][1]['name']} vs {arena.players[arena.player_ids[1]][1]['name']}\n\n"
+    text += f"📊 Score: {p1_score} - {p2_score}"
+    return text
