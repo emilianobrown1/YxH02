@@ -28,7 +28,7 @@ from .tictactoe import game_manager, create_board, check_winner
 from ..Database.tictactoe import add_tictactoe_game
 from .catch import catch_command
 from .powers import powerxup_store, refresh_power, buy_power
-from .duel_callback import handle_duel_actions
+from .duel_callback import handle_duel_actions, handle_arena_actions
 
 # Then register other handlers
 from . extras import uncollected_characters, create_telegraph_page_for_uncollected
