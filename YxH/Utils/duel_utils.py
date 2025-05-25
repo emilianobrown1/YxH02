@@ -12,20 +12,18 @@ def get_duel_keyboard(user_id, abilities, heal_cooldown=0):
             InlineKeyboardButton(abilities[3], callback_data=f"duel_ability_3:{user_id}")
         ]
     ]
-    
+
     heal_button = InlineKeyboardButton(
         "Heal (25% HP)" if heal_cooldown == 0 else f"Heal (Cooldown: {heal_cooldown})",
         callback_data=f"duel_heal:{user_id}"
     )
-    
+
     buttons.append([
         heal_button,
         InlineKeyboardButton("Exit Duel", callback_data=f"duel_exit:{user_id}")
     ])
-    
+
     return InlineKeyboardMarkup(buttons)
-
-
 
 def get_arena_keyboard(user_id, abilities, heal_cooldown=0):
     buttons = [
