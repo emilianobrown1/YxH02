@@ -2,21 +2,25 @@ from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery
 from ..Class.duel import Duel, Arena
 from ..Class.duel_state import active_duels, active_arenas
-from ..Utils.duel_utils import get_duel_keyboard, format_arena_progress
+from ..Utils.duel_utils import get_duel_keyboard, get_arena_keyboard, format_arena_progress
 from ..Database.users import get_user
 
-async def process_duel_action(callback: CallbackQuery, duel: Duel, user_id: int, action_part: str):
+async def process_duel_action(callback: CallbackQuery, duel: Duel, user_id: int, action_part: str, is_arena=False):
     if action_part == "exit":
-        for uid in duel.player_ids:
-            active_duels.pop(uid, None)
-        await callback.message.edit("⚔️ Duel cancelled!")
+        if is_arena:
+            for uid in duel.player_ids:
+                active_arenas.pop(uid, None)
+            await callback.message.edit("🏟 Arena cancelled!")
+        else:
+            for uid in duel.player_ids:
+                active_duels.pop(uid, None)
+            await callback.message.edit("⚔️ Duel cancelled!")
         return True
 
     if duel.turn != user_id:
         await callback.answer("⏳ Wait for your turn!", show_alert=True)
         return False
 
-    # Process actions
     if action_part.startswith("ability_"):
         ability_index = int(action_part.split("_")[1])
         damage = duel.use_ability(user_id, ability_index)
@@ -54,7 +58,7 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
     try:
         action_part = callback.matches[0].group(1)
         user_id = int(callback.matches[0].group(2))
-        
+
         if user_id != callback.from_user.id:
             await callback.answer("🚫 It's not your turn!", show_alert=True)
             return
@@ -99,7 +103,7 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
 
 async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
     arena.process_round_result()
-    
+
     if arena.finished:
         winner_id, loser_id = await arena.reward_players()
         await callback.message.edit(
@@ -117,7 +121,7 @@ async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
             f"{format_arena_progress(arena)}\n\n"
             f"⚔️ Round {arena.current_round} Started!\n"
             f"{char1} vs {char2}",
-            reply_markup=get_duel_keyboard(
+            reply_markup=get_arena_keyboard(
                 arena.turn,
                 arena.active_duel.players[arena.turn]['abilities'],
                 arena.active_duel.heal_cooldown[arena.turn]
@@ -129,7 +133,7 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
     try:
         action_part = callback.matches[0].group(1)
         user_id = int(callback.matches[0].group(2))
-        
+
         if user_id != callback.from_user.id:
             await callback.answer("🚫 It's not your turn!", show_alert=True)
             return
@@ -139,8 +143,7 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
             await callback.answer("❌ Arena session expired!", show_alert=True)
             return
 
-        # Process the action through the active duel
-        result_text = await process_duel_action(callback, arena.active_duel, user_id, action_part)
+        result_text = await process_duel_action(callback, arena.active_duel, user_id, action_part, is_arena=True)
         if result_text is True or result_text is False:
             return
 
@@ -156,7 +159,7 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
             )
             await callback.message.edit(
                 status_text,
-                reply_markup=get_duel_keyboard(
+                reply_markup=get_arena_keyboard(
                     arena.active_duel.turn,
                     arena.active_duel.players[arena.active_duel.turn]['abilities'],
                     arena.active_duel.heal_cooldown[arena.active_duel.turn]
