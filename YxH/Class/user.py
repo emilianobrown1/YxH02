@@ -33,6 +33,7 @@ class User:
         self.gifts_sent = {}  # Track daily gifts sent {date: count}
         self.invite_link = None
         self.invited_by = None
+        self.invite_rewarded = False  # Track if invite reward was already given
         self.partner = None 
         self.convertx = {}  # {date: "converted"}
         self.buy_crystals = {}
