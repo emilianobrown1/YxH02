@@ -69,7 +69,6 @@ async def start_arena(client, message):
     to_user = message.reply_to_message.from_user
     entry_cost = 200000
 
-    # Existing checks and balance validation
     u1 = await get_user(from_user.id)
     u2 = await get_user(to_user.id)
 
@@ -77,7 +76,6 @@ async def start_arena(client, message):
         await message.reply("❌ Both players need 200,000 gold to enter the arena!")
         return
 
-    # Deduct gold
     u1.gold -= entry_cost
     u2.gold -= entry_cost
     await u1.update()
@@ -87,12 +85,13 @@ async def start_arena(client, message):
     active_arenas[from_user.id] = arena
     active_arenas[to_user.id] = arena
 
-    # Start first round
     arena.start_next_round()
-    
+
     text = format_arena_progress(arena)
     text += "\n\n⚔️ Round 1 Started!"
     text += f"\n{arena.get_round_characters()[0]} vs {arena.get_round_characters()[1]}"
-    
-    await message.reply(text, reply_markup=get_duel_keyboard(from_user.id, 
-        arena.active_duel.players[from_user.id]['abilities']))
+
+    await message.reply(text, reply_markup=get_arena_keyboard(
+        from_user.id, 
+        arena.active_duel.players[from_user.id]['abilities']
+    ))
