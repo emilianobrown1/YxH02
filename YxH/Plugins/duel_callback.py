@@ -128,6 +128,33 @@ async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
             )
         )
 
+async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
+    arena.process_round_result()
+
+    if arena.finished:
+        winner_id, loser_id = await arena.reward_players()
+        await callback.message.edit(
+            f"🏆 Arena Final Results\n"
+            f"• Score: {arena.scores[arena.player_ids[0]]} - {arena.scores[arena.player_ids[1]]}\n"
+            f"🎁 Winner gets 3 crystals!\n"
+            f"🎁 Loser gets 1 crystal!"
+        )
+        del active_arenas[arena.player_ids[0]]
+        del active_arenas[arena.player_ids[1]]
+    else:
+        arena.start_next_round()
+        char1, char2 = arena.get_round_characters()
+        # Get abilities of the current turn player
+        current_turn_player_id = arena.active_duel.turn
+        abilities = arena.active_duel.players[current_turn_player_id]['abilities']
+        keyboard = get_arena_keyboard(current_turn_player_id, abilities, arena.active_duel.heal_cooldown[current_turn_player_id])
+        await callback.message.edit(
+            f"{format_arena_progress(arena)}\n\n"
+            f"⚔️ Round {arena.current_round} Started!\n"
+            f"{char1} vs {char2}",
+            reply_markup=keyboard
+        )
+
 @Client.on_callback_query(filters.regex(r"^arena_(ability_\d+|heal|exit):(\d+)$"))
 async def handle_arena_actions(client: Client, callback: CallbackQuery):
     try:
@@ -157,13 +184,17 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
                 f"{arena.active_duel.get_health_bar(arena.active_duel.turn)}\n\n"
                 f"📜 Last moves:\n{arena.active_duel.get_log()}"
             )
+            # Get abilities of the current turn player
+            current_turn_player_id = arena.active_duel.turn
+            abilities = arena.active_duel.players[current_turn_player_id]['abilities']
+            keyboard = get_arena_keyboard(
+                current_turn_player_id,
+                abilities,
+                arena.active_duel.heal_cooldown[current_turn_player_id]
+            )
             await callback.message.edit(
                 status_text,
-                reply_markup=get_arena_keyboard(
-                    arena.active_duel.turn,
-                    arena.active_duel.players[arena.active_duel.turn]['abilities'],
-                    arena.active_duel.heal_cooldown[arena.active_duel.turn]
-                )
+                reply_markup=keyboard
             )
         await callback.answer()
 
