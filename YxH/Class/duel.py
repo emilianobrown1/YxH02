@@ -201,8 +201,8 @@ class Duel:
     def __init__(self, user1_id, user2_id, char1=None, char2=None):
         self.player_ids = [user1_id, user2_id]
         self.players = {
-            user1_id: self.random_character(),
-            user2_id: self.random_character()
+            user1_id: char1 if char1 else self.random_character(),
+            user2_id: char2 if char2 else self.random_character()
         }
         self.health = {
             user1_id: self.players[user1_id]['hp'],
@@ -217,6 +217,7 @@ class Duel:
         }
 
     def random_character(self):
+        from ..Class.duel import CHARACTERS
         name = random.choice(list(CHARACTERS.keys()))
         return {**CHARACTERS[name], 'name': name}
 
@@ -227,7 +228,7 @@ class Duel:
         return any(hp <= 0 for hp in self.health.values())
 
     def calculate_damage(self, attacker, defender, ability_index):
-        base_damage = (attacker['power'] * attacker['ability_modifiers'][ability_index] + 
+        base_damage = (attacker['power'] * attacker['ability_modifiers'][ability_index] +
                       attacker['speed'] * 0.5) - (defender['defense'] * 0.3)
 
         variance = random.randint(-3, 3 + ability_index * 2)
@@ -296,14 +297,16 @@ class Duel:
     def get_log(self):
         return "\n".join(self.log[-5:])
 
-
     async def reward_winner(self, winner_id):
+        from ..Database.users import get_user
+        from ..Database.characters import get_anime_character
         loser_id = self.opponent(winner_id)
         winner = await get_user(winner_id)
         loser = await get_user(loser_id)
 
         transfer_msg = ""
         if loser.collection:
+            import random
             stolen_char_id = random.choice(list(loser.collection.keys()))
             loser.collection[stolen_char_id] -= 1
             if loser.collection[stolen_char_id] <= 0:
@@ -322,10 +325,11 @@ class Duel:
 
 class Arena:
     def __init__(self, user1_id, user2_id):
+        from ..Class.duel import CHARACTERS
         self.player_ids = [user1_id, user2_id]
         self.players = {
-            user1_id: [self.random_character(), self.random_character()],
-            user2_id: [self.random_character(), self.random_character()]
+            user1_id: [random.choice(list(CHARACTERS.values())), random.choice(list(CHARACTERS.values()))],
+            user2_id: [random.choice(list(CHARACTERS.values())), random.choice(list(CHARACTERS.values()))]
         }
         self.scores = {user1_id: 0, user2_id: 0}
         self.rounds = []
@@ -334,6 +338,7 @@ class Arena:
         self.finished = False
 
     def random_character(self):
+        from ..Class.duel import CHARACTERS
         name = random.choice(list(CHARACTERS.keys()))
         return {**CHARACTERS[name], 'name': name}
 
@@ -344,7 +349,7 @@ class Arena:
 
         p1_char = self.players[self.player_ids[0]][self.current_round-1]
         p2_char = self.players[self.player_ids[1]][self.current_round-1]
-        
+
         self.active_duel = Duel(
             self.player_ids[0],
             self.player_ids[1],
@@ -360,7 +365,7 @@ class Arena:
         winner = max(self.active_duel.health, key=lambda x: self.active_duel.health[x])
         self.scores[winner] += 1
         self.rounds.append(winner)
-        
+
         if self.scores[self.player_ids[0]] >= 2 or self.scores[self.player_ids[1]] >= 2:
             self.finished = True
         return True
@@ -372,12 +377,13 @@ class Arena:
         )
 
     async def reward_players(self):
+        from ..Database.users import get_user
         winner_id = max(self.scores, key=lambda x: self.scores[x])
         loser_id = min(self.scores, key=lambda x: self.scores[x])
-        
+
         winner = await get_user(winner_id)
         loser = await get_user(loser_id)
-        
+
         winner.crystals += 3
         loser.crystals += 1
         await winner.update()
