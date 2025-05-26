@@ -89,7 +89,9 @@ async def start_arena(client, message):
     text += "\n\n⚔️ Round 1 Started!"
     text += f"\n{arena.get_round_characters()[0]} vs {arena.get_round_characters()[1]}"
 
-    await message.reply(text, reply_markup=get_arena_keyboard(
-        from_user.id, 
-        arena.active_duel.players[from_user.id]['abilities']
-    ))
+    # Get abilities of the current turn player
+    current_turn_player_id = arena.active_duel.turn
+    abilities = arena.active_duel.players[current_turn_player_id]['abilities']
+    keyboard = get_arena_keyboard(current_turn_player_id, abilities)
+
+    await message.reply(text, reply_markup=keyboard)
