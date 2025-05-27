@@ -82,7 +82,9 @@ async def mine(_, m, user):
 async def fest_hour_task(app):
     while True:
         current_hour = datetime.now(IST).hour
-        if current_hour == await get_fest_hour():
+        fest_hour = await get_fest_hour()
+        print(f"[Fest Hour Debug] Current Hour: {current_hour}, Fest Hour: {fest_hour}")
+        if current_hour == fest_hour:
             text = (
                 "🎉 Fest Hour is live! 🎉\n\n"
                 "💰 Higher success rates for mining are now active for the next hour. "
