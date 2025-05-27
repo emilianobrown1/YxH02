@@ -23,23 +23,3 @@ async def invite(_, m):
         await user.update()
 
     await m.reply(f"Your invite link: {user.invite_link}")
-
-    # Handle inviter reward (only once)
-    if user.invited_by and not getattr(user, "invite_rewarded", False):
-        inviter = await load_user_data(user.invited_by)
-        if inviter:
-            inviter.crystals += 20
-            await inviter.update()
-
-            # Mark user as rewarded
-            user.invite_rewarded = True
-            await user.update()
-
-            # Notify inviter
-            try:
-                await _.send_message(
-                    chat_id=inviter.user.id,
-                    text=f"User [{m.from_user.first_name}](tg://user?id={m.from_user.id}) joined using your invite link!\nYou received 20 crystals!"
-                )
-            except Exception as e:
-                print(f"Failed to notify inviter: {e}")
