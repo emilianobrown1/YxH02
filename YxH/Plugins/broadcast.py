@@ -69,9 +69,14 @@ async def ubroadcast(_, m, user):
     users = await get_all_users()
 
     for u in users:
-        i = u.user_id
+        try:
+            i = u.user.id  # Corrected here
+        except Exception:
+            continue
+
         if i in CASTED:
             continue
+
         try:
             if m.reply_to_message:
                 await _.forward_messages(i, y, x)
