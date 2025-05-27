@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from . import YxH
-from yxh import YxH
+from yxh import YxH as app
 from ..Database.fest_hour import get_fest_hour
 import random
 from .equipments import equipment_data as equipments_data, check_expiry
@@ -79,7 +79,7 @@ async def mine(_, m, user):
     await m.reply(txt)
 
 
-async def fest_hour_task(YxH):
+async def fest_hour_task(app):
     while True:
         current_hour = datetime.now(IST).hour
         fest_hour = await get_fest_hour()
@@ -90,7 +90,7 @@ async def fest_hour_task(YxH):
                 "💰 Higher success rates for mining are now active for the next hour. "
                 "Don't miss your chance to strike big!"
             )
-            mess = await YxH.send_message(SUPPORT_GROUP, text)
+            mess = await app.send_message(SUPPORT_GROUP, text)
             try:
                 await mess.pin()
             except Exception as e:
@@ -98,4 +98,4 @@ async def fest_hour_task(YxH):
             await asyncio.sleep(3600)
         await asyncio.sleep(60)
 
-asyncio.create_task(fest_hour_task(YxH))
+asyncio.create_task(fest_hour_task(app))
