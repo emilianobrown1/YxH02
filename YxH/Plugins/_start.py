@@ -33,6 +33,15 @@ async def start(_, m):
                     u.invited_by = inviter_id  # Set the inviter ID for the new user
                     inviter.crystals += 20  # Add 20 crystals to the inviter
                     await inviter.update()  # Update the inviter's data in the database
+
+                    # Notify inviter
+                    try:
+                        await _.send_message(
+                            inviter.user.id,
+                            f"User [{m.from_user.first_name}](tg://user?id={m.from_user.id}) joined using your invite link!\nYou received 20 crystals!"
+                        )
+                    except Exception as e:
+                        print(f"Failed to notify inviter: {e}")
             except ValueError:
                 pass  # Handle cases where the invite ID is not a valid integer
 
