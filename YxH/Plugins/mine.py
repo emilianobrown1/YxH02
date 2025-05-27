@@ -96,5 +96,4 @@ async def fest_hour_task(app):
             await asyncio.sleep(3600)
         await asyncio.sleep(60)
 
-loop = asyncio.get_event_loop()
-loop.create_task(fest_hour_task(app))
+asyncio.create_task(fest_hour_task(app))
