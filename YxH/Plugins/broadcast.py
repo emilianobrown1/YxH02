@@ -25,9 +25,14 @@ async def broadcast(_, m, user):
     CASTED = set()
 
     for chat in chats:
-        i = chat.chat_id
+        try:
+            i = chat.chat.id  # Corrected here
+        except Exception:
+            continue
+
         if i in CASTED:
             continue
+
         try:
             if m.reply_to_message:
                 ok = await _.forward_messages(i, y, x)
@@ -36,7 +41,7 @@ async def broadcast(_, m, user):
             sent += 1
             CASTED.add(i)
 
-            if m.command[0][1:].lower() == "pbroadcast":
+            if m.text.split()[0][1:].lower() == "pbroadcast":
                 try:
                     await _.pin_chat_message(i, ok.id)
                     pinned += 1
@@ -49,7 +54,7 @@ async def broadcast(_, m, user):
         except:
             continue
 
-    await m.reply_text(f"**Broadcasted Message In {sent} Chats.**\n**Pinned in {pinned} Chats.**")
+    await m.reply_text(f"**Broadcasted Message in {sent} Chats.**\n**Pinned in {pinned} Chats.**")
 
 
 @Client.on_message(filters.command("ubroadcast"))
