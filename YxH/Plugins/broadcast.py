@@ -5,70 +5,90 @@ from ..Database.chats import get_all_chats
 from ..Database.users import get_all_users
 from config import SUDO_USERS
 
-@Client.on_message(filters.command("broadcast") & filters.user(SUDO_USERS))
-async def broadcast_message(client, message):
-    if message.reply_to_message:
-        broadcast_msg = message.reply_to_message
-        use_copy = True
+
+@Client.on_message(filters.command(["broadcast", "pbroadcast"]))
+@YxH(sudo=True)
+async def broadcast(_, m, user):
+    if m.reply_to_message:
+        x = m.reply_to_message.id
+        y = m.chat.id
     else:
-        parts = message.text.split(maxsplit=1)
-        if len(parts) < 2:
-            return await message.reply_text("Please provide a broadcast message or reply to a message to broadcast.")
-        broadcast_text = parts[1]
-        use_copy = False
+        if len(m.command) < 2:
+            return await m.reply_text("**Usage**:\n/broadcast [MESSAGE] or [Reply to a Message]")
+        query = m.text.split(None, 1)[1]
 
-    # Get all chats and users (each entry contains both ID and pickled info)
-    chat_entries = await get_all_chats()  # List of {"chat_id": ..., "info": ...}
-    user_entries = await get_all_users()  # List of {"user_id": ..., "info": ...}
+    sent = 0
+    pinned = 0
+    chats = await get_all_chats()
+    CASTED = []
 
-    total_success = 0  
-    total_failed = 0  
-
-    # Broadcast to chats
-    for entry in chat_entries:
-        chat_id = entry["chat_id"]  # Access chat_id from the database document
+    for chat in chats:
+        i = chat.chat_id
+        if i in CASTED:
+            continue
         try:
-            if use_copy:
-                await client.copy_message(chat_id, message.chat.id, broadcast_msg.message_id)
+            if m.reply_to_message:
+                ok = await _.forward_messages(i, y, x)
+                sent += 1
+                CASTED.append(i)
+                try:
+                    if m.text.split()[0][1:].lower() != "pbroadcast":
+                        continue
+                    await _.pin_chat_message(i, ok.id)
+                    pinned += 1
+                except:
+                    continue
             else:
-                await client.send_message(chat_id, broadcast_text)
-            total_success += 1
-            await asyncio.sleep(0.1)
+                ok = await _.send_message(i, query)
+                sent += 1
+                CASTED.append(i)
+                try:
+                    if m.text.split()[0][1:].lower() != "pbroadcast":
+                        continue
+                    await _.pin_chat_message(i, ok.id)
+                    pinned += 1
+                except:
+                    continue
         except FloodWait as e:
-            await asyncio.sleep(e.x)
-        except Exception as e:
-            total_failed += 1
-            print(f"Failed to send to chat {chat_id}: {e}")
+            if e.value > 200:
+                continue
+            await asyncio.sleep(e.value)
+        except Exception:
+            continue
 
-    for entry in chats:
-        chat_id = entry["id"]  # Get from the database document's chat_id
+    await m.reply_text(f"**Broadcasted Message In {sent} Chats.**\n**Pinned in {pinned} Chats.**")
+
+@Client.on_message(filters.command("ubroadcast"))
+@YxH(sudo=True)
+async def ubroadcast(_, m, user):
+    if m.reply_to_message:
+        x = m.reply_to_message.id
+        y = m.chat.id
+    else:
+        if len(m.command) < 2:
+            return await m.reply_text("**Usage**:\n/ubroadcast [MESSAGE] or [Reply to a Message]")
+        query = m.text.split(None, 1)[1]
+
+    sent = 0
+    CASTED = []
+    users = await get_all_users()
+
+    for u in users:
+        i = u.user_id
+        if i in CASTED:
+            continue
         try:
-            if use_copy:
-                await client.copy_message(chat_id, message.chat.id, broadcast_msg.message_id)
+            if m.reply_to_message:
+                await _.forward_messages(i, y, x)
             else:
-                await client.send_message(chat_id, broadcast_text)
-            total_success += 1
-            await asyncio.sleep(0.1)
+                await _.send_message(i, query)
+            sent += 1
+            CASTED.append(i)
         except FloodWait as e:
-            await asyncio.sleep(e.x)
-        except Exception as e:
-            total_failed += 1
-            print(f"Failed to send to chat {chat_id}: {e}")
+            if e.value > 200:
+                continue
+            await asyncio.sleep(e.value)
+        except Exception:
+            continue
 
-    # Broadcast to users
-    for entry in users:
-        user_id = entry["id"]  # Get from the database document's user_id
-        try:
-            if use_copy:
-                await client.copy_message(user_id, message.chat.id, broadcast_msg.message_id)
-            else:
-                await client.send_message(user_id, broadcast_text)
-            total_success += 1
-            await asyncio.sleep(0.1)
-        except FloodWait as e:
-            await asyncio.sleep(e.x)
-        except Exception as e:
-            total_failed += 1
-            print(f"Failed to send to user {user_id}: {e}")
-
-    await message.reply_text(f"Broadcast completed! Success: {total_success}, Failures: {total_failed}")
+    await m.reply_text(f"**Broadcasted Message to {sent} Users!**")
