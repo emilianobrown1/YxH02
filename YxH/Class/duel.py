@@ -366,14 +366,18 @@ class Arena:
         self.scores[winner] += 1
         self.rounds.append(winner)
 
+        if not self.finished: # Only increment round if not finished
+            self.current_round += 1
+
         if self.scores[self.player_ids[0]] >= 2 or self.scores[self.player_ids[1]] >= 2:
             self.finished = True
         return True
 
     def get_round_characters(self):
+        round_index = min(self.current_round - 1, 1)  # Ensure index is within 0 or 1
         return (
-            self.players[self.player_ids[0]][self.current_round-1]['name'],
-            self.players[self.player_ids[1]][self.current_round-1]['name']
+            self.players[self.player_ids[0]][round_index]['name'],
+            self.players[self.player_ids[1]][round_index]['name']
         )
 
     async def reward_players(self):
@@ -389,19 +393,3 @@ class Arena:
         await winner.update()
         await loser.update()
         return winner_id, loser_id
-
-    def process_round_result(self):
-        if not self.active_duel.is_finished():
-            return False
-
-        winner = max(self.active_duel.health, key=lambda x: self.active_duel.health[x])
-        self.scores[winner] += 1
-        self.rounds.append(winner)
-
-        if not self.finished: # Only increment round if not finished
-            self.current_round += 1
-
-        if self.scores[self.player_ids[0]] >= 2 or self.scores[self.player_ids[1]] >= 2:
-            self.finished = True
-        return True
-
