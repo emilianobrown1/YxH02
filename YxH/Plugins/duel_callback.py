@@ -4,6 +4,7 @@ from pyrogram.types import CallbackQuery
 from ..Class.duel import Duel, Arena
 from ..Class.duel_state import active_duels, active_arenas
 from ..Utils.duel_utils import get_duel_keyboard, get_arena_keyboard, format_arena_progress
+
 from ..Database.users import get_user
 
 async def process_duel_action(callback: CallbackQuery, duel: Duel, user_id: int, action_part: str):
@@ -78,10 +79,14 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
             await callback.answer("❌ Duel session expired!", show_alert=True)
             return
 
-        action_result = await process_duel_action(callback, duel, user_id, action_part)
-        if action_result is True:  # Duel cancelled
+        if action_part == "exit":
+            for uid in duel.player_ids:
+                active_duels.pop(uid, None)
+            await callback.message.edit("⚔️ Duel cancelled!")
             return
-        elif action_result:
+
+        action_result = await process_duel_action(callback, duel, user_id, action_part)
+        if action_result:
             duel.update_cooldowns()
             if duel.is_finished():
                 await handle_duel_finish(callback, duel)
@@ -146,7 +151,7 @@ async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
             next_round_text += f"{char1_name} vs {char2_name}"
             current_turn_player_id = arena.active_duel.turn
             abilities = arena.active_duel.players[current_turn_player_id]['abilities']
-            keyboard = get_arena_keyboard(current_turn_player_id, abilities, arena.active_duel.heal_cooldown[current_turn_player_id], arena.active_duel.ability_cooldowns[current_turn_player_id])
+            keyboard = get_arena_keyboard(current_turn_player_id, abilities, arena.active_duel.heal_cooldown[current_turn_player_id], arena.active_duel.ability_cooldowns[arena.active_duel.turn])
             await callback.message.reply(next_round_text, reply_markup=keyboard)
         else:
             await callback.message.reply("❌ Failed to start the next round.")
@@ -166,11 +171,14 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
             await callback.answer("❌ Arena session expired!", show_alert=True)
             return
 
-        result_text = await process_duel_action(callback, arena.active_duel, user_id, action_part, is_arena=True)
-        if result_text is True:
+        if action_part == "exit":
+            for uid in arena.active_duel.player_ids:
+                active_arenas.pop(uid, None)
+            await callback.message.edit("🏟 Arena cancelled!")
             return
 
-        elif result_text:
+        result_text = await process_duel_action(callback, arena.active_duel, user_id, action_part)
+        if result_text:
             arena.active_duel.update_cooldowns()
             if arena.active_duel.is_finished():
                 await handle_arena_round_finish(callback, arena)
