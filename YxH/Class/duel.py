@@ -323,7 +323,6 @@ class Duel:
         return transfer_msg
 
 
-
 class Arena:
     def __init__(self, user1_id, user2_id):
         self.player_ids = [user1_id, user2_id]
@@ -343,7 +342,7 @@ class Arena:
 
     def start_next_round(self):
         self.current_round += 1
-        if self.current_round > 2:
+        if self.current_round > 2 or self.finished:
             return False
 
         p1_char = self.players[self.player_ids[0]][self.current_round-1]
@@ -367,6 +366,9 @@ class Arena:
 
         if self.scores[self.player_ids[0]] >= 2 or self.scores[self.player_ids[1]] >= 2:
             self.finished = True
+        elif self.current_round == 2: # Check for draw after 2 rounds
+            if self.scores[self.player_ids[0]] == self.scores[self.player_ids[1]]:
+                self.finished = True
         return True
 
     def get_round_characters(self):
@@ -422,3 +424,15 @@ class Arena:
         await loser.update()
         return winner_id, loser_id
 
+    def get_final_results(self):
+        p1_id = self.player_ids[0]
+        p2_id = self.player_ids[1]
+        p1_score = self.scores[p1_id]
+        p2_score = self.scores[p2_id]
+
+        if p1_score > p2_score:
+            return p1_id, p2_id, "won"
+        elif p2_score > p1_score:
+            return p2_id, p1_id, "won"
+        else:
+            return p1_id, p2_id, "draw"
