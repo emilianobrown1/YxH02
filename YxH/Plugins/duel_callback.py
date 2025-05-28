@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery
-from ..Class.duel import Duel
+from ..Class.duel import Duel, Arena
 from ..Class.duel_state import active_duels
 from ..Utils.duel_utils import get_duel_keyboard, format_duel_progress
 from ..Database.users import get_user
@@ -19,17 +19,22 @@ async def process_duel_action(callback: CallbackQuery, duel: Duel, user_id: int,
     if action_part.startswith("ability_"):
         ability_index = int(action_part.split("_")[1])
         damage = duel.use_ability(user_id, ability_index)
-        ability_name = duel.players[user_id]['abilities'][ability_index]
-        result_text = f"⚡ **{ability_name}** dealt {damage} damage!"
-    elif action_part == "heal":
-        if duel.heal_cooldown[user_id] > 0:
-            await callback.answer(f"Heal is on cooldown for {duel.heal_cooldown[user_id]} more turns!", show_alert=True)
+        if damage is not None:
+            ability_name = duel.players[user_id]['abilities'][ability_index]
+            result_text = f"⚡ **{ability_name}** dealt {damage} damage!"
+            return result_text
+        else:
+            await callback.answer("⚠️ Ability is on cooldown!", show_alert=True)
             return False
+    elif action_part == "heal":
         heal_amount = duel.heal(user_id)
-        result_text = f"💚 Healed for {heal_amount} HP!"
-
-    duel.update_cooldowns()
-    return result_text
+        if heal_amount > 0:
+            result_text = f"💚 Healed for {heal_amount} HP!"
+            return result_text
+        else:
+            await callback.answer("⚠️ Heal is on cooldown!", show_alert=True)
+            return False
+    return None
 
 async def handle_duel_finish(callback: CallbackQuery, duel: Duel):
     winner_id = max(duel.player_ids, key=lambda x: duel.health[x])
@@ -63,32 +68,36 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
             await callback.answer("❌ Duel session expired!", show_alert=True)
             return
 
-        result_text = await process_duel_action(callback, duel, user_id, action_part)
-        if result_text is True or result_text is False:
+        action_result = await process_duel_action(callback, duel, user_id, action_part)
+        if action_result is True:  # Duel cancelled
             return
-
-        if duel.is_finished():
-            await handle_duel_finish(callback, duel)
-        else:
-            status_text = (
-                f"{format_duel_progress(duel)}\n\n"
-                f"{result_text}\n\n"
-                f"{duel.get_status(duel.turn)}\n"
-                f"{duel.get_health_bar(duel.turn)}\n\n"
-                f"📜 Last moves:\n{duel.get_log()}"
-            )
-            # Get abilities of the current turn player
-            current_turn_player_id = duel.turn
-            abilities = duel.players[current_turn_player_id]['abilities']
-            keyboard = get_duel_keyboard(
-                current_turn_player_id,
-                abilities,
-                duel.heal_cooldown[current_turn_player_id]
-            )
-            await callback.message.edit(
-                status_text,
-                reply_markup=keyboard
-            )
+        elif action_result:
+            duel.update_cooldowns()
+            if duel.is_finished():
+                await handle_duel_finish(callback, duel)
+            else:
+                status_text = (
+                    f"{format_duel_progress(duel)}\n\n"
+                    f"{action_result}\n\n"
+                    f"{duel.get_status(duel.turn)}\n"
+                    f"{duel.get_health_bar(duel.turn)}\n\n"
+                    f"📜 Last moves:\n{duel.get_log()}"
+                )
+                # Get abilities of the current turn player
+                current_turn_player_id = duel.turn
+                abilities = duel.players[current_turn_player_id]['abilities']
+                keyboard = get_duel_keyboard(
+                    current_turn_player_id,
+                    abilities,
+                    duel.heal_cooldown[current_turn_player_id],
+                    duel.ability_cooldowns[current_turn_player_id]
+                )
+                await callback.message.edit(
+                    status_text,
+                    reply_markup=keyboard
+                )
+        elif action_result is False: # Invalid action (e.g., cooldown)
+            pass # The answer for cooldown is already sent in process_duel_action
         await callback.answer()
 
     except Exception as e:
@@ -97,7 +106,7 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
 
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery
-from ..Class.duel import Arena
+from ..Class.duel import Arena, Duel # Import Duel here as well
 from ..Class.duel_state import active_arenas
 from ..Utils.duel_utils import get_arena_keyboard, format_arena_progress
 from ..Database.users import get_user
@@ -121,17 +130,22 @@ async def process_duel_action(callback: CallbackQuery, duel: Duel, user_id: int,
     if action_part.startswith("ability_"):
         ability_index = int(action_part.split("_")[1])
         damage = duel.use_ability(user_id, ability_index)
-        ability_name = duel.players[user_id]['abilities'][ability_index]
-        result_text = f"⚡ **{ability_name}** dealt {damage} damage!"
-    elif action_part == "heal":
-        if duel.heal_cooldown[user_id] > 0:
-            await callback.answer(f"Heal is on cooldown for {duel.heal_cooldown[user_id]} more turns!", show_alert=True)
+        if damage is not None:
+            ability_name = duel.players[user_id]['abilities'][ability_index]
+            result_text = f"⚡ **{ability_name}** dealt {damage} damage!"
+            return result_text
+        else:
+            await callback.answer("⚠️ Ability is on cooldown!", show_alert=True)
             return False
+    elif action_part == "heal":
         heal_amount = duel.heal(user_id)
-        result_text = f"💚 Healed for {heal_amount} HP!"
-
-    duel.update_cooldowns()
-    return result_text
+        if heal_amount > 0:
+            result_text = f"💚 Healed for {heal_amount} HP!"
+            return result_text
+        else:
+            await callback.answer("⚠️ Heal is on cooldown!", show_alert=True)
+            return False
+    return None
 
 async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
     arena.process_round_result()
@@ -165,7 +179,7 @@ async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
             next_round_text += f"{char1_name} vs {char2_name}"
             current_turn_player_id = arena.active_duel.turn
             abilities = arena.active_duel.players[current_turn_player_id]['abilities']
-            keyboard = get_arena_keyboard(current_turn_player_id, abilities, arena.active_duel.heal_cooldown[current_turn_player_id])
+            keyboard = get_arena_keyboard(current_turn_player_id, abilities, arena.active_duel.heal_cooldown[current_turn_player_id], arena.active_duel.ability_cooldowns[current_turn_player_id])
             await callback.message.reply(next_round_text, reply_markup=keyboard)
         else:
             await callback.message.reply("❌ Failed to start the next round.")
@@ -186,34 +200,38 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
             return
 
         result_text = await process_duel_action(callback, arena.active_duel, user_id, action_part, is_arena=True)
-        if result_text is True or result_text is False:
+        if result_text is True:
             return
 
-        if arena.active_duel.is_finished():
-            await handle_arena_round_finish(callback, arena)
-        else:
-            status_text = (
-                f"{format_arena_progress(arena)}\n\n"
-                f"{result_text}\n\n"
-                f"{arena.active_duel.get_status(arena.active_duel.turn)}\n"
-                f"{arena.active_duel.get_health_bar(arena.active_duel.turn)}\n\n"
-                f"📜 Last moves:\n{arena.active_duel.get_log()}"
-            )
-            # Get abilities of the current turn player
-            current_turn_player_id = arena.active_duel.turn
-            abilities = arena.active_duel.players[current_turn_player_id]['abilities']
-            keyboard = get_arena_keyboard(
-                current_turn_player_id,
-                abilities,
-                arena.active_duel.heal_cooldown[current_turn_player_id]
-            )
-            await callback.message.edit(
-                status_text,
-                reply_markup=keyboard
-            )
+        elif result_text:
+            arena.active_duel.update_cooldowns()
+            if arena.active_duel.is_finished():
+                await handle_arena_round_finish(callback, arena)
+            else:
+                status_text = (
+                    f"{format_arena_progress(arena)}\n\n"
+                    f"{result_text}\n\n"
+                    f"{arena.active_duel.get_status(arena.active_duel.turn)}\n"
+                    f"{arena.active_duel.get_health_bar(arena.active_duel.turn)}\n\n"
+                    f"📜 Last moves:\n{arena.active_duel.get_log()}"
+                )
+                # Get abilities of the current turn player
+                current_turn_player_id = arena.active_duel.turn
+                abilities = arena.active_duel.players[current_turn_player_id]['abilities']
+                keyboard = get_arena_keyboard(
+                    current_turn_player_id,
+                    abilities,
+                    arena.active_duel.heal_cooldown[current_turn_player_id],
+                    arena.active_duel.ability_cooldowns[arena.active_duel.turn]
+                )
+                await callback.message.edit(
+                    status_text,
+                    reply_markup=keyboard
+                )
+        elif result_text is False:
+            pass # Cooldown message already sent
         await callback.answer()
 
     except Exception as e:
         await callback.answer(f"⚠️ Error: {str(e)}", show_alert=True)
         print(f"Arena callback error: {str(e)}")
-
