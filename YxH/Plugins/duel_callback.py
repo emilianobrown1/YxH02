@@ -53,107 +53,42 @@ async def handle_duel_finish(callback: CallbackQuery, duel: Duel):
         reply_markup=None
     )
 
-@Client.on_callback_query(filters.regex(r"^duel_(ability_\d+|heal|exit):(\d+)$"))
-async def handle_duel_actions(client: Client, callback: CallbackQuery):
-    try:
-        action_part = callback.matches[0].group(1)
-        user_id = int(callback.matches[0].group(2))
-
-        if user_id != callback.from_user.id:
-            await callback.answer("🚫 It's not your turn!", show_alert=True)
-            return
-
-        duel = active_duels.get(user_id)
-        if not duel:
-            await callback.answer("❌ Duel session expired!", show_alert=True)
-            return
-
-        result_text = await process_duel_action(callback, duel, user_id, action_part)
-        if result_text is True:  # Exit case
-            await callback.answer()
-            return
-        if result_text is False:  # Invalid action case
-            return
-
-        if duel.is_finished():
-            await handle_duel_finish(callback, duel)
-            await callback.answer()
-            return
-
-        status_text = (
-            f"{result_text}\n\n"
-            f"{duel.get_status(duel.turn)}\n"
-            f"{duel.get_health_bar(duel.turn)}\n\n"
-            f"📜 Last moves:\n{duel.get_log()}"
-        )
-
-        await callback.message.edit(
-            status_text,
-            reply_markup=get_duel_keyboard(
-                duel.turn,
-                duel.players[duel.turn]['abilities'],
-                duel.heal_cooldown[duel.turn]
-            )
-        )
-        await callback.answer()
-
-    except Exception as e:
-        await callback.answer(f"⚠️ Error: {str(e)}", show_alert=True)
-        print(f"Duel callback error: {str(e)}")
-
 async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
     arena.process_round_result()
 
     if arena.finished:
-        winner_id, loser_id = await arena.reward_players()
-        await callback.message.edit(
-            f"🏆 Arena Final Results\n"
-            f"• Score: {arena.scores[arena.player_ids[0]]} - {arena.scores[arena.player_ids[1]]}\n"
-            f"🎁 Winner gets 3 crystals!\n"
-            f"🎁 Loser gets 1 crystal!"
-        )
+        winner_id, loser_id, result = arena.get_final_results()
+        reward_winner_id, reward_loser_id = await arena.reward_players()
+
+        p1_name = callback.message.chat.get_member(arena.player_ids[0]).user.first_name
+        p2_name = callback.message.chat.get_member(arena.player_ids[1]).user.first_name
+
+        final_text = "🏆 Arena Finished! 🏆\n\n"
+        final_text += f"Final Score: {p1_name}: {arena.scores[arena.player_ids[0]]} - {p2_name}: {arena.scores[arena.player_ids[1]]}\n\n"
+
+        if result == "won":
+            winner_name = callback.message.chat.get_member(winner_id).user.first_name
+            final_text += f"🎉 Winner: {winner_name}!\n"
+            if reward_winner_id is not None:
+                final_text += "🎁 Received bonus rewards!"
+        else:
+            final_text += "🤝 It's a draw! Both players receive a crystal."
+            # Rewards for draw are already given in reward_players
+
+        await callback.message.reply(final_text)
         del active_arenas[arena.player_ids[0]]
         del active_arenas[arena.player_ids[1]]
     else:
-        arena.start_next_round()
-        char1, char2 = arena.get_round_characters()
-        await callback.message.edit(
-            f"{format_arena_progress(arena)}\n\n"
-            f"⚔️ Round {arena.current_round} Started!\n"
-            f"{char1} vs {char2}",
-            reply_markup=get_arena_keyboard(
-                arena.turn,
-                arena.active_duel.players[arena.turn]['abilities'],
-                arena.active_duel.heal_cooldown[arena.turn]
-            )
-        )
-
-async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
-    arena.process_round_result()
-
-    if arena.finished:
-        winner_id, loser_id = await arena.reward_players()
-        await callback.message.edit(
-            f"🏆 Arena Final Results\n"
-            f"• Score: {arena.scores[arena.player_ids[0]]} - {arena.scores[arena.player_ids[1]]}\n"
-            f"🎁 Winner gets 3 crystals!\n"
-            f"🎁 Loser gets 1 crystal!"
-        )
-        del active_arenas[arena.player_ids[0]]
-        del active_arenas[arena.player_ids[1]]
-    else:
-        arena.start_next_round()
-        char1, char2 = arena.get_round_characters()
-        # Get abilities of the current turn player
-        current_turn_player_id = arena.active_duel.turn
-        abilities = arena.active_duel.players[current_turn_player_id]['abilities']
-        keyboard = get_arena_keyboard(current_turn_player_id, abilities, arena.active_duel.heal_cooldown[current_turn_player_id])
-        await callback.message.edit(
-            f"{format_arena_progress(arena)}\n\n"
-            f"⚔️ Round {arena.current_round} Started!\n"
-            f"{char1} vs {char2}",
-            reply_markup=keyboard
-        )
+        if arena.start_next_round():
+            next_round_text = f"⚔️ Round {arena.current_round} Starting!\n"
+            char1_name, char2_name = arena.get_round_characters()
+            next_round_text += f"{char1_name} vs {char2_name}"
+            current_turn_player_id = arena.active_duel.turn
+            abilities = arena.active_duel.players[current_turn_player_id]['abilities']
+            keyboard = get_arena_keyboard(current_turn_player_id, abilities, arena.active_duel.heal_cooldown[current_turn_player_id])
+            await callback.message.reply(next_round_text, reply_markup=keyboard)
+        else:
+            await callback.message.reply("❌ Failed to start the next round.")
 
 @Client.on_callback_query(filters.regex(r"^arena_(ability_\d+|heal|exit):(\d+)$"))
 async def handle_arena_actions(client: Client, callback: CallbackQuery):
