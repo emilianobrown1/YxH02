@@ -1,20 +1,15 @@
 from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery
-from ..Class.duel import Duel, Arena
-from ..Class.duel_state import active_duels, active_arenas
-from ..Utils.duel_utils import get_duel_keyboard, get_arena_keyboard, format_arena_progress
+from ..Class.duel import Duel
+from ..Class.duel_state import active_duels
+from ..Utils.duel_utils import get_duel_keyboard, format_duel_progress
 from ..Database.users import get_user
 
-async def process_duel_action(callback: CallbackQuery, duel: Duel, user_id: int, action_part: str, is_arena=False):
+async def process_duel_action(callback: CallbackQuery, duel: Duel, user_id: int, action_part: str):
     if action_part == "exit":
-        if is_arena:
-            for uid in duel.player_ids:
-                active_arenas.pop(uid, None)
-            await callback.message.edit("🏟 Arena cancelled!")
-        else:
-            for uid in duel.player_ids:
-                active_duels.pop(uid, None)
-            await callback.message.edit("⚔️ Duel cancelled!")
+        for uid in duel.player_ids:
+            active_duels.pop(uid, None)
+        await callback.message.edit("⚔️ Duel cancelled!")
         return True
 
     if duel.turn != user_id:
@@ -52,6 +47,91 @@ async def handle_duel_finish(callback: CallbackQuery, duel: Duel):
         f"{duel.get_log()}",
         reply_markup=None
     )
+
+@Client.on_callback_query(filters.regex(r"^duel_(ability_\d+|heal|exit):(\d+)$"))
+async def handle_duel_actions(client: Client, callback: CallbackQuery):
+    try:
+        action_part = callback.matches[0].group(1)
+        user_id = int(callback.matches[0].group(2))
+
+        if user_id != callback.from_user.id:
+            await callback.answer("🚫 It's not your turn!", show_alert=True)
+            return
+
+        duel = active_duels.get(user_id)
+        if not duel:
+            await callback.answer("❌ Duel session expired!", show_alert=True)
+            return
+
+        result_text = await process_duel_action(callback, duel, user_id, action_part)
+        if result_text is True or result_text is False:
+            return
+
+        if duel.is_finished():
+            await handle_duel_finish(callback, duel)
+        else:
+            status_text = (
+                f"{format_duel_progress(duel)}\n\n"
+                f"{result_text}\n\n"
+                f"{duel.get_status(duel.turn)}\n"
+                f"{duel.get_health_bar(duel.turn)}\n\n"
+                f"📜 Last moves:\n{duel.get_log()}"
+            )
+            # Get abilities of the current turn player
+            current_turn_player_id = duel.turn
+            abilities = duel.players[current_turn_player_id]['abilities']
+            keyboard = get_duel_keyboard(
+                current_turn_player_id,
+                abilities,
+                duel.heal_cooldown[current_turn_player_id]
+            )
+            await callback.message.edit(
+                status_text,
+                reply_markup=keyboard
+            )
+        await callback.answer()
+
+    except Exception as e:
+        await callback.answer(f"⚠️ Error: {str(e)}", show_alert=True)
+        print(f"Duel callback error: {str(e)}")
+
+from pyrogram import Client, filters
+from pyrogram.types import CallbackQuery
+from ..Class.duel import Arena
+from ..Class.duel_state import active_arenas
+from ..Utils.duel_utils import get_arena_keyboard, format_arena_progress
+from ..Database.users import get_user
+
+async def process_duel_action(callback: CallbackQuery, duel: Duel, user_id: int, action_part: str, is_arena=False):
+    if action_part == "exit":
+        if is_arena:
+            for uid in duel.player_ids:
+                active_arenas.pop(uid, None)
+            await callback.message.edit("🏟 Arena cancelled!")
+        else:
+            for uid in duel.player_ids:
+                active_duels.pop(uid, None)
+            await callback.message.edit("⚔️ Duel cancelled!")
+        return True
+
+    if duel.turn != user_id:
+        await callback.answer("⏳ Wait for your turn!", show_alert=True)
+        return False
+
+    if action_part.startswith("ability_"):
+        ability_index = int(action_part.split("_")[1])
+        damage = duel.use_ability(user_id, ability_index)
+        ability_name = duel.players[user_id]['abilities'][ability_index]
+        result_text = f"⚡ **{ability_name}** dealt {damage} damage!"
+    elif action_part == "heal":
+        if duel.heal_cooldown[user_id] > 0:
+            await callback.answer(f"Heal is on cooldown for {duel.heal_cooldown[user_id]} more turns!", show_alert=True)
+            return False
+        heal_amount = duel.heal(user_id)
+        result_text = f"💚 Healed for {heal_amount} HP!"
+
+    duel.update_cooldowns()
+    return result_text
 
 async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
     arena.process_round_result()
@@ -136,3 +216,4 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
     except Exception as e:
         await callback.answer(f"⚠️ Error: {str(e)}", show_alert=True)
         print(f"Arena callback error: {str(e)}")
+
