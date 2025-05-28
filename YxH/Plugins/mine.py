@@ -81,21 +81,20 @@ async def mine(_, m, user):
 
 async def fest_hour_task(app):
     while True:
-        current_hour = datetime.now(IST).hour
-        fest_hour = await get_fest_hour()
-        print(f"[Fest Hour Debug] Current Hour: {current_hour}, Fest Hour: {fest_hour}")
-        if current_hour == fest_hour:
-            text = (
-                "🎉 Fest Hour is live! 🎉\n\n"
-                "💰 Higher success rates for mining are now active for the next hour. "
-                "Don't miss your chance to strike big!"
-            )
-            mess = await app.send_message(SUPPORT_GROUP, text)
-            try:
-                await mess.pin()
-            except Exception as e:
-                print(f"[Fest Hour] Pin failed: {e}")
-            await asyncio.sleep(3600)
-        await asyncio.sleep(60)
-
-asyncio.create_task(fest_hour_task(app))
+        try:
+            current_hour = datetime.now(IST).hour
+            if current_hour == await get_fest_hour():
+                text = (
+                    "🎉 Fest Hour is live! 🎉\n\n"
+                    "💰 Higher success rates for mining are now active for the next hour. "
+                    "Don't miss your chance to strike big!"
+                )
+                mess = await app.send_message(SUPPORT_GROUP, text)
+                try:
+                    await mess.pin()
+                except Exception as e:
+                    print(f"[Fest Hour] Pin failed: {e}")
+                await asyncio.sleep(3600)
+            await asyncio.sleep(60)
+        except Exception as e:
+            print(f"[Fest Hour Task Error] {e}")
