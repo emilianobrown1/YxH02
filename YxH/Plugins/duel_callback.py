@@ -3,7 +3,7 @@ from pyrogram import Client, filters
 from pyrogram.types import CallbackQuery
 from ..Class.duel import Duel, Arena
 from ..Class.duel_state import active_duels, active_arenas
-from ..Utils.duel_utils import get_duel_keyboard, get_arena_keyboard, format_duel_progress, format_arena_progress
+from ..Utils.duel_utils import get_duel_keyboard, get_arena_keyboard, format_arena_progress
 from ..Database.users import get_user
 
 async def process_duel_action(callback: CallbackQuery, duel: Duel, user_id: int, action_part: str):
@@ -53,6 +53,15 @@ async def handle_duel_finish(callback: CallbackQuery, duel: Duel):
         f"{duel.get_log()}",
         reply_markup=None
     )
+
+def format_duel_progress(duel):
+    p1_hp = duel.health[duel.player_ids[0]]
+    p1_max_hp = duel.players[duel.player_ids[0]]['hp']
+    p2_hp = duel.health[duel.player_ids[1]]
+    p2_max_hp = duel.players[duel.player_ids[1]]['hp']
+    p1_name = duel.players[duel.player_ids[0]]['name']
+    p2_name = duel.players[duel.player_ids[1]]['name']
+    return f"⚔️ Duel Progress:\n• {p1_name}: {p1_hp}/{p1_max_hp}\n• {p2_name}: {p2_hp}/{p2_max_hp}"
 
 @Client.on_callback_query(filters.regex(r"^duel_(ability_\d+|heal|exit):(\d+)$"))
 async def handle_duel_actions(client: Client, callback: CallbackQuery):
@@ -193,4 +202,3 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
     except Exception as e:
         await callback.answer(f"⚠️ Error: {str(e)}", show_alert=True)
         print(f"Arena callback error: {str(e)}")
-
