@@ -323,13 +323,13 @@ class Duel:
         return transfer_msg
 
 
+
 class Arena:
     def __init__(self, user1_id, user2_id):
-        from ..Class.duel import CHARACTERS
         self.player_ids = [user1_id, user2_id]
         self.players = {
-            user1_id: [random.choice(list(CHARACTERS.values())), random.choice(list(CHARACTERS.values()))],
-            user2_id: [random.choice(list(CHARACTERS.values())), random.choice(list(CHARACTERS.values()))]
+            user1_id: [self.random_character(), self.random_character()],
+            user2_id: [self.random_character(), self.random_character()]
         }
         self.scores = {user1_id: 0, user2_id: 0}
         self.rounds = []
@@ -338,7 +338,6 @@ class Arena:
         self.finished = False
 
     def random_character(self):
-        from ..Class.duel import CHARACTERS
         name = random.choice(list(CHARACTERS.keys()))
         return {**CHARACTERS[name], 'name': name}
 
@@ -366,9 +365,6 @@ class Arena:
         self.scores[winner] += 1
         self.rounds.append(winner)
 
-        if not self.finished: # Only increment round if not finished
-            self.current_round += 1
-
         if self.scores[self.player_ids[0]] >= 2 or self.scores[self.player_ids[1]] >= 2:
             self.finished = True
         return True
@@ -380,10 +376,42 @@ class Arena:
             self.players[self.player_ids[1]][round_index]['name']
         )
 
+    def get_arena_status(self):
+        p1_score = self.scores[self.player_ids[0]]
+        p2_score = self.scores[self.player_ids[1]]
+        round_num = self.current_round
+        status = f"🏟️ Arena Status (Round {round_num}/2)\n"
+        status += f"{self.players[self.player_ids[0]][0]['name']} ({self.player_ids[0]}): {p1_score}\n"
+        status += f"{self.players[self.player_ids[1]][0]['name']} ({self.player_ids[1]}): {p2_score}\n"
+        if self.active_duel:
+            status += f"\n--- Current Round Duel ---\n"
+            status += f"{self.active_duel.players[self.player_ids[0]]['name']} HP: {self.active_duel.health[self.player_ids[0]]}/{self.active_duel.players[self.player_ids[0]]['hp']}\n"
+            status += f"{self.active_duel.players[self.player_ids[1]]['name']} HP: {self.active_duel.health[self.player_ids[1]]}/{self.active_duel.players[self.player_ids[1]]['hp']}\n"
+            status += f"Turn: {self.active_duel.players[self.active_duel.turn]['name']} ({self.active_duel.turn})\n"
+            status += f"Log: {self.active_duel.get_log()}"
+        return status
+
     async def reward_players(self):
         from ..Database.users import get_user
-        winner_id = max(self.scores, key=lambda x: self.scores[x])
-        loser_id = min(self.scores, key=lambda x: self.scores[x])
+        player1_id = self.player_ids[0]
+        player2_id = self.player_ids[1]
+
+        winner_id = None
+        if self.scores[player1_id] > self.scores[player2_id]:
+            winner_id = player1_id
+            loser_id = player2_id
+        elif self.scores[player2_id] > self.scores[player1_id]:
+            winner_id = player2_id
+            loser_id = player1_id
+        else:
+            # Draw condition
+            winner1 = await get_user(player1_id)
+            winner2 = await get_user(player2_id)
+            winner1.crystals += 1
+            winner2.crystals += 1
+            await winner1.update()
+            await winner2.update()
+            return None, None  # Indicate a draw
 
         winner = await get_user(winner_id)
         loser = await get_user(loser_id)
@@ -393,3 +421,4 @@ class Arena:
         await winner.update()
         await loser.update()
         return winner_id, loser_id
+
