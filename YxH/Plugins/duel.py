@@ -52,8 +52,7 @@ async def start_duel(client, message):
         keyboard = get_duel_keyboard(
             u1.user.id,
             duel.players[u1.user.id]['abilities'],
-            duel.heal_cooldown[u1.user.id],
-            duel.ability_cooldowns[u1.user.id]
+            duel.heal_cooldown[u1.user.id]
         )
         await message.reply(text, reply_markup=keyboard)
 
@@ -65,6 +64,7 @@ async def start_duel(client, message):
         await message.reply(f"❌ Failed to start duel: {str(e)}")
         active_duels.pop(u1.user.id, None)
         active_duels.pop(u2.user.id, None)
+
 
 @Client.on_message(filters.command("arena") & filters.reply)
 async def start_arena(client, message):
@@ -100,8 +100,7 @@ async def start_arena(client, message):
     keyboard = get_arena_keyboard(
         current_turn_player_id,
         abilities,
-        arena.active_duel.heal_cooldown[current_turn_player_id],
-        arena.active_duel.ability_cooldowns[current_turn_player_id]
+        arena.active_duel.heal_cooldown[current_turn_player_id]
     )
 
     await message.reply(text, reply_markup=keyboard)
