@@ -104,8 +104,7 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
                 keyboard = get_duel_keyboard(
                     current_turn_player_id,
                     abilities,
-                    duel.heal_cooldown[current_turn_player_id],
-                    duel.ability_cooldowns[current_turn_player_id]
+                    duel.heal_cooldown[current_turn_player_id]
                 )
                 await callback.message.edit(
                     status_text,
@@ -118,6 +117,7 @@ async def handle_duel_actions(client: Client, callback: CallbackQuery):
     except Exception as e:
         await callback.answer(f"⚠️ Error: {str(e)}", show_alert=True)
         print(f"Duel callback error: {str(e)}")
+
 
 async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
     arena.process_round_result()
@@ -196,8 +196,7 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
                 keyboard = get_arena_keyboard(
                     current_turn_player_id,
                     abilities,
-                    arena.active_duel.heal_cooldown[current_turn_player_id],
-                    arena.active_duel.ability_cooldowns[arena.active_duel.turn]
+                    arena.active_duel.heal_cooldown[current_turn_player_id]
                 )
                 await callback.message.edit(
                     status_text,
