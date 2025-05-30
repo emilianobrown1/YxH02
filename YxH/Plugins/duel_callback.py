@@ -126,14 +126,17 @@ async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
         winner_id, loser_id, result = arena.get_final_results()
         reward_winner_id, reward_loser_id = await arena.reward_players()
 
-        p1_name = callback.message.chat.get_member(arena.player_ids[0]).user.first_name
-        p2_name = callback.message.chat.get_member(arena.player_ids[1]).user.first_name
+        member1 = await callback.message.chat.get_member(arena.player_ids[0])
+        member2 = await callback.message.chat.get_member(arena.player_ids[1])
+        p1_name = member1.user.first_name if member1 and member1.user else "Player 1"
+        p2_name = member2.user.first_name if member2 and member2.user else "Player 2"
 
         final_text = "🏆 Arena Finished! 🏆\n\n"
         final_text += f"Final Score: {p1_name}: {arena.scores[arena.player_ids[0]]} - {p2_name}: {arena.scores[arena.player_ids[1]]}\n\n"
 
         if result == "won":
-            winner_name = callback.message.chat.get_member(winner_id).user.first_name
+            winner_member = await callback.message.chat.get_member(winner_id)
+            winner_name = winner_member.user.first_name if winner_member and winner_member.user else "Winner"
             final_text += f"🎉 Winner: {winner_name}!\n"
             if reward_winner_id is not None:
                 final_text += "🎁 Received bonus rewards!"
@@ -151,10 +154,14 @@ async def handle_arena_round_finish(callback: CallbackQuery, arena: Arena):
             next_round_text += f"{char1_name} vs {char2_name}"
             current_turn_player_id = arena.active_duel.turn
             abilities = arena.active_duel.players[current_turn_player_id]['abilities']
-            keyboard = get_arena_keyboard(current_turn_player_id, abilities, arena.active_duel.heal_cooldown[current_turn_player_id], arena.active_duel.ability_cooldowns[arena.active_duel.turn])
+            keyboard_args = [current_turn_player_id, abilities, arena.active_duel.heal_cooldown[current_turn_player_id]]
+            if hasattr(arena.active_duel, 'ability_cooldowns') and current_turn_player_id in arena.active_duel.ability_cooldowns:
+                keyboard_args.append(arena.active_duel.ability_cooldowns[current_turn_player_id])
+            keyboard = get_arena_keyboard(*keyboard_args)
             await callback.message.reply(next_round_text, reply_markup=keyboard)
         else:
             await callback.message.reply("❌ Failed to start the next round.")
+
 
 @Client.on_callback_query(filters.regex(r"^arena_(ability_\d+|heal|exit):(\d+)$"))
 async def handle_arena_actions(client: Client, callback: CallbackQuery):
