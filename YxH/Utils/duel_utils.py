@@ -25,15 +25,15 @@ def get_duel_keyboard(user_id, abilities, heal_cooldown=0):
 
     return InlineKeyboardMarkup(buttons)
 
-def get_arena_keyboard(user_id, abilities, heal_cooldown=0):
+def get_arena_keyboard(user_id, abilities, heal_cooldown=0, ability_cooldowns=None):
     buttons = [
         [
-            InlineKeyboardButton(abilities[0], callback_data=f"arena_ability_0:{user_id}"),
-            InlineKeyboardButton(abilities[1], callback_data=f"arena_ability_1:{user_id}")
+            InlineKeyboardButton(f"{abilities[0]}{f' (CD: {ability_cooldowns[0]})' if ability_cooldowns and ability_cooldowns[0] > 0 else ''}", callback_data=f"arena_ability_0:{user_id}"),
+            InlineKeyboardButton(f"{abilities[1]}{f' (CD: {ability_cooldowns[1]})' if ability_cooldowns and ability_cooldowns[1] > 0 else ''}", callback_data=f"arena_ability_1:{user_id}")
         ],
         [
-            InlineKeyboardButton(abilities[2], callback_data=f"arena_ability_2:{user_id}"),
-            InlineKeyboardButton(abilities[3], callback_data=f"arena_ability_3:{user_id}")
+            InlineKeyboardButton(f"{abilities[2]}{f' (CD: {ability_cooldowns[2]})' if ability_cooldowns and ability_cooldowns[2] > 0 else ''}", callback_data=f"arena_ability_2:{user_id}"),
+            InlineKeyboardButton(f"{abilities[3]}{f' (CD: {ability_cooldowns[3]})' if ability_cooldowns and ability_cooldowns[3] > 0 else ''}", callback_data=f"arena_ability_3:{user_id}")
         ]
     ]
 
@@ -48,6 +48,7 @@ def get_arena_keyboard(user_id, abilities, heal_cooldown=0):
     ])
 
     return InlineKeyboardMarkup(buttons)
+
 
 def format_arena_progress(arena):
     p1_score = arena.scores[arena.player_ids[0]]
