@@ -203,7 +203,8 @@ async def handle_arena_actions(client: Client, callback: CallbackQuery):
                 keyboard = get_arena_keyboard(
                     current_turn_player_id,
                     abilities,
-                    arena.active_duel.heal_cooldown[current_turn_player_id]
+                    arena.active_duel.heal_cooldown[current_turn_player_id],
+                    arena.active_duel.ability_cooldowns[current_turn_player_id]
                 )
                 await callback.message.edit(
                     status_text,
