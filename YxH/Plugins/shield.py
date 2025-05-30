@@ -20,7 +20,7 @@ def build_markup(user_id):
     return ikm(lis)
 
 @Client.on_message(filters.command("shield"))
-@YxH(main_only=True)
+@YxH(private=False)
 async def sh(_, m, u):
     if u.shield:
         if int(time.time()-u.shield[1]) > u.shield[0]:
