@@ -129,7 +129,7 @@ class User:
         return int((time.time() - self.init_time) / 86400)
 
     def set_afk(self, reason="AFK"):
-    self.data["afk"] = {
+    self.afk = {
         "reason": reason,
         "since": time.time()
     }
