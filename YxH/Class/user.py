@@ -135,10 +135,14 @@ class User:
         }
 
     def get_afk(self):
-        return self.afk["reason"] if hasattr(self, "afk") and self.afk else None
+        return self.afk["reason"] if self.afk else None
 
     def get_afk_time(self):
-        return self.afk["since"] if hasattr(self, "afk") and self.afk else None
-
+        return self.afk["since"] if self.afk else None
+    
     def remove_afk(self):
-    self.afk = None
+        self.afk = None
+    
+    def is_afk(self):
+        return bool(self.afk)
+    
