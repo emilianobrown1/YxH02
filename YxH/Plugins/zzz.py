@@ -8,7 +8,6 @@ from .copx import cwf as copx_cwf
 from .scramble import catch_scramble_response  
 from .couple_messages import handle_couple_messages
 from .catch import beast_spawner
-from .afk import afk_command, remove_afk_on_message, notify_afk_on_mention
 
 from .watchers import (
     info_watcher,
@@ -16,8 +15,7 @@ from .watchers import (
     copx_watcher,
     scramble_watcher,
     couple_message_watcher,
-    catch_watcher,
-    afk_watcher
+    catch_watcher
 )
 
 @Client.on_message(filters.group, group=fw_watcher)
@@ -50,14 +48,3 @@ async def handle_messages(_, m):
     await beast_spawner(_, m)
 
 
-@Client.on_message(filters.command("afk") & filters.group, group=afk_watcher)
-async def afk_cmd(_, m):
-    await afk_command(_, m)
-
-@Client.on_message(filters.group & filters.text, group=afk_watcher + 1)
-async def afk_return(_, m):
-    await remove_afk_on_message(_, m)
-
-@Client.on_message(filters.group & filters.reply, group=afk_watcher + 2)
-async def afk_tag_check(_, m):
-    await notify_afk_on_mention(_, m)
