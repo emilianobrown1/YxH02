@@ -84,6 +84,7 @@ class User:
         self.gl = ["Other", "Haru🧍‍♂", "Yoon🧍‍♀"]
         self.max_gems = 5_000_000
         self.max_gold = 1_000_000_000_0
+        self.afk = None
 
     async def update_invite_link(self, link):
         self.invite_link = link
@@ -126,3 +127,18 @@ class User:
     
     def get_old(self) -> int:
         return int((time.time() - self.init_time) / 86400)
+
+    def set_afk(self, reason: str = "AFK"):
+        self.afk = {
+        "reason": reason,
+        "since": time.time()
+        }
+
+    def get_afk(self):
+        return self.afk["reason"] if hasattr(self, "afk") and self.afk else None
+
+    def get_afk_time(self):
+        return self.afk["since"] if hasattr(self, "afk") and self.afk else None
+
+    def remove_afk(self):
+    self.afk = None
