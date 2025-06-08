@@ -15,7 +15,7 @@ async def afk_command(_, m: Message, user):
     await m.reply(f"✅ You are now AFK.\n📝 Reason: `{reason}`")
 
 # ─────── Auto remove AFK on any text message ───────
-@Client.on_message(filters.text & ~filters.command("afk"))
+@Client.on_message(filters.text & filters.command("afk"))
 @YxH()
 async def auto_remove_afk(_, m: Message, user):
     if user.get_afk():
