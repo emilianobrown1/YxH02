@@ -129,19 +129,19 @@ class User:
         return int((time.time() - self.init_time) / 86400)
 
     def set_afk(self, reason="AFK"):
-    self.afk = {
+        self.afk = {
         "reason": reason,
         "since": time.time()
-    }
+        }
 
-def remove_afk(self):
-    self.data.pop("afk", None)
+    def remove_afk(self):
+        self.afk = None
 
-def is_afk(self):
-    return "afk" in self.data
+    def is_afk(self):
+        return self.afk is not None
 
-def get_afk(self):
-    return self.data["afk"]["reason"] if "afk" in self.data else None
+    def get_afk(self):
+        return self.afk["reason"] if self.afk else None
 
-def get_afk_time(self):
-    return self.data["afk"]["since"] if "afk" in self.data else None
+    def get_afk_time(self):
+        return self.afk["since"] if self.afk else None
