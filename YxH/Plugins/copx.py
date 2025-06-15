@@ -70,5 +70,5 @@ async def copx(_, m, u):
     await asyncio.gather(
         chat.update(),
         user.update(),
-        m.reply(f'{m.from_user.first_name}, you have successfully bought {info["name"]} for {info["price"]} gems.')
+        m.reply(f'{m.from_user.first_name}, you have successfully cought {info["name"]} for {info["price"]} gems.')
     )
