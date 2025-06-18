@@ -3,7 +3,7 @@ from pyrogram.types import ChatPermissions, Message
 from datetime import datetime, timedelta
 import asyncio
 import time
-from YxH import YxH  # Ensure this is your actual Client object
+from ..universal_decorator import YxH
 
 spam_tracker: dict[int, list[float]] = {}
 
