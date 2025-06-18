@@ -13,7 +13,7 @@ MUTE_DURATION = 60  # seconds
 
 filter_spam = (filters.group & filters.text) & ~filters.service
 
-@YxH.on_message(filter_spam)
+@Client.on_message(filter_spam)
 async def anti_spam_mute(client: Client, message: Message):
     user_id = message.from_user.id
     chat_id = message.chat.id
