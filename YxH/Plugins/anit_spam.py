@@ -7,7 +7,7 @@ import time
 spam_tracker: dict[int, list[float]] = {}
 
 # Anti-spam configuration
-SPAM_LIMIT = 5         # Max messages allowed
+SPAM_LIMIT = 3         # Max messages allowed
 TIME_WINDOW = 5       # In seconds
 MUTE_DURATION = 60     # Mute time in seconds
 
