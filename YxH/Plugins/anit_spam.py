@@ -30,7 +30,7 @@ async def auto_unmute(client, chat_id, user_id, mention):
     except Exception as e:
         await client.send_message(chat_id, f"❌ Auto-unmute failed: {e}")
 
-@YxH.on_message(filter_spam)
+@Client.on_message(filter_spam)
 async def anti_spam_mute(client: Client, message: Message):
     try:
         user_id = message.from_user.id
