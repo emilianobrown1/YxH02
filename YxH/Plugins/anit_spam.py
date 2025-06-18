@@ -3,7 +3,8 @@ from pyrogram.types import ChatPermissions, Message
 from datetime import datetime, timedelta
 import asyncio
 import time
-from yxh import YxH  # ✅ Correct import
+from ..universal_decorator import YxH
+
 
 spam_tracker: dict[tuple[int, int], list[float]] = {}
 
