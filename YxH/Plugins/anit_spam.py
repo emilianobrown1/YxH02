@@ -1,26 +1,25 @@
 from pyrogram import Client, filters
 from pyrogram.types import ChatPermissions, Message
-from . import YxH  # your main bot client
+from . import YxH
+from datetime import datetime, timedelta
+import asyncio
 import time
 
-# In-memory tracker for user messages
 spam_tracker: dict[int, list[float]] = {}
 
-# Anti-spam settings
-SPAM_LIMIT = 5        # Messages allowed
-TIME_WINDOW = 5       # Seconds window
-MUTE_DURATION = 60    # Mute duration in seconds
+SPAM_LIMIT = 5
+TIME_WINDOW = 5
+MUTE_DURATION = 60  # seconds
 
-# Combined filter to avoid syntax error with ~filters.service
 filter_spam = (filters.group & filters.text) & ~filters.service
 
-@Client.on_message(filter_spam)
+@YxH.on_message(filter_spam)
 async def anti_spam_mute(client: Client, message: Message):
     user_id = message.from_user.id
     chat_id = message.chat.id
     now = time.time()
 
-    # ✅ Skip if user is admin
+    # ✅ Skip admins
     try:
         member = await client.get_chat_member(chat_id, user_id)
         if member.status in ("administrator", "creator"):
@@ -28,29 +27,48 @@ async def anti_spam_mute(client: Client, message: Message):
     except:
         return
 
-    # Store timestamps of recent messages
+    # ✅ Track recent messages
     spam_tracker.setdefault(user_id, []).append(now)
-    spam_tracker[user_id] = [
-        ts for ts in spam_tracker[user_id] if now - ts < TIME_WINDOW
-    ]
+    spam_tracker[user_id] = [ts for ts in spam_tracker[user_id] if now - ts < TIME_WINDOW]
 
-    # Check if user exceeded the limit
     if len(spam_tracker[user_id]) > SPAM_LIMIT:
         try:
+            mute_until = datetime.utcnow() + timedelta(seconds=MUTE_DURATION)
+
+            # ✅ Mute user
             await client.restrict_chat_member(
                 chat_id=chat_id,
                 user_id=user_id,
-                permissions=ChatPermissions(),  # No permissions = mute
-                until_date=int(now + MUTE_DURATION)
+                permissions=ChatPermissions(),  # Mute = No perms
+                until_date=mute_until
             )
 
             await message.reply_text(
                 f"🚫 {message.from_user.mention} has been muted for spamming "
-                f"({MUTE_DURATION} seconds)."
+                f"for {MUTE_DURATION} seconds."
             )
 
-            # Clear the user's history after mute
+            # ✅ Clear history
             spam_tracker[user_id] = []
 
+            # ✅ Auto-unmute after delay
+            await asyncio.sleep(MUTE_DURATION)
+
+            await client.restrict_chat_member(
+                chat_id=chat_id,
+                user_id=user_id,
+                permissions=ChatPermissions(
+                    can_send_messages=True,
+                    can_send_media_messages=True,
+                    can_send_other_messages=True,
+                    can_add_web_page_previews=True
+                )
+            )
+
+            await client.send_message(
+                chat_id,
+                f"🔈 {message.from_user.mention} has been automatically unmuted."
+            )
+
         except Exception as e:
-            await message.reply_text(f"❌ Failed to mute: {e}")
+            await message.reply_text(f"❌ Failed to mute/unmute: {e}")
