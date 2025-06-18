@@ -11,7 +11,7 @@ SPAM_LIMIT = 5
 TIME_WINDOW = 5
 MUTE_DURATION = 60
 
-@YxH.on_message(filters.group & filters.text)
+@Clinet.on_message(filters.group & filters.text)
 async def anti_spam_mute(client, message: Message):
     try:
         user = message.from_user
