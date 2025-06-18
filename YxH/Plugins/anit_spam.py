@@ -11,7 +11,7 @@ SPAM_LIMIT = 5         # Max messages allowed
 TIME_WINDOW = 05       # In seconds
 MUTE_DURATION = 60     # Mute time in seconds
 
-@Client.on_message(filters.group & filters.text & ~filters.service)
+@Client.on_message(filters.group & filters.text & filters.service)
 async def anti_spam_mute(client: Client, message: Message):
     user_id = message.from_user.id
     chat_id = message.chat.id
