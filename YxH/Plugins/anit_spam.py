@@ -1,42 +1,42 @@
 from pyrogram import Client, filters
 from pyrogram.types import ChatPermissions, Message
-from . import YxH  
+from . import YxH  # your main bot client
 import time
 
-# Track messages per user in memory
+# In-memory tracker for user messages
 spam_tracker: dict[int, list[float]] = {}
 
-# Anti-spam configuration
-SPAM_LIMIT = 3         # Max messages allowed
-TIME_WINDOW = 5       # In seconds
-MUTE_DURATION = 60     # Mute time in seconds
+# Anti-spam settings
+SPAM_LIMIT = 5        # Messages allowed
+TIME_WINDOW = 5       # Seconds window
+MUTE_DURATION = 60    # Mute duration in seconds
 
-@Client.on_message(filters.group & filters.text & ~filters.service)
+# Combined filter to avoid syntax error with ~filters.service
+filter_spam = (filters.group & filters.text) & ~filters.service
+
+@Client.on_message(filter_spam)
 async def anti_spam_mute(client: Client, message: Message):
     user_id = message.from_user.id
     chat_id = message.chat.id
     now = time.time()
 
-    # ✅ OPTIONAL: skip admins
+    # ✅ Skip if user is admin
     try:
         member = await client.get_chat_member(chat_id, user_id)
         if member.status in ("administrator", "creator"):
-            return  # Don't mute admins
+            return
     except:
-        return  # If failed to get member, skip
+        return
 
-    # Initialize or update message timestamps
+    # Store timestamps of recent messages
     spam_tracker.setdefault(user_id, []).append(now)
-
-    # Keep only recent messages in the defined time window
     spam_tracker[user_id] = [
         ts for ts in spam_tracker[user_id] if now - ts < TIME_WINDOW
     ]
 
-    # If message count exceeds the spam limit
+    # Check if user exceeded the limit
     if len(spam_tracker[user_id]) > SPAM_LIMIT:
         try:
-            # Restrict all permissions (mute)
             await client.restrict_chat_member(
                 chat_id=chat_id,
                 user_id=user_id,
@@ -49,7 +49,7 @@ async def anti_spam_mute(client: Client, message: Message):
                 f"({MUTE_DURATION} seconds)."
             )
 
-            # Clear history after muting
+            # Clear the user's history after mute
             spam_tracker[user_id] = []
 
         except Exception as e:
