@@ -5,22 +5,21 @@ import asyncio
 import time
 from typing import Dict, Deque
 
+# Settings
+SPAM_LIMIT = 5            # Number of messages
+TIME_WINDOW = 7           # Seconds window
+MUTE_DURATION = 300       # Mute duration in seconds
+
 # Use defaultdict for cleaner initialization
-spam_tracker: Dict[int, Dict[int, Deque[float]] = defaultdict(lambda: defaultdict(lambda: deque(maxlen=SPAM_LIMIT + 2)))
+spam_tracker: Dict[int, Dict[int, Deque[float]]] = defaultdict(lambda: defaultdict(lambda: deque(maxlen=SPAM_LIMIT + 2)))
 muted_users: Dict[int, float] = {}
 tracker_lock = asyncio.Lock()
 
-# Settings
-SPAM_LIMIT = 5
-TIME_WINDOW = 7
-MUTE_DURATION = 300
-
 @Client.on_message(filters.group & ~filters.service & ~filters.edited)
 async def anti_spam_handler(client: Client, message: types.Message):
-    # Early exit conditions
     if not message.from_user or message.from_user.is_bot:
         return
-        
+
     if message.chat.type not in (ChatType.GROUP, ChatType.SUPERGROUP):
         return
 
@@ -28,7 +27,7 @@ async def anti_spam_handler(client: Client, message: types.Message):
     chat_id = message.chat.id
     now = time.time()
 
-    # Check if user is admin (shouldn't be muted)
+    # Skip admins
     try:
         member = await client.get_chat_member(chat_id, user_id)
         if member.status in (ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER):
@@ -37,7 +36,7 @@ async def anti_spam_handler(client: Client, message: types.Message):
         print(f"Failed to check user status: {e}")
         return
 
-    # Cleanup expired mutes
+    # Check if user is already muted
     if user_id in muted_users and muted_users[user_id] <= now:
         del muted_users[user_id]
 
@@ -59,36 +58,37 @@ async def anti_spam_handler(client: Client, message: types.Message):
         else:
             return
 
-    # Verify bot has admin permissions
+    # Check bot permissions
     try:
         bot_member = await client.get_chat_member(chat_id, "me")
-        if not bot_member.privileges.can_restrict_members:
+        if not bot_member.privileges or not bot_member.privileges.can_restrict_members:
             print(f"Bot lacks mute permissions in chat {chat_id}")
             return
     except Exception as e:
         print(f"Failed to check bot permissions: {e}")
         return
 
-    # Perform mute
+    # Mute the user
     try:
         await client.restrict_chat_member(
             chat_id,
             user_id,
             permissions=types.ChatPermissions(),
             until_date=int(now + MUTE_DURATION)
-            
+        )
+
         await message.reply(
-            f"🚫 {message.from_user.mention} has been muted for {MUTE_DURATION//60} minutes for spamming."
+            f"🚫 {message.from_user.mention} has been muted for {MUTE_DURATION // 60} minutes for spamming."
         )
         print(f"Muted user {user_id} in chat {chat_id}")
-        
-        # Delete spam messages
+
+        # Optionally delete recent spam
         async for msg in client.search_messages(chat_id, from_user=user_id, limit=SPAM_LIMIT):
             if now - msg.date.timestamp() <= TIME_WINDOW:
                 try:
                     await msg.delete()
                 except:
                     continue
-                    
+
     except Exception as e:
         print(f"Failed to mute user {user_id}: {e}")
