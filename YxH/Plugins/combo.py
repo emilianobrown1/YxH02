@@ -21,29 +21,29 @@ async def comboattack(_, m, u):
 
     if u.clan_id == t.clan_id:
         return await m.reply("ʏᴏᴜ ᴄᴀɴɴᴏᴛ ᴀᴛᴛᴀᴄᴋ ʏᴏᴜʀ ᴄʟᴀɴ ᴍᴀᴛᴇꜱ.")
+
     if t.latest_defend and (time.time() - t.latest_defend) <= 10800:
-        return await m.reply("ᴛᴀʀɢᴇᴛ ᴜꜱᴇʀ ᴡᴀꜱ ᴀᴛᴛᴀᴄᴋᴇᴅ ʀᴇᴄᴇɴᴛʟʏ. ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.")
+        return await m.reply("ᴛᴀʀɢᴇᴛ ᴡᴀꜱ ᴀᴛᴛᴀᴄᴋᴇᴅ ʀᴇᴄᴇɴᴛʟʏ. ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.")
 
     if len(m.command) >= 2:
         attack_type = m.command[1].lower()
     else:
         attack_type = "shield"
 
-    # SHIELD ATTACK
     if attack_type == "shield":
         if t.protectors.get("Titanus Aegisorn", 0) > 0:
             if u.attackers.get("Ignirax", 0) > 0:
                 u.attackers["Ignirax"] -= 1
             t.protectors["Titanus Aegisorn"] = max(0, t.protectors["Titanus Aegisorn"] - 1)
             await u.update(); await t.update()
-            return await m.reply("ᴀᴛᴛᴀᴄᴋ ʙʟᴏᴄᴋᴇᴅ: ꜱʜɪᴇʟᴅ ɢᴜᴀʀᴅɪᴀɴ ᴄᴏᴜɴᴛᴇʀᴇᴅ ʏᴏᴜ.")
+            return await m.reply("ᴀᴛᴛᴀᴄᴋ ʙʟᴏᴄᴋᴇᴅ ʙʏ ꜱʜɪᴇʟᴅ ɢᴜᴀʀᴅɪᴀɴ (ᴛɪᴛᴀɴᴜꜱ ᴀᴇɢɪꜱᴏʀɴ).")
 
         if u.troops.get("shinobi", 0) < 15 or u.troops.get("wizard", 0) < 10 or u.troops.get("sensei", 0) < 5:
             return await m.reply("ɴᴏᴛ ᴇɴᴏᴜɢʜ ᴛʀᴏᴏᴘꜱ: 15 ꜱʜɪɴᴏʙɪ, 10 ᴡɪᴢᴀʀᴅ, 5 ꜱᴇɴꜱᴇɪ.")
         if u.power.get("Flame Heat Inferno", 0) <= 0 or u.power.get("Nature Ground", 0) <= 0:
-            return await m.reply("ɴᴇᴇᴅ ᴘᴏᴡᴇʀꜱ: ꜰʟᴀᴍᴇ ʜᴇᴀᴛ ɪɴꜰᴇʀɴᴏ & ɴᴀᴛᴜʀᴇ ɢʀᴏᴜɴᴅ.")
+            return await m.reply("ᴍɪꜱꜱɪɴɢ ᴘᴏᴡᴇʀꜱ: ꜰʟᴀᴍᴇ ʜᴇᴀᴛ ɪɴꜰᴇʀɴᴏ & ɴᴀᴛᴜʀᴇ ɢʀᴏᴜɴᴅ.")
         if u.attackers.get("Ignirax", 0) <= 0:
-            return await m.reply("ɴᴇᴇᴅ ᴀᴛᴛᴀᴄᴋᴇʀ ʙᴇᴀꜱᴛ: ɪɢɴɪʀᴀx.")
+            return await m.reply("ɴᴇᴇᴅ ᴀᴛᴛᴀᴄᴋᴇʀ: ɪɢɴɪʀᴀx.")
 
         loot_gems = int(t.gems * 0.50)
         loot_gold = int(t.gold * 0.50)
@@ -65,24 +65,26 @@ async def comboattack(_, m, u):
         await u.update(); await t.update()
 
         await m.reply(f"ꜱʜɪᴇʟᴅ ᴀᴛᴛᴀᴄᴋ ꜱᴜᴄᴄᴇꜱꜰᴜʟ! ʟᴏᴏᴛᴇᴅ: {loot_gold} ɢᴏʟᴅ, {loot_gems} ɢᴇᴍꜱ, {loot_crystals} ᴄʀʏꜱᴛᴀʟꜱ.")
+        try:
+            await _.send_message(t.user.id, f"**{u.user.first_name}** ᴀᴛᴛᴀᴄᴋᴇᴅ ʏᴏᴜ! ʟᴏꜱᴛ: {loot_gold} ɢᴏʟᴅ, {loot_gems} ɢᴇᴍꜱ, {loot_crystals} ᴄʀʏꜱᴛᴀʟꜱ.")
+        except: pass
 
-    # CRYSTAL ATTACK
     elif attack_type in ("crystal", "crystals"):
         if t.protectors.get("Glacelynx", 0) > 0:
             if u.attackers.get("Frostclaw", 0) > 0:
                 u.attackers["Frostclaw"] -= 1
             t.protectors["Glacelynx"] = max(0, t.protectors["Glacelynx"] - 1)
             await u.update(); await t.update()
-            return await m.reply("ʙʟᴏᴄᴋᴇᴅ ʙʏ ᴄʀʏꜱᴛᴀʟ ɢᴜᴀʀᴅɪᴀɴ.")
+            return await m.reply("ʙʟᴏᴄᴋᴇᴅ ʙʏ ᴄʀʏꜱᴛᴀʟ ɢᴜᴀʀᴅɪᴀɴ (ɢʟᴀᴄᴇʟʏɴx).")
 
         if u.crystals < 3:
-            return await m.reply("ɴᴇᴇᴅ 3 ᴄʀʏꜱᴛᴀʟꜱ ᴛᴏ ᴀᴛᴛᴀᴄᴋ.")
+            return await m.reply("ɴᴇᴇᴅ 3 ᴄʀʏꜱᴛᴀʟꜱ ꜰᴏʀ ᴄʀʏꜱᴛᴀʟ ᴀᴛᴛᴀᴄᴋ.")
         if u.troops.get("shinobi", 0) < 10 or u.troops.get("wizard", 0) < 15 or u.troops.get("sensei", 0) < 15:
             return await m.reply("ɴᴏᴛ ᴇɴᴏᴜɢʜ ᴛʀᴏᴏᴘꜱ: 10 ꜱʜɪɴᴏʙɪ, 15 ᴡɪᴢᴀʀᴅ, 15 ꜱᴇɴꜱᴇɪ.")
         if u.power.get("Strength", 0) <= 0 or u.power.get("Frost Snow", 0) <= 0:
-            return await m.reply("ɴᴇᴇᴅ ᴘᴏᴡᴇʀꜱ: ꜱᴛʀᴇɴɢᴛʜ & ꜰʀᴏꜱᴛ ꜱɴᴏᴡ.")
+            return await m.reply("ᴍɪꜱꜱɪɴɢ ᴘᴏᴡᴇʀꜱ: ꜱᴛʀᴇɴɢᴛʜ & ꜰʀᴏꜱᴛ ꜱɴᴏᴡ.")
         if u.attackers.get("Frostclaw", 0) <= 0:
-            return await m.reply("ɴᴇᴇᴅ ᴀᴛᴛᴀᴄᴋᴇʀ ʙᴇᴀꜱᴛ: ꜰʀᴏꜱᴛᴄʟᴀᴡ.")
+            return await m.reply("ɴᴇᴇᴅ ᴀᴛᴛᴀᴄᴋᴇʀ: ꜰʀᴏꜱᴛᴄʟᴀᴡ.")
 
         u.crystals -= 3
         loot_base = int(t.crystals * 0.30)
@@ -101,22 +103,24 @@ async def comboattack(_, m, u):
         await u.update(); await t.update()
 
         await m.reply(f"ᴄʀʏꜱᴛᴀʟ ᴀᴛᴛᴀᴄᴋ ꜱᴜᴄᴄᴇꜱꜰᴜʟ! ʟᴏᴏᴛᴇᴅ {total_loot} ᴄʀʏꜱᴛᴀʟꜱ.")
+        try:
+            await _.send_message(t.user.id, f"**{u.user.first_name}** ᴀᴛᴛᴀᴄᴋᴇᴅ ʏᴏᴜ! ʟᴏꜱᴛ {total_loot} ᴄʀʏꜱᴛᴀʟꜱ.")
+        except: pass
 
-    # COLLECTION ATTACK
     elif attack_type == "collection":
         if t.protectors.get("Voltaryn", 0) > 0:
             if u.attackers.get("Vilescale", 0) > 0:
                 u.attackers["Vilescale"] -= 1
             t.protectors["Voltaryn"] = max(0, t.protectors["Voltaryn"] - 1)
             await u.update(); await t.update()
-            return await m.reply("ʙʟᴏᴄᴋᴇᴅ ʙʏ ᴄᴏʟʟᴇᴄᴛɪᴏɴ ᴘʀᴏᴛᴇᴄᴛᴏʀ.")
+            return await m.reply("ʙʟᴏᴄᴋᴇᴅ ʙʏ ᴄᴏʟʟᴇᴄᴛɪᴏɴ ᴘʀᴏᴛᴇᴄᴛᴏʀ (ᴠᴏʟᴛᴀʀʏɴ).")
 
         if u.troops.get("shinobi", 0) < 10 or u.troops.get("wizard", 0) < 15 or u.troops.get("sensei", 0) < 10:
             return await m.reply("ɴᴏᴛ ᴇɴᴏᴜɢʜ ᴛʀᴏᴏᴘꜱ: 10 ꜱʜɪɴᴏʙɪ, 15 ᴡɪᴢᴀʀᴅ, 10 ꜱᴇɴꜱᴇɪ.")
         if u.power.get("Thunder Storm", 0) <= 0 or u.power.get("Nature Ground", 0) <= 0:
-            return await m.reply("ɴᴇᴇᴅ ᴘᴏᴡᴇʀꜱ: ᴛʜᴜɴᴅᴇʀ ꜱᴛᴏʀᴍ & ɴᴀᴛᴜʀᴇ ɢʀᴏᴜɴᴅ.")
+            return await m.reply("ᴍɪꜱꜱɪɴɢ ᴘᴏᴡᴇʀꜱ: ᴛʜᴜɴᴅᴇʀ ꜱᴛᴏʀᴍ & ɴᴀᴛᴜʀᴇ ɢʀᴏᴜɴᴅ.")
         if u.attackers.get("Vilescale", 0) <= 0:
-            return await m.reply("ɴᴇᴇᴅ ᴀᴛᴛᴀᴄᴋᴇʀ ʙᴇᴀꜱᴛ: ᴠɪʟᴇꜱᴄᴀʟᴇ.")
+            return await m.reply("ɴᴇᴇᴅ ᴀᴛᴛᴀᴄᴋᴇʀ: ᴠɪʟᴇꜱᴄᴀʟᴇ.")
 
         available = list(t.collection.keys())
         loot = random.sample(available, min(5, len(available))) if available else []
@@ -131,25 +135,27 @@ async def comboattack(_, m, u):
         await u.update(); await t.update()
 
         if loot:
-            await m.reply(f"ᴄᴏʟʟᴇᴄᴛɪᴏɴ ᴀᴛᴛᴀᴄᴋ ꜱᴜᴄᴄᴇꜱꜰᴜʟ! ʟᴏᴏᴛᴇᴅ: {', '.join(loot)}.")
+            await m.reply(f"ᴄᴏʟʟᴇᴄᴛɪᴏɴ ᴀᴛᴛᴀᴄᴋ ꜱᴜᴄᴄᴇꜱꜰᴜʟ! ʟᴏᴏᴛᴇᴅ: {', '.join(map(str, loot))}.")
+            try:
+                await _.send_message(t.user.id, f"**{u.user.first_name}** ᴀᴛᴛᴀᴄᴋᴇᴅ ʏᴏᴜʀ ᴄᴏʟʟᴇᴄᴛɪᴏɴ ᴀɴᴅ ꜱᴛᴏʟᴇ: {', '.join(map(str, loot))}.")
+            except: pass
         else:
             await m.reply("ᴄᴏʟʟᴇᴄᴛɪᴏɴ ᴀᴛᴛᴀᴄᴋ ꜱᴜᴄᴄᴇꜱꜰᴜʟ ʙᴜᴛ ɴᴏ ᴄʜᴀʀᴀᴄᴛᴇʀꜱ ᴛᴏ ʟᴏᴏᴛ.")
 
-    # TREASURE ATTACK
     elif attack_type == "treasure":
         if t.protectors.get("Cerberus", 0) > 0:
             if u.attackers.get("Pyraxion", 0) > 0:
                 u.attackers["Pyraxion"] -= 1
             t.protectors["Cerberus"] = max(0, t.protectors["Cerberus"] - 1)
             await u.update(); await t.update()
-            return await m.reply("ʙʟᴏᴄᴋᴇᴅ ʙʏ ᴛʀᴇᴀꜱᴜʀᴇ ɢᴜᴀʀᴅɪᴀɴ.")
+            return await m.reply("ʙʟᴏᴄᴋᴇᴅ ʙʏ ᴛʀᴇᴀꜱᴜʀᴇ ɢᴜᴀʀᴅɪᴀɴ (ᴄᴇʀʙᴇʀᴜꜱ).")
 
         if u.troops.get("shinobi", 0) < 15 or u.troops.get("wizard", 0) < 15 or u.troops.get("sensei", 0) < 10:
             return await m.reply("ɴᴏᴛ ᴇɴᴏᴜɢʜ ᴛʀᴏᴏᴘꜱ: 15 ꜱʜɪɴᴏʙɪ, 15 ᴡɪᴢᴀʀᴅ, 10 ꜱᴇɴꜱᴇɪ.")
         if u.power.get("Darkness Shadow", 0) <= 0 or u.power.get("Flame Heat Inferno", 0) <= 0:
-            return await m.reply("ɴᴇᴇᴅ ᴘᴏᴡᴇʀꜱ: ᴅᴀʀᴋɴᴇꜱꜱ ꜱʜᴀᴅᴏᴡ & ꜰʟᴀᴍᴇ ʜᴇᴀᴛ ɪɴꜰᴇʀɴᴏ.")
+            return await m.reply("ᴍɪꜱꜱɪɴɢ ᴘᴏᴡᴇʀꜱ: ᴅᴀʀᴋɴᴇꜱꜱ ꜱʜᴀᴅᴏᴡ & ꜰʟᴀᴍᴇ ʜᴇᴀᴛ ɪɴꜰᴇʀɴᴏ.")
         if u.attackers.get("Pyraxion", 0) <= 0:
-            return await m.reply("ɴᴇᴇᴅ ᴀᴛᴛᴀᴄᴋᴇʀ ʙᴇᴀꜱᴛ: ᴘʏʀᴀxɪᴏɴ.")
+            return await m.reply("ɴᴇᴇᴅ ᴀᴛᴛᴀᴄᴋᴇʀ: ᴘʏʀᴀxɪᴏɴ.")
 
         loot_gold = int(t.treasure[0] * 0.40)
         loot_gems = int(t.treasure[1] * 0.40)
@@ -171,6 +177,13 @@ async def comboattack(_, m, u):
         await u.update(); await t.update()
 
         await m.reply(f"ᴛʀᴇᴀꜱᴜʀᴇ ᴀᴛᴛᴀᴄᴋ ꜱᴜᴄᴄᴇꜱꜰᴜʟ! ʟᴏᴏᴛᴇᴅ: {loot_gold} ɢᴏʟᴅ, {loot_gems} ɢᴇᴍꜱ, {loot_crystals} ᴄʀʏꜱᴛᴀʟꜱ.")
+        try:
+            await _.send_message(
+                t.user.id,
+                f"**{u.user.first_name}** ᴀᴛᴛᴀᴄᴋᴇᴅ ʏᴏᴜʀ ᴛʀᴇᴀꜱᴜʀᴇ! ʟᴏꜱᴛ: {loot_gold} ɢᴏʟᴅ, {loot_gems} ɢᴇᴍꜱ, {loot_crystals} ᴄʀʏꜱᴛᴀʟꜱ."
+            )
+        except:
+            pass
 
     else:
-        await m.reply("ɪɴᴠᴀʟɪᴅ ᴀᴛᴛᴀᴄᴋ ᴛʏᴘᴇ. ᴜꜱᴇ: ꜱʜɪᴇʟᴅ, ᴄʀʏꜱᴛᴀʟ(ꜱ), ᴄᴏʟʟᴇᴄᴛɪᴏɴ,
+        await m.reply("ɪɴᴠᴀʟɪᴅ ᴀᴛᴛᴀᴄᴋ ᴛʏᴘᴇ. ᴜꜱᴇ: ꜱʜɪᴇʟᴅ, ᴄʀʏꜱᴛᴀʟ(ꜱ), ᴄᴏʟʟᴇᴄᴛɪᴏɴ, ᴏʀ ᴛʀᴇᴀꜱᴜʀᴇ.")
