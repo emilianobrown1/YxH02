@@ -1,4 +1,6 @@
-from pyrogram import Client, filters from . import get_user, YxH import time, random
+from pyrogram import Client, filters
+from . import get_user, YxH
+import time, random
 
 @Client.on_message(filters.command("comboattack")) @YxH() async def comboattack(_, m, u): if not u.clan_id: return await m.reply("❌ ʏᴏᴜ ᴍᴜꜱᴛ ʙᴇ ᴘᴀʀᴛ ᴏꜰ ᴀ ᴄʟᴀɴ ᴛᴏ ᴀᴛᴛᴀᴄᴋ.")
 
