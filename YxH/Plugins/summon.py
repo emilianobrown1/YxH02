@@ -18,14 +18,7 @@ async def summon_command(client, message, u):
     uid = u.user.id
     now = int(time.time())
 
-    # ✅ Check if there's already a pending summon
-    if uid in SUMMON_PENDING:
-        return await message.reply(
-            "❌ You already have a beast awaiting your decision. "
-            "Please summon or dismiss the current beast before summoning a new one!"
-        )
-
-    # ✅ Check cooldown
+    # ✅ Check cooldown first
     last_time = SUMMON_COOLDOWN_TRACKER.get(uid, 0)
     if last_time and now - last_time < SUMMON_COOLDOWN:
         remaining = SUMMON_COOLDOWN - (now - last_time)
@@ -34,7 +27,17 @@ async def summon_command(client, message, u):
             f"⏳ Please wait {mins} more minutes before summoning another beast."
         )
 
-    # Pick random beast
+    # ✅ Check for an already pending summon
+    if uid in SUMMON_PENDING:
+        return await message.reply(
+            "❌ You already have a beast awaiting your decision. "
+            "Please summon or dismiss the current beast before trying again!"
+        )
+
+    # ✅ Set cooldown immediately
+    SUMMON_COOLDOWN_TRACKER[uid] = now
+
+    # Pick a random beast
     beast_name = random.choice(list(BEAST_INFO.keys()))
     beast_data = BEAST_INFO[beast_name]
     cost = random.randint(35, 100)
