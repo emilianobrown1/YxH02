@@ -4,12 +4,12 @@ from . import YxH, get_user
 from .catch import BEAST_INFO
 import random, time
 
-# ⏳ Cooldown (2 hours in seconds)
+# ⏳ Cooldown period (2 hours in seconds)
 SUMMON_COOLDOWN = 2 * 60 * 60
 
-# 💾 In-memory trackers
-SUMMON_COOLDOWN_TRACKER: dict[int, int] = {}     # user_id -> last summon timestamp
-SUMMON_PENDING: dict[int, dict] = {}             # user_id -> beast info
+# In-memory trackers
+SUMMON_COOLDOWN_TRACKER: dict[int, int] = {}  # user_id -> last summon timestamp
+SUMMON_PENDING: dict[int, dict] = {}           # user_id -> beast info
 
 
 @Client.on_message(filters.command("summon"))
@@ -18,7 +18,14 @@ async def summon_command(client, message, u):
     uid = u.user.id
     now = int(time.time())
 
-    # Check cooldown
+    # ✅ Check if there's already a pending summon
+    if uid in SUMMON_PENDING:
+        return await message.reply(
+            "❌ You already have a beast awaiting your decision. "
+            "Please summon or dismiss the current beast before summoning a new one!"
+        )
+
+    # ✅ Check cooldown
     last_time = SUMMON_COOLDOWN_TRACKER.get(uid, 0)
     if last_time and now - last_time < SUMMON_COOLDOWN:
         remaining = SUMMON_COOLDOWN - (now - last_time)
@@ -32,7 +39,7 @@ async def summon_command(client, message, u):
     beast_data = BEAST_INFO[beast_name]
     cost = random.randint(35, 100)
 
-    # Save summon info in memory
+    # Save summon info
     SUMMON_PENDING[uid] = {
         "name": beast_name,
         "cost": cost,
