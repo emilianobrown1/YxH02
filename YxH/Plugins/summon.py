@@ -1,36 +1,44 @@
-# Plugins/summon.py
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton as ikb, InlineKeyboardMarkup as ikm
 from . import YxH, get_user
-from ..Class.user import User
-from .catch import BEAST_INFO  # reuse the BEAST_INFO dictionary
+from .catch import BEAST_INFO
 import random, time
 
-SUMMON_COOLDOWN = 2 * 60 * 60  # 2 hours in seconds
+# ⏳ Cooldown (2 hours in seconds)
+SUMMON_COOLDOWN = 2 * 60 * 60
+
+# 💾 In-memory trackers
+SUMMON_COOLDOWN_TRACKER: dict[int, int] = {}     # user_id -> last summon timestamp
+SUMMON_PENDING: dict[int, dict] = {}             # user_id -> beast info
+
 
 @Client.on_message(filters.command("summon"))
 @YxH(private=False)
-async def summon_command(client, message, u: User):
+async def summon_command(client, message, u):
+    uid = u.user.id
     now = int(time.time())
-    if u.last_summon_time and now - u.last_summon_time < SUMMON_COOLDOWN:
-        remaining = SUMMON_COOLDOWN - (now - u.last_summon_time)
+
+    # Check cooldown
+    last_time = SUMMON_COOLDOWN_TRACKER.get(uid, 0)
+    if last_time and now - last_time < SUMMON_COOLDOWN:
+        remaining = SUMMON_COOLDOWN - (now - last_time)
         mins = remaining // 60
         return await message.reply(
             f"⏳ Please wait {mins} more minutes before summoning another beast."
         )
 
+    # Pick random beast
     beast_name = random.choice(list(BEAST_INFO.keys()))
     beast_data = BEAST_INFO[beast_name]
     cost = random.randint(35, 100)
 
-    # Save summon info in user
-    u.pending_summon = {
+    # Save summon info in memory
+    SUMMON_PENDING[uid] = {
         "name": beast_name,
         "cost": cost,
         "image": beast_data['Image'],
         "role": beast_data['Role'],
     }
-    await u.update()
 
     caption = (
         f"🔮 A mystical {beast_name} appeared!\n\n"
@@ -45,6 +53,7 @@ async def summon_command(client, message, u: User):
             [ikb("❌ Dismiss Beast ❌", callback_data="summon_no")]
         ]
     )
+
     await message.reply_photo(
         beast_data['Image'],
         caption=caption,
