@@ -1,4 +1,3 @@
-# summon_callback.py
 from pyrogram import Client, filters
 from ..Database.users import get_user
 from .summon import SUMMON_PENDING, SUMMON_COOLDOWN_TRACKER
@@ -6,18 +5,22 @@ import time
 
 @Client.on_callback_query(filters.regex(r"^summon_"))
 async def summon_callbacks(client, callback_query):
-    user = await get_user(callback_query.from_user.id)
     uid = callback_query.from_user.id
+    user = await get_user(uid)
+    beast_info = SUMMON_PENDING.get(uid)
 
+    # 📛 Check that a beast is awaiting this user
+    if not beast_info:
+        return await callback_query.answer(
+            "❌ No active beast to summon!",
+            show_alert=True
+        )
+
+    # ✅ User chose to summon
     if callback_query.data == "summon_yes":
-        beast_info = SUMMON_PENDING.get(uid)
-        if not beast_info:
-            return await callback_query.answer(
-                "❌ No beast to summon!",
-                show_alert=True
-            )
         cost = beast_info['cost']
 
+        # 🪙 Check if they can pay
         if user.crystals < cost:
             return await callback_query.answer(
                 "❌ Not enough crystals to summon this beast!",
@@ -27,7 +30,7 @@ async def summon_callbacks(client, callback_query):
         role = beast_info['role']
         beast_name = beast_info['name']
 
-        # Check for duplicates
+        # ❌ Check duplicates
         if "Protector" in role and beast_name in user.protectors:
             return await callback_query.answer(
                 "❌ You already have this protector beast!",
@@ -39,6 +42,7 @@ async def summon_callbacks(client, callback_query):
                 show_alert=True
             )
 
+        # 📝 Deduct cost and add beast to barracks
         user.crystals -= cost
         if "Protector" in role:
             user.protectors[beast_name] = 1
@@ -46,20 +50,21 @@ async def summon_callbacks(client, callback_query):
             user.attackers[beast_name] = 1
         await user.update()
 
-        # Set last summon time and clear pending summon
+        # ⏳ Save cooldown timestamp and clear pending
         SUMMON_COOLDOWN_TRACKER[uid] = int(time.time())
         SUMMON_PENDING.pop(uid, None)
 
         await callback_query.message.edit_caption(
             f"🎉 You successfully summoned {beast_name} for {cost} crystals!"
         )
-        await callback_query.answer()
+        return await callback_query.answer()
 
+    # ❌ User chose to dismiss
     elif callback_query.data == "summon_no":
-        # Dismiss beast and set cooldown so they can’t immediately summon again
         SUMMON_COOLDOWN_TRACKER[uid] = int(time.time())
         SUMMON_PENDING.pop(uid, None)
+
         await callback_query.message.edit_caption(
             "❌ Beast dismissed."
         )
-        await callback_query.answer()
+        return await callback_query.answer()
