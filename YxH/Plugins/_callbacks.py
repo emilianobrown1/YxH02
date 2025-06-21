@@ -30,7 +30,7 @@ from .catch import catch_command
 from .powers import powerxup_store, refresh_power, buy_power
 from .duel_callback import handle_arena_actions, handle_duel_actions
 # Then register other handlers
-from .summon_callback import summon_callback
+from .summon_handler import handle_summon_actions
 from . extras import uncollected_characters, create_telegraph_page_for_uncollected
 from ..Database.characters import get_all as get_all_anime_characters
 
@@ -123,8 +123,8 @@ async def cbq(_, q: CallbackQuery):
   elif q.data.startswith('arena_'):
         return await handle_arena_actions(_, q)
 
-  if q.data and q.data.startswith("summon_"):
-        return
+  elif q.data.startswith('summon_'):
+        return await handle_summon_actions(q)
         
   if q.data.startswith("ttt_"):
         try:
