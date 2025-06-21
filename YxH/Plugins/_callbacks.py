@@ -121,6 +121,9 @@ async def cbq(_, q: CallbackQuery):
         return await handle_duel_actions(_, q)
   elif q.data.startswith('arena_'):
         return await handle_arena_actions(_, q)
+
+  if q.data and q.data.startswith("summon_"):
+        return
         
   if q.data.startswith("ttt_"):
         try:
