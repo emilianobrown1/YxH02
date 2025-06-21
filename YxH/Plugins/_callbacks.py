@@ -30,6 +30,7 @@ from .catch import catch_command
 from .powers import powerxup_store, refresh_power, buy_power
 from .duel_callback import handle_arena_actions, handle_duel_actions
 # Then register other handlers
+from .summon_callback import summon
 from . extras import uncollected_characters, create_telegraph_page_for_uncollected
 from ..Database.characters import get_all as get_all_anime_characters
 
