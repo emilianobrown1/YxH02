@@ -1,7 +1,7 @@
 import random
 import asyncio
 from pyrogram import Client, filters
-from .universal_decorator import YxH  # Adjust path if different
+from ..universal_decorator import YxH
 
 @Client.on_message(filters.command("flipcoin"))
 @YxH()  # You can pass arguments like private=False, group=False etc. if needed
