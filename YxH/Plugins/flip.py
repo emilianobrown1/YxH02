@@ -1,9 +1,11 @@
 import random
 import asyncio
 from pyrogram import Client, filters
+from .universal_decorator import YxH  # Adjust path if different
 
 @Client.on_message(filters.command("flipcoin"))
-async def flip_coin(client, message):
+@YxH()  # You can pass arguments like private=False, group=False etc. if needed
+async def flip_coin(client, message, user):
     # Step 1: Show coin
     coin_msg = await message.reply("🪙")
     await asyncio.sleep(1.5)
