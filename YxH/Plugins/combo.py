@@ -22,7 +22,7 @@ async def comboattack(_, m, u):
     if u.clan_id == t.clan_id:
         return await m.reply("ʏᴏᴜ ᴄᴀɴɴᴏᴛ ᴀᴛᴛᴀᴄᴋ ʏᴏᴜʀ ᴄʟᴀɴ ᴍᴀᴛᴇꜱ.")
 
-    if t.latest_defend and (time.time() - t.latest_defend) <= 10800:
+    if t.latest_defend and (time.time() - t.latest_defend) <= 1800:
         return await m.reply("ᴛᴀʀɢᴇᴛ ᴡᴀꜱ ᴀᴛᴛᴀᴄᴋᴇᴅ ʀᴇᴄᴇɴᴛʟʏ. ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.")
 
     if len(m.command) >= 2:
