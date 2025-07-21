@@ -11,3 +11,4 @@ aiohttp
 pytz
 pymongo
 cloudinary
+reportlab
