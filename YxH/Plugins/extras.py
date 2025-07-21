@@ -1,10 +1,12 @@
 import asyncio
+import os
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup as ikm, InlineKeyboardButton as ikb
-from . import YxH, get_anime_character
 from pyrogram.types import CallbackQuery
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from . import YxH, get_anime_character
 from telegraph import Telegraph
-
 from YxH.Database.characters import get_all as get_all_anime_characters
 
 # Initialize the Telegraph object
@@ -17,7 +19,6 @@ async def get_telegraph_account(user):
     if user.id in telegraph_accounts:
         return telegraph_accounts[user.id], None
     try:
-        # Run the blocking call in a thread
         account = await asyncio.to_thread(telegraph.create_account, short_name=user.first_name)
         if 'error' in account:
             return None, account.get('error')
@@ -26,66 +27,35 @@ async def get_telegraph_account(user):
     except Exception as e:
         return None, str(e)
 
-# Function to create a Telegraph page for duplicate characters
-async def create_telegraph_page_for_duplicates(user, duplicates):
-    account, error = await get_telegraph_account(user)
-    if error:
-        return None, f"Failed to create Telegraph account: {error}"
+# Function to create PDF for duplicate characters
+async def create_pdf_for_duplicates(user, duplicates, file_path):
+    c = canvas.Canvas(file_path, pagesize=letter)
+    width, height = letter
+    y = height - 50
 
-    # Prepare the HTML content for the page
-    content = f"<strong>{user.first_name}'s Duplicate Characters:</strong><ul>"
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(50, y, f"{user.first_name}'s Duplicate Characters")
+    y -= 30
+
+    c.setFont("Helvetica", 12)
     for dup_id, count in duplicates.items():
         char = await get_anime_character(dup_id)
         if not char:
             continue
-        content += f"<li>{char.name} (ID: {char.id})</li>"
-    content += "</ul>"
+        line = f"{char.name} (ID: {char.id}) × {count}"
+        if y < 50:
+            c.showPage()
+            y = height - 50
+        c.drawString(50, y, line)
+        y -= 20
 
-    try:
-        # Run the blocking create_page call in a thread
-        page = await asyncio.to_thread(
-            telegraph.create_page,
-            title=f"{user.first_name}'s Duplicates",
-            html_content=content
-        )
-        if 'error' in page:
-            return None, f"Telegraph page error: {page.get('error')}"
-        return page.get('url'), None
-    except Exception as e:
-        return None, f"Telegraph page creation failed: {e}"
+    c.save()
 
-# Function to create a Telegraph page for uncollected characters
-async def create_telegraph_page_for_uncollected(user, uncollected):
-    account, error = await get_telegraph_account(user)
-    if error:
-        return None, f"Failed to create Telegraph account: {error}"
-
-    # Prepare the HTML content for the page
-    content = f"<strong>{user.first_name}'s Uncollected Characters:</strong><ul>"
-    for char in uncollected:
-        if not char:
-            continue
-        content += f"<li>{char.name} (ID: {char.id})</li>"
-    content += "</ul>"
-
-    try:
-        # Run the blocking create_page call in a thread
-        page = await asyncio.to_thread(
-            telegraph.create_page,
-            title=f"{user.first_name}'s Uncollected Characters",
-            html_content=content
-        )
-        if 'error' in page:
-            return None, f"Telegraph page error: {page.get('error')}"
-        return page.get('url'), None
-    except Exception as e:
-        return None, f"Telegraph page creation failed: {e}"
-
-# Extras (Duplicates) Command
+# Extras (Duplicates) Command using PDF instead of Telegraph
 @Client.on_message(filters.command('extras'))
 @YxH()
 async def find_duplicates(_, m, u):
-    user = m.from_user  # Fetch the user object from the message
+    user = m.from_user
     coll_dict: dict = u.collection
     if not coll_dict:
         return await m.reply('Your collection is empty.')
@@ -95,14 +65,16 @@ async def find_duplicates(_, m, u):
     if not duplicates:
         return await m.reply('No extras 🆔 found in your collection.')
 
-    # Generate Telegraph page URL for duplicates
-    telegraph_url, error = await create_telegraph_page_for_duplicates(user, duplicates)
-    if error:
-        return await m.reply(f"Error: {error}")
+    file_path = f"/tmp/{user.id}_duplicates.pdf"
+    await create_pdf_for_duplicates(user, duplicates, file_path)
 
-    await m.reply(f"Here are your duplicate characters: {telegraph_url}")
+    try:
+        await m.reply_document(file_path, caption="📄 Here is your Duplicate Characters list.")
+    finally:
+        if os.path.exists(file_path):
+            os.remove(file_path)
 
-# Uncollected Characters Command
+# Uncollected Characters Command (unchanged)
 @Client.on_message(filters.command('uncollected'))
 @YxH()
 async def uncollected_characters(_, m, u):
