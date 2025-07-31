@@ -1,14 +1,17 @@
-import config  # Import your configuration settings
-from runner import run  # Import the function from runner.py
+from pyrogram import Client, idle
+import os
+from config import API_ID, API_HASH, BOT_TOKEN
 
-def main():
-    # Example of printing configuration settings (optional)
-    print("Configuration loaded from config.py:")
-    print(config.SETTING_1)
-    print(config.SETTING_2)
-
-    # Run the main function
-    run()
+app = Client(
+    "YxHBot",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN,
+    plugins=dict(root="YxH/Plugins")
+)
 
 if __name__ == "__main__":
-    main()
+    os.makedirs("Characters", exist_ok=True)
+    app.start()
+    print("✅ Bot Started.")
+    idle()
